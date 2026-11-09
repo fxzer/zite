@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/geist-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/geist-medium-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-italic-latin.woff2") format("woff2");
+}
+
+:root {
+  --primary: #f0eef4;
+  --secondary: #f0eef4;
+  --tertiary: #f0eef4;
+  --accent: #7aa2f7;
+  --background: #0f1116;
+  --ground: linear-gradient(90deg, #08090c 0%, #08090c 24%, #c0cdf508 46%, #93c5fd0a 70%, #67e8f90f 100%);
+  --elevated: #f0eef4;
+  --hero-start: #07080b;
+  --hero-end: #12141a;
+  --tile: #181a21;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", monospace;
+  --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-wu: "Geist", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-wu-mono: "JetBrains Mono", ui-monospace, Menlo, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", monospace;
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-accent: var(--accent);
+  --color-background: var(--background);
+  --color-elevated: var(--elevated);
+  --color-hero-start: var(--hero-start);
+  --color-hero-end: var(--hero-end);
+  --color-tile: var(--tile);
+  --animate-fill: fill 9s linear forwards;
+  --animate-blink: blink 1s steps(1) infinite;
+  --animate-gspin: gspin 750ms linear infinite;
+  --animate-fade-in: fade-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes fill {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  @keyframes gspin {
+    0%, 100% { opacity: 1; }
+    45%, 92% { opacity: 0.1; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    @apply bg-background font-sans leading-[1.2] font-medium tracking-[-0.01em] text-primary antialiased;
+    background-image: var(--ground);
+    background-attachment: fixed;
+    text-rendering: optimizeLegibility;
+  }
+
+  [id] {
+    scroll-margin-top: 80px;
+  }
+
+  :is(p, li, td) a {
+    @apply text-primary underline underline-offset-2;
+  }
+
+  code {
+    @apply rounded-md bg-elevated/7 px-[5px] py-px font-mono text-[0.88em];
+  }
+}
+
+@utility app-icon {
+  @apply inline-grid shrink-0 place-items-center bg-tile ring-1 ring-elevated/15 ring-inset;
+
+  & > img {
+    @apply block size-4/5;
+  }
+}
+
+@utility btn {
+  @apply inline-flex cursor-pointer items-center justify-center gap-[7px] rounded-full whitespace-nowrap no-underline outline-offset-2 outline-primary transition-[background-color,transform] duration-200 focus-visible:outline-2 active:scale-97;
+}
+
+@utility btn-md {
+  @apply min-h-[38px] px-[15px] py-2 text-base;
+}
+
+@utility btn-lg {
+  @apply min-h-[46px] px-[18px] py-3 text-[17px];
+}
+
+@utility btn-soft {
+  @apply bg-elevated/7 text-primary hover:bg-elevated/10;
+}
+
+@utility btn-ghost {
+  @apply bg-transparent text-primary hover:bg-elevated/7;
+}
+
+@utility card-raised {
+  @apply relative bg-[#1e2028]/70 backdrop-blur-2xl backdrop-saturate-150;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 12px 40px rgb(0 0 0 / 0.35);
+}
+
+@utility text-shimmer {
+  background: linear-gradient(90deg, #aaa8b7 0 35%, #f0eef4 50%, #aaa8b7 65% 100%) 100% 0 / 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer 2.4s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes shimmer {
+  to { background-position: 0 0; }
+}
+
+@utility btn-light {
+  @apply bg-white text-black shadow-[inset_0_-1px_0_rgb(0_0_0/0.12),0_2px_4px_rgb(0_0_0/0.5),0_8px_20px_rgb(0_0_0/0.45)] hover:bg-[#ececef] active:bg-[#dededf];
+}
+
+@utility btn-primary {
+  @apply bg-black text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.14),0_0_0_1px_rgb(255_255_255/0.1),0_2px_4px_rgb(0_0_0/0.5),0_8px_20px_rgb(0_0_0/0.45)] hover:bg-[#15171d] active:bg-[#0b0c10];
+}
+
+@utility doc {
+  & h1 {
+    @apply mb-7 text-[clamp(36px,5vw,48px)] leading-[1.1] font-medium tracking-[-0.03em];
+  }
+
+  & h2 {
+    @apply mt-14 mb-3.5 text-2xl leading-[1.1] font-medium tracking-[-0.02em];
+  }
+
+  & :is(p, li, td) {
+    @apply text-[17px] leading-normal text-secondary;
+  }
+
+  & p {
+    @apply mb-4;
+  }
+
+  & ul {
+    @apply mb-4 list-disc pl-[22px];
+  }
+
+  & li {
+    @apply my-1.5 marker:text-tertiary;
+  }
+
+  & table {
+    @apply mb-4 w-full border-collapse;
+  }
+
+  & :is(th, td) {
+    @apply border-b border-elevated/10 py-2.5 pr-3 text-left align-top;
+  }
+
+  & th {
+    @apply text-sm font-medium text-tertiary;
+  }
+
+  & td:first-child {
+    @apply text-primary;
+  }
+}
