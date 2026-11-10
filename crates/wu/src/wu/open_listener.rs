@@ -131,7 +131,11 @@ impl OpenRequest {
         }
 
         for url in request.urls {
-            let normalized_url = if let Some(stripped) = url.strip_prefix("zed-lite://") {
+            let normalized_url = if let Some(stripped) = url.strip_prefix("zite://") {
+                format!("wu://{stripped}")
+            } else if let Some(stripped) = url.strip_prefix("zite-cli://") {
+                format!("wu-cli://{stripped}")
+            } else if let Some(stripped) = url.strip_prefix("zed-lite://") {
                 format!("wu://{stripped}")
             } else if let Some(stripped) = url.strip_prefix("zed-lite-cli://") {
                 format!("wu-cli://{stripped}")
@@ -363,7 +367,7 @@ pub fn listen_for_cli_connections(opener: OpenListener) -> Result<()> {
     use release_channel::RELEASE_CHANNEL_NAME;
     use std::os::unix::net::UnixDatagram;
 
-    let sock_path = paths::data_dir().join(format!("zed-lite-{}.sock", *RELEASE_CHANNEL_NAME));
+    let sock_path = paths::data_dir().join(format!("zite-{}.sock", *RELEASE_CHANNEL_NAME));
     // remove the socket if the process listening on it has died
     if let Err(e) = UnixDatagram::unbound()?.connect(&sock_path)
         && e.kind() == std::io::ErrorKind::ConnectionRefused

@@ -63,7 +63,7 @@ actions!(
         OpenServerSettings,
         /// Quits the application.
         Quit,
-        /// Shows information about Zed Lite.
+        /// Shows information about Zite.
         About,
         /// Opens the documentation website.
         OpenDocs,

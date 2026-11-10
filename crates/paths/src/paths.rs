@@ -16,7 +16,7 @@ pub const EDITORCONFIG_NAME: &str = ".editorconfig";
 /// and state directory paths.
 ///
 /// Forks should change this to avoid colliding with Zed's user data.
-pub const APP_NAME: &str = "Zed-Lite";
+pub const APP_NAME: &str = "Zite";
 
 /// Lowercased form of [`APP_NAME`], for use in XDG-style paths on
 /// Linux/FreeBSD and the macOS `~/.config` fallback.
@@ -69,7 +69,7 @@ static CONFIG_DIR: OnceLock<PathBuf> = OnceLock::new();
 /// Returns the relative path to the remote server directory on the ssh host.
 pub fn remote_server_dir_relative() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed_lite_server").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zite_server").unwrap());
     *CACHED
 }
 
@@ -77,7 +77,7 @@ pub fn remote_server_dir_relative() -> &'static RelPath {
 /// Returns the relative path to the remote wsl server directory on the wsl host.
 pub fn remote_wsl_server_dir_relative() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed_lite_wsl_server").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zite_wsl_server").unwrap());
     *CACHED
 }
 
@@ -162,20 +162,34 @@ pub fn config_dir() -> &'static PathBuf {
             }
             .join(APP_NAME_LOWERCASE)
         } else {
-            home_dir().join(".config").join(APP_NAME_LOWERCASE)
+            let primary = home_dir().join(".config").join(APP_NAME_LOWERCASE);
+            let legacy = home_dir().join(".config").join("zed-lite");
+            if !primary.exists() && legacy.exists() {
+                legacy
+            } else {
+                primary
+            }
         }
     })
 }
 
-/// Returns the path to the data directory used by Zed-Lite.
+/// Returns the path to the data directory used by Zite.
 pub fn data_dir() -> &'static PathBuf {
     CURRENT_DATA_DIR.get_or_init(|| {
         if let Some(custom_dir) = CUSTOM_DATA_DIR.get() {
             custom_dir.clone()
         } else if cfg!(target_os = "macos") {
-            home_dir()
+            let primary = home_dir()
                 .join("Library/Application Support")
-                .join(APP_NAME)
+                .join(APP_NAME);
+            let legacy = home_dir()
+                .join("Library/Application Support")
+                .join("Zed-Lite");
+            if !primary.exists() && legacy.exists() {
+                legacy
+            } else {
+                primary
+            }
         } else if cfg!(any(target_os = "linux", target_os = "freebsd")) {
             if let Ok(flatpak_xdg_data) = std::env::var("FLATPAK_XDG_DATA_HOME") {
                 flatpak_xdg_data.into()
@@ -197,7 +211,13 @@ pub fn state_dir() -> &'static PathBuf {
     static STATE_DIR: OnceLock<PathBuf> = OnceLock::new();
     STATE_DIR.get_or_init(|| {
         if cfg!(target_os = "macos") {
-            return home_dir().join(".local").join("state").join(APP_NAME);
+            let primary = home_dir().join(".local").join("state").join(APP_NAME);
+            let legacy = home_dir().join(".local").join("state").join("Zed-Lite");
+            if !primary.exists() && legacy.exists() {
+                return legacy;
+            } else {
+                return primary;
+            }
         }
 
         if cfg!(any(target_os = "linux", target_os = "freebsd")) {
@@ -498,15 +518,15 @@ pub fn remote_servers_dir() -> &'static PathBuf {
     REMOTE_SERVERS_DIR.get_or_init(|| data_dir().join("remote_servers"))
 }
 
-/// Returns the relative path to a `.zed-lite` folder within a project.
+/// Returns the relative path to a `.zite` folder within a project.
 pub fn local_settings_folder_name() -> &'static str {
-    ".zed-lite"
+    ".zite"
 }
 
-/// Returns the relative path to a `.zed` folder within a project, used as a
-/// fallback when there is no `.zed-lite` folder.
+/// Returns the relative path to a `.zed-lite` folder within a project, used as a
+/// fallback when there is no `.zite` folder.
 pub fn legacy_local_settings_folder_name() -> &'static str {
-    ".zed"
+    ".zed-lite"
 }
 
 /// Returns the relative path to a `.vscode` folder within a project.
@@ -514,8 +534,8 @@ pub fn local_vscode_folder_name() -> &'static str {
     ".vscode"
 }
 
-/// Picks the `.zed-lite` config file over its `.zed` counterpart. The `.zed` file is
-/// only used when it exists and the `.zed-lite` one does not.
+/// Picks the `.zite` config file over its legacy counterpart. The legacy file is
+/// only used when it exists and the `.zite` one does not.
 pub fn resolve_local_config_path<P: AsRef<RelPath>>(
     path: P,
     legacy_path: P,
@@ -531,30 +551,30 @@ pub fn resolve_local_config_path<P: AsRef<RelPath>>(
 /// Returns the relative path to a `settings.json` file within a project.
 pub fn local_settings_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/settings.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zite/settings.json").unwrap());
     *CACHED
 }
 
-/// Returns the relative path to a `.zed/settings.json` file within a project, used as a
-/// fallback when there is no `.zed-lite/settings.json`.
+/// Returns the relative path to a `.zed-lite/settings.json` file within a project, used as a
+/// fallback when there is no `.zite/settings.json`.
 pub fn legacy_local_settings_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed/settings.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/settings.json").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `tasks.json` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/tasks.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zite/tasks.json").unwrap());
     *CACHED
 }
 
-/// Returns the relative path to a `.zed/tasks.json` file within a project, used as a
-/// fallback when there is no `.zed-lite/tasks.json`.
+/// Returns the relative path to a `.zed-lite/tasks.json` file within a project, used as a
+/// fallback when there is no `.zite/tasks.json`.
 pub fn legacy_local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed/tasks.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/tasks.json").unwrap());
     *CACHED
 }
 
@@ -574,18 +594,18 @@ pub fn task_file_name() -> &'static str {
 }
 
 /// Returns the relative path to a `debug.json` file within a project.
-/// .zed-lite/debug.json
+/// .zite/debug.json
 pub fn local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/debug.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zite/debug.json").unwrap());
     *CACHED
 }
 
-/// Returns the relative path to a `.zed/debug.json` file within a project, used as a
-/// fallback when there is no `.zed-lite/debug.json`.
+/// Returns the relative path to a `.zed-lite/debug.json` file within a project, used as a
+/// fallback when there is no `.zite/debug.json`.
 pub fn legacy_local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed/debug.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/debug.json").unwrap());
     *CACHED
 }
 

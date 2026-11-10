@@ -26,7 +26,7 @@
   "Failed to open project": "打开项目失败",
   "Failed to reconnect": "重新连接失败",
   "Invalid path": "路径无效",
-  "Invalid path specified when trying to open a folder inside WSL.\n\nPlease note that Zed Lite currently does not support opening network share folders inside WSL.": "尝试在 WSL 中打开文件夹时指定的路径无效。\n\n请注意，Zed Lite 目前不支持在 WSL 中打开网络共享文件夹。",
+  "Invalid path specified when trying to open a folder inside WSL.\n\nPlease note that Zite currently does not support opening network share folders inside WSL.": "尝试在 WSL 中打开文件夹时指定的路径无效。\n\n请注意，Zite 目前不支持在 WSL 中打开网络共享文件夹。",
   "Learn More": "了解详情",
   "New Window": "新建窗口",
   "No matches": "无匹配项",

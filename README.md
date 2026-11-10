@@ -1,21 +1,21 @@
 <p align="center">English | <a href="README.zh-CN.md">中文</a></p>
 
 <div align="center">
-  <img src="crates/wu/resources/app-icon.png" alt="Zed Lite" width="128">
-  <h1>Zed Lite</h1>
+  <img src="crates/wu/resources/app-icon.png" alt="Zite" width="128">
+  <h1>Zite</h1>
   <p>The ultra-fast, clean, and lightweight native code editor.</p>
   <p>Built on Zed's core architecture · Zero AI bloat · Pure editing experience</p>
 </div>
 
 ---
 
-**Zed Lite** is a high-performance native code editor written in Rust, focusing purely on speed, minimal memory footprint, and an uncompromised text editing experience. All bundled AI agents, speech dictation models, and heavy neural runtime dependencies have been completely stripped out, returning the editor to its core mission: blazing-fast, distraction-free code editing.
+**Zite** (formerly Zed Lite) is a high-performance native code editor written in Rust, focusing purely on speed, minimal memory footprint, and an uncompromised text editing experience. All bundled AI agents, speech dictation models, and heavy neural runtime dependencies have been completely stripped out, returning the editor to its core mission: blazing-fast, distraction-free code editing.
 
 ## 🌟 Key Custom Feature: Search Tree View
 
 In stock Zed and traditional editors, multi-file search results are presented in a flat path list. In large monorepos with dozens of nested directories, this quickly becomes visually noisy and loses structural context.
 
-Zed Lite introduces a seamless **dual-mode switcher** in the project search panel:
+Zite introduces a seamless **dual-mode switcher** in the project search panel:
 
 | Mode | Features |
 | :--- | :--- |
@@ -36,7 +36,7 @@ Zed Lite introduces a seamless **dual-mode switcher** in the project search pane
 - Activity bar simplified to files, search, Git, and terminal.
 
 ### 2. Isolated Bundle ID & Coexistence with Official Zed
-- Bundle ID: `dev.zed.Zed-Lite`, installed as `/Applications/Zed Lite.app`.
+- Bundle ID: `dev.zed.Zite`, installed as `/Applications/Zite.app`.
 - Runs side-by-side with official `Zed.app` without configuration conflicts or cache collisions.
 - Styled with a distinctive dark tech-focused app icon.
 

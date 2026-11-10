@@ -2,7 +2,7 @@
 description = "The fast, native VSCode alternative."
 edition.workspace = true
 name = "wu"
-version = "1.4.1"
+version = "1.5.0"
 publish.workspace = true
 license = "GPL-3.0-or-later"
 default-run = "wu"
@@ -11,6 +11,7 @@ default-run = "wu"
 workspace = true
 
 [features]
+default = ["mimalloc"]
 inspector = [
     "gpui/inspector",
     "inspector_ui/inspector",
@@ -234,19 +235,19 @@ search = { workspace = true, features = ["test-support"] }
 
 [package.metadata.bundle-dev]
 icon = ["resources/app-icon-dev@2x.png", "resources/app-icon-dev.png"]
-identifier = "dev.zed.Zed-Lite-Dev"
-name = "Zed Lite Dev"
+identifier = "dev.zed.Zite-Dev"
+name = "Zite Dev"
 osx_minimum_system_version = "10.15.7"
 osx_info_plist_exts = ["resources/info/*"]
-osx_url_schemes = ["zed-lite"]
+osx_url_schemes = ["zite", "zed-lite"]
 
 [package.metadata.bundle-stable]
 icon = ["resources/app-icon@2x.png", "resources/app-icon.png"]
-identifier = "dev.zed.Zed-Lite"
-name = "Zed Lite"
+identifier = "dev.zed.Zite"
+name = "Zite"
 osx_minimum_system_version = "10.15.7"
 osx_info_plist_exts = ["resources/info/*"]
-osx_url_schemes = ["zed-lite"]
+osx_url_schemes = ["zite", "zed-lite"]
 
 [package.metadata.cargo-shear]
 ignored = ["profiling", "tracing"]

@@ -1,15 +1,15 @@
 <p align="center"><a href="README.md">English</a> | 中文</p>
 
 <div align="center">
-  <img src="crates/wu/resources/app-icon.png" alt="Zed Lite" width="128">
-  <h1>Zed Lite</h1>
+  <img src="crates/wu/resources/app-icon.png" alt="Zite" width="128">
+  <h1>Zite</h1>
   <p>极速、纯粹、极致轻量的原生代码编辑器。</p>
   <p>基于 Zed 核心架构打造 · 剔除 AI 冗余 · 纯粹文本编辑</p>
 </div>
 
 ---
 
-**Zed Lite** 是一款专注于极致性能与原生体验的 Rust 代码编辑器。我们移除了庞大繁杂的内置 AI 智能体与重型依赖，让编辑器回归毫秒级响应、超低内存占用与纯粹的代码编写体验。同时针对大型工程日常开发痛点，深度魔改增强了全局搜索与文件管理能力。
+**Zite**（原 Zed Lite）是一款专注于极致性能与原生体验的 Rust 代码编辑器。我们移除了庞大繁杂的内置 AI 智能体与重型依赖，让编辑器回归毫秒级响应、超低内存占用与纯粹的代码编写体验。同时针对大型工程日常开发痛点，深度魔改增强了全局搜索与文件管理能力。
 
 ## 🌟 核心魔改亮点：全局搜索面板文件树视图 (Tree View)
 
@@ -36,7 +36,7 @@
 - 侧边栏活动栏彻底隐藏机器人图标，只保留项目文件、全局搜索、Git 与内置终端。
 
 ### 2. 独立 Bundle ID 与官方版 Zed 完美共存
-- 应用 Bundle ID 配置为 `dev.zed.Zed-Lite`，安装产物为 `/Applications/Zed Lite.app`。
+- 应用 Bundle ID 配置为 `dev.zed.Zite`，安装产物为 `/Applications/Zite.app`。
 - 与本地已安装的官方版 `Zed.app` 完全隔离，配置、缓存、插件和系统权限互不打架。
 - 采用专属的高对比度暗黑科技图标，在 Dock 栏与 Spotlight/Raycast 中一眼区分。
 
@@ -58,7 +58,7 @@
 
 ### 构建并安装至系统 Applications
 ```sh
-# 增量编译并安装到 /Applications/Zed Lite.app
+# 增量编译并安装到 /Applications/Zite.app
 ./script/bundle-mac -i
 ```
 

@@ -55,7 +55,7 @@
   "Syntax Tree": "语法树",
   "Text Highlights": "文本高亮",
   "The editor has no text, syntax, or semantic token highlights": "编辑器中没有文本、语法或语义标记高亮",
-  "This view lets you determine the current context stack for creating custom key bindings in Zed Lite. When a keyboard shortcut is triggered, it also shows all the possible contexts it could have triggered in, and which one matched.": "此视图可显示当前的上下文堆栈，方便你在 Zed Lite 中创建自定义快捷键。触发快捷键时，它还会列出所有可能触发的上下文，以及实际匹配的那一个。",
+  "This view lets you determine the current context stack for creating custom key bindings in Zite. When a keyboard shortcut is triggered, it also shows all the possible contexts it could have triggered in, and which one matched.": "此视图可显示当前的上下文堆栈，方便你在 Zite 中创建自定义快捷键。触发快捷键时，它还会列出所有可能触发的上下文，以及实际匹配的那一个。",
   "Trace level": "跟踪级别",
   "Try assigning a language or switching to a different buffer": "请尝试指定语言，或切换到其他缓冲区",
   "Typed: {keystrokes}": "已输入：{keystrokes}",

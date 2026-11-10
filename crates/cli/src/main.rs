@@ -31,7 +31,7 @@ use walkdir::WalkDir;
 
 use std::io::IsTerminal;
 
-const URL_PREFIX: [&'static str; 6] = ["zed-lite://", "wu://", "http://", "https://", "file://", "ssh://"];
+const URL_PREFIX: [&'static str; 7] = ["zite://", "zed-lite://", "wu://", "http://", "https://", "file://", "ssh://"];
 
 struct Detect;
 
@@ -48,21 +48,21 @@ trait InstalledApp {
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "zed-lite",
+    name = "zite",
     disable_version_flag = true,
-    before_help = "The Zed Lite CLI binary.
-This CLI is a separate binary that invokes Zed Lite.
+    before_help = "The Zite CLI binary.
+This CLI is a separate binary that invokes Zite.
 
 Examples:
-    `zed-lite`
-          Simply opens Zed Lite
-    `zed-lite --foreground`
+    `zite`
+          Simply opens Zite
+    `zite --foreground`
           Runs in foreground (shows all logs)
-    `zed-lite path-to-your-project`
-          Open your project in Zed Lite
-    `zed-lite -n path-to-file `
+    `zite path-to-your-project`
+          Open your project in Zite
+    `zite -n path-to-file `
           Open file/folder in a new window",
-    after_help = "To read from stdin, append '-', e.g. 'ps axf | zed-lite -'"
+    after_help = "To read from stdin, append '-', e.g. 'ps axf | zite -'"
 )]
 struct Args {
     /// Wait for all of the given paths to be opened/closed before exiting.
@@ -79,7 +79,7 @@ struct Args {
     /// Reuse an existing window, replacing its workspace
     #[arg(short, long, overrides_with_all = ["add", "new", "existing", "classic"], hide = true)]
     reuse: bool,
-    /// Open in existing Zed Lite window
+    /// Open in existing Zite window
     #[arg(short = 'e', long = "existing", overrides_with_all = ["add", "new", "reuse", "classic"])]
     existing: bool,
     /// Use the classic open behavior: new window for directories, reuse for files
@@ -87,33 +87,33 @@ struct Args {
     classic: bool,
     /// Sets a custom directory for all user data (e.g., database, extensions, logs).
     /// This overrides the default platform-specific data directory location:
-    #[cfg_attr(target_os = "macos", doc = "`~/Library/Application Support/Zed-Lite`.")]
-    #[cfg_attr(target_os = "windows", doc = "`%LOCALAPPDATA%\\Zed-Lite`.")]
+    #[cfg_attr(target_os = "macos", doc = "`~/Library/Application Support/Zite`.")]
+    #[cfg_attr(target_os = "windows", doc = "`%LOCALAPPDATA%\\Zite`.")]
     #[cfg_attr(
         not(any(target_os = "windows", target_os = "macos")),
-        doc = "`$XDG_DATA_HOME/zed-lite`."
+        doc = "`$XDG_DATA_HOME/zite`."
     )]
     #[arg(long, value_name = "DIR", value_hint = clap::ValueHint::DirPath)]
     user_data_dir: Option<String>,
-    /// The paths to open in Zed Lite (space-separated).
+    /// The paths to open in Zite (space-separated).
     ///
     /// Use `path:line:column` syntax to open a file at the given line and column.
     #[arg(trailing_var_arg = true, value_hint = clap::ValueHint::AnyPath)]
     paths_with_position: Vec<String>,
-    /// Print Zed Lite's version and the app path.
+    /// Print Zite's version and the app path.
     #[arg(short, long)]
     version: bool,
-    /// Run zed-lite in the foreground (useful for debugging)
+    /// Run zite in the foreground (useful for debugging)
     #[arg(long)]
     foreground: bool,
-    /// Custom path to Zed Lite.app or the zed-lite binary
+    /// Custom path to Zite.app or the zite binary
     #[arg(long)]
     zed: Option<PathBuf>,
-    /// Run zed-lite in dev-server mode
+    /// Run zite in dev-server mode
     #[arg(long)]
     dev_server_token: Option<String>,
     /// The username and WSL distribution to use when opening paths. If not specified,
-    /// Zed Lite will attempt to open the paths directly.
+    /// Zite will attempt to open the paths directly.
     ///
     /// The username is optional, and if not specified, the default user for the distribution
     /// will be used.
@@ -124,7 +124,7 @@ struct Args {
     #[cfg(target_os = "windows")]
     #[arg(long, value_name = "USER@DISTRO")]
     wsl: Option<String>,
-    /// Not supported in Zed Lite CLI, only supported on Zed Lite binary
+    /// Not supported in Zite CLI, only supported on Zite binary
     /// Will attempt to give the correct command to run
     #[arg(long)]
     system_specs: bool,
@@ -132,10 +132,10 @@ struct Args {
     /// When directories are provided, recurses into them and shows all changed files in a single multi-diff view.
     #[arg(long, action = clap::ArgAction::Append, num_args = 2, value_names = ["OLD_PATH", "NEW_PATH"], value_hint = clap::ValueHint::AnyPath)]
     diff: Vec<String>,
-    /// Generate shell completions for Zed Lite
+    /// Generate shell completions for Zite
     #[arg(long, value_names = ["SHELL"])]
     completions: Option<Shell>,
-    /// Uninstall Zed Lite from user system
+    /// Uninstall Zite from user system
     #[cfg(all(
         any(target_os = "linux", target_os = "macos"),
         not(feature = "no-bundled-uninstall")
@@ -144,7 +144,7 @@ struct Args {
     uninstall: bool,
 
     /// Used for SSH/Git password authentication, to remove the need for netcat as a dependency,
-    /// by having Zed Lite act like netcat communicating over a Unix socket.
+    /// by having Zite act like netcat communicating over a Unix socket.
     #[arg(long, hide = true)]
     askpass: Option<String>,
 }
@@ -545,7 +545,7 @@ fn run() -> Result<()> {
     if args.system_specs {
         let path = app.path();
         let msg = [
-            "The `--system-specs` argument is not supported in the Zed Lite CLI, only on Zed Lite binary.",
+            "The `--system-specs` argument is not supported in the Zite CLI, only on Zite binary.",
             "To retrieve the system specs on the command line, run the following command:",
             &format!("{} --system-specs", path.display()),
         ];
@@ -576,8 +576,8 @@ fn run() -> Result<()> {
     }
 
     let (server, server_name) =
-        IpcOneShotServer::<IpcHandshake>::new().context("Handshake before Zed Lite spawn")?;
-    let url = format!("zed-lite-cli://{server_name}");
+        IpcOneShotServer::<IpcHandshake>::new().context("Handshake before Zite spawn")?;
+    let url = format!("zite-cli://{server_name}");
 
     let open_behavior = if args.new {
         cli::OpenBehavior::AlwaysNew
@@ -697,7 +697,7 @@ fn run() -> Result<()> {
             let exit_status = exit_status.clone();
             let user_data_dir_for_thread = user_data_dir.clone();
             move || {
-                let (_, handshake) = server.accept().context("Handshake after Zed Lite spawn")?;
+                let (_, handshake) = server.accept().context("Handshake after Zite spawn")?;
                 let (tx, rx) = (handshake.requests, handshake.responses);
 
                 #[cfg(target_os = "windows")]
@@ -841,16 +841,16 @@ fn prompt_open_behavior() -> Option<cli::CliBehaviorSetting> {
     let blue = console::Style::new().blue();
     let items = [
         format!(
-            "Add to existing Zed Lite window ({})",
-            blue.apply_to("zed-lite --existing")
+            "Add to existing Zite window ({})",
+            blue.apply_to("zite --existing")
         ),
-        format!("Open a new window ({})", blue.apply_to("zed-lite --classic")),
+        format!("Open a new window ({})", blue.apply_to("zite --classic")),
     ];
 
     let prompt = format!(
         "Configure default behavior for {}\n{}",
-        blue.apply_to("zed-lite <path>"),
-        console::style("You can change this later in Zed Lite settings"),
+        blue.apply_to("zite <path>"),
+        console::style("You can change this later in Zite settings"),
     );
 
     let selection = dialoguer::Select::new()
@@ -914,7 +914,7 @@ mod linux {
     impl InstalledApp for App {
         fn zed_version_string(&self) -> String {
             format!(
-                "Zed Lite {}{}{} – {}",
+                "Zite {}{}{} – {}",
                 if *release_channel::RELEASE_CHANNEL_NAME == "stable" {
                     "".to_string()
                 } else {
@@ -1200,7 +1200,7 @@ mod windows {
     impl InstalledApp for App {
         fn zed_version_string(&self) -> String {
             format!(
-                "Zed Lite {}{}{} – {}",
+                "Zite {}{}{} – {}",
                 if *release_channel::RELEASE_CHANNEL_NAME == "stable" {
                     "".to_string()
                 } else {
@@ -1388,13 +1388,13 @@ mod mac_os {
 
     impl InstalledApp for Bundle {
         fn zed_version_string(&self) -> String {
-            format!("Zed Lite {} – {}", self.version(), self.path().display(),)
+            format!("Zite {} – {}", self.version(), self.path().display(),)
         }
 
         fn launch(&self, url: String, user_data_dir: Option<&str>) -> anyhow::Result<()> {
             match self {
                 Self::App { app_bundle, .. } if !io::stdout().is_terminal() => {
-                    // LaunchServices hands our environment to the app, so a launcher's would leak into Zed Lite.
+                    // LaunchServices hands our environment to the app, so a launcher's would leak into Zite.
                     let status = Command::new("/usr/bin/open")
                         .env_clear()
                         .envs(std::env::vars_os().filter(|(name, _)| {

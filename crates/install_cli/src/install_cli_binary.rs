@@ -13,7 +13,7 @@ use workspace::{Toast, Workspace};
 actions!(
     cli,
     [
-        /// Installs the Zed Lite CLI tool to the system PATH.
+        /// Installs the Zite CLI tool to the system PATH.
         InstallCliBinary,
     ]
 );
@@ -27,7 +27,8 @@ const CANT_INSTALL_DOCS_URL: &str =
 /// commonly because the user is not an admin.
 async fn install_script(cx: &AsyncApp) -> Result<Option<PathBuf>> {
     let cli_path = cx.update(|cx| cx.path_for_auxiliary_executable("cli"))?;
-    let link_path = Path::new("/usr/local/bin/zed-lite");
+    let link_path = Path::new("/usr/local/bin/zite");
+    let legacy_link_path = Path::new("/usr/local/bin/zed-lite");
     let bin_dir_path = link_path.parent().unwrap();
 
     // Don't re-create symlink if it points to the same CLI binary.
@@ -38,11 +39,13 @@ async fn install_script(cx: &AsyncApp) -> Result<Option<PathBuf>> {
     // If the symlink is not there or is outdated, first try replacing it
     // without escalating.
     smol::fs::remove_file(link_path).await.log_err();
-    if smol::fs::unix::symlink(&cli_path, link_path)
+    smol::fs::remove_file(legacy_link_path).await.log_err();
+    let zite_symlinked = smol::fs::unix::symlink(&cli_path, link_path)
         .await
         .log_err()
-        .is_some()
-    {
+        .is_some();
+    let _ = smol::fs::unix::symlink(&cli_path, legacy_link_path).await.log_err();
+    if zite_symlinked {
         return Ok(Some(link_path.into()));
     }
 
@@ -54,11 +57,14 @@ async fn install_script(cx: &AsyncApp) -> Result<Option<PathBuf>> {
             &format!(
                 "do shell script \" \
                     mkdir -p \'{}\' && \
+                    ln -sf \'{}\' \'{}\' && \
                     ln -sf \'{}\' \'{}\' \
                 \" with administrator privileges",
                 bin_dir_path.to_string_lossy(),
                 cli_path.to_string_lossy(),
                 link_path.to_string_lossy(),
+                cli_path.to_string_lossy(),
+                legacy_link_path.to_string_lossy(),
             ),
         ])
         .output()

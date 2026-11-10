@@ -11,5 +11,5 @@
   "Parse error in section `context` field: {error}": "解析部分的 `context` 字段时出错：{error}",
   "This action does not take input - just the action name string should be used.": "此命令不接受输入，只需使用命令名称字符串。",
   "Unrecognized fields: {fields}": "无法识别的字段：{fields}",
-  "Zed Lite (Default)": "Zed Lite（默认）"
+  "Zite (Default)": "Zite（默认）"
 }

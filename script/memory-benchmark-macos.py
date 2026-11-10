@@ -152,15 +152,21 @@ def run_single_measurement(name, binary_path, project_path, settle_time=25):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Normalized macOS Memory Benchmark for Zed vs Zed Lite")
+    default_wu = Path("/Applications/Zite.app/Contents/MacOS/wu")
+    if not default_wu.exists():
+        default_wu = Path("/Applications/Zed Lite.app/Contents/MacOS/wu")
+
+    parser = argparse.ArgumentParser(description="Normalized macOS Memory Benchmark for Zed vs Zite")
     parser.add_argument("--runs", type=int, default=3, help="Number of benchmark runs")
     parser.add_argument("--settle", type=int, default=20, help="Settle time in seconds per run")
     parser.add_argument("--project", type=Path, default=None, help="Project directory to open")
-    parser.add_argument("--wu", type=Path, default=Path("/Applications/Zed Lite.app/Contents/MacOS/wu"))
+    parser.add_argument("--wu", type=Path, default=default_wu)
     parser.add_argument("--zed", type=Path, default=Path("/Applications/Zed.app/Contents/MacOS/zed"))
+    parser.add_argument("--name1", type=str, default="Zite")
+    parser.add_argument("--name2", type=str, default="Zed")
     args = parser.parse_args()
 
-    targets = [("Zed Lite", args.wu), ("Zed", args.zed)]
+    targets = [(args.name1, args.wu), (args.name2, args.zed)]
     for name, bin_path in targets:
         if not bin_path.exists() or not os.access(bin_path, os.X_OK):
             sys.exit(f"Binary not found or executable: {bin_path}")
@@ -170,7 +176,7 @@ def main():
     print(f"Scenario: {project_desc}")
     print(f"Runs: {args.runs}, Settle Time: {args.settle}s per run\n")
 
-    results = {"Zed Lite": [], "Zed": []}
+    results = {args.name1: [], args.name2: []}
 
     for run_idx in range(1, args.runs + 1):
         order = targets if run_idx % 2 == 1 else list(reversed(targets))
@@ -190,7 +196,7 @@ def main():
     print("=" * 60)
 
     summary = {}
-    for name in ("Zed Lite", "Zed"):
+    for name in (args.name1, args.name2):
         runs = results[name]
         if not runs:
             continue
@@ -206,7 +212,7 @@ def main():
         }
 
     # Print Table
-    header = f"{'Metric (MB)':<30} | {'Zed Lite':<12} | {'Zed':<12} | {'Difference':<12}"
+    header = f"{'Metric (MB)':<30} | {args.name1:<20} | {args.name2:<20} | {'Difference':<12}"
     print(header)
     print("-" * len(header))
 
@@ -222,12 +228,12 @@ def main():
     ]
 
     for label, key in metrics_map:
-        val_lite = summary["Zed Lite"][key]
-        val_zed = summary["Zed"][key]
+        val_lite = summary[args.name1][key]
+        val_zed = summary[args.name2][key]
         diff = val_lite - val_zed
         pct = (diff / val_zed) * 100 if val_zed else 0
         diff_str = f"{diff:+.1f} MB ({pct:+.1f}%)"
-        print(f"{label:<30} | {val_lite:<12.1f} | {val_zed:<12.1f} | {diff_str:<12}")
+        print(f"{label:<30} | {val_lite:<20.1f} | {val_zed:<20.1f} | {diff_str:<12}")
 
     print("=" * 60)
 
