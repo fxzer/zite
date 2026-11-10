@@ -840,26 +840,25 @@ impl SearchPanel {
     }
 
     pub(crate) fn is_all_collapsed(&self) -> bool {
-        if self.files.is_empty() {
+        if self.files.is_empty() || self.entries.is_empty() {
             return false;
         }
         match self.view_mode {
             SearchResultViewMode::Flat => {
-                self.files
-                    .iter()
-                    .all(|file| self.collapsed_files.contains(&file.buffer_id))
+                !self.entries.iter().any(|entry| matches!(entry, Entry::Match { .. }))
             }
             SearchResultViewMode::Tree => {
-                let all_files_collapsed = self
-                    .files
-                    .iter()
-                    .all(|file| self.collapsed_files.contains(&file.buffer_id));
-                let all_dirs_collapsed = self.tree_directories.is_empty()
-                    || self
+                self.entries.iter().all(|entry| match entry {
+                    Entry::Match { .. } => false,
+                    Entry::File(file_index) => self
+                        .files
+                        .get(*file_index)
+                        .map_or(false, |file| self.collapsed_files.contains(&file.buffer_id)),
+                    Entry::Directory(dir_index) => self
                         .tree_directories
-                        .iter()
-                        .all(|dir| self.collapsed_dirs.contains(&dir.path_key));
-                all_files_collapsed && all_dirs_collapsed
+                        .get(*dir_index)
+                        .map_or(false, |dir| self.collapsed_dirs.contains(&dir.path_key)),
+                })
             }
         }
     }
@@ -1451,8 +1450,8 @@ impl SearchPanel {
                                     cx,
                                 )
                             })
-                            .on_click(cx.listener(move |this, _, window, cx| {
-                                if is_all_collapsed {
+                            .on_click(cx.listener(|this, _, window, cx| {
+                                if this.is_all_collapsed() {
                                     this.expand_all_entries(&ExpandAllEntries, window, cx);
                                 } else {
                                     this.collapse_all_entries(&CollapseAllEntries, window, cx);
@@ -1553,9 +1552,12 @@ impl SearchPanel {
         let dir = self.tree_directories.get(dir_index)?;
         let is_expanded = !self.collapsed_dirs.contains(&dir.path_key);
         let colors = cx.theme().colors();
-        let folder_icon = if let Some(icon_path) =
-            file_icons::FileIcons::get_folder_icon(is_expanded, Path::new(dir.name.as_ref()), cx)
-        {
+        let folder_icon_path = file_icons::FileIcons::get_folder_icon(
+            is_expanded,
+            Path::new(dir.path_key.as_str()),
+            cx,
+        );
+        let folder_icon = if let Some(icon_path) = folder_icon_path {
             Icon::from_path(icon_path)
                 .color(Color::Muted)
                 .size(IconSize::Small)
@@ -2476,6 +2478,37 @@ mod tests {
             assert!(!panel.is_all_collapsed());
             assert_eq!(panel.entries.len(), 10, "all matches are expanded again");
         });
+
+        // Test tree mode collapse and expand all
+        panel.update_in(&mut cx, |panel, window, cx| {
+            panel.toggle_view_mode(&ToggleViewMode, window, cx);
+        });
+        cx.run_until_parked();
+        panel.read_with(&cx, |panel, _| {
+            assert_eq!(panel.view_mode, SearchResultViewMode::Tree);
+            assert!(!panel.is_all_collapsed());
+        });
+
+        panel.update_in(&mut cx, |panel, window, cx| {
+            panel.collapse_all_entries(&CollapseAllEntries, window, cx);
+        });
+        panel.read_with(&cx, |panel, _| {
+            assert!(panel.is_all_collapsed(), "tree mode is all collapsed");
+            assert!(
+                !panel
+                    .entries
+                    .iter()
+                    .any(|entry| matches!(entry, Entry::Match { .. })),
+                "no matches should be visible when collapsed in tree mode"
+            );
+        });
+
+        panel.update_in(&mut cx, |panel, window, cx| {
+            panel.expand_all_entries(&ExpandAllEntries, window, cx);
+        });
+        panel.read_with(&cx, |panel, _| {
+            assert!(!panel.is_all_collapsed(), "tree mode is expanded");
+        });
     }
 
     #[gpui::test]
@@ -2512,7 +2545,6 @@ mod tests {
         });
         cx.run_until_parked();
 
-        // 默认 Flat 模式：2 个文件，每个文件 1 个 match，总共 4 个 entries
         panel.read_with(&cx, |panel, _| {
             assert_eq!(panel.view_mode, SearchResultViewMode::Flat);
             assert_eq!(panel.entries.len(), 4);
