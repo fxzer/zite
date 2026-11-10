@@ -36,7 +36,7 @@ pub struct Account {
 }
 
 const OPENCODE_NO_ACCOUNTS: &str = i18n::n!(
-    "OpenCode manages its own provider logins (`opencode auth login`); Zed Lite can't switch them"
+    "OpenCode manages its own provider logins (`opencode auth login`); Zite can't switch them"
 );
 
 pub async fn list(harness: HarnessId, data_dir: &Path) -> Result<Vec<Account>, String> {

@@ -1262,7 +1262,7 @@ impl RunningState {
                 let Err(e) = request_type else {
                     unreachable!();
                 };
-                anyhow::bail!(t!("Zed Lite cannot determine how to run this debug scenario. `build` field was not provided and Debug Adapter won't accept provided configuration because: {error}", error = e));
+                anyhow::bail!(t!("Zite cannot determine how to run this debug scenario. `build` field was not provided and Debug Adapter won't accept provided configuration because: {error}", error = e));
             };
 
             Ok(DebugTaskDefinition {

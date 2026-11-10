@@ -31,7 +31,7 @@ use walkdir::WalkDir;
 
 use std::io::IsTerminal;
 
-const URL_PREFIX: [&'static str; 7] = ["zite://", "zed-lite://", "wu://", "http://", "https://", "file://", "ssh://"];
+const URL_PREFIX: [&'static str; 7] = ["zite://", "zite://", "wu://", "http://", "https://", "file://", "ssh://"];
 
 struct Detect;
 

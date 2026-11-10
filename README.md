@@ -9,7 +9,7 @@
 
 ---
 
-**Zite** (formerly Zed Lite) is a high-performance native code editor written in Rust, focusing purely on speed, minimal memory footprint, and an uncompromised text editing experience. All bundled AI agents, speech dictation models, and heavy neural runtime dependencies have been completely stripped out, returning the editor to its core mission: blazing-fast, distraction-free code editing.
+**Zite** (formerly Zite) is a high-performance native code editor written in Rust, focusing purely on speed, minimal memory footprint, and an uncompromised text editing experience. All bundled AI agents, speech dictation models, and heavy neural runtime dependencies have been completely stripped out, returning the editor to its core mission: blazing-fast, distraction-free code editing.
 
 ## 🌟 Key Custom Feature: Search Tree View
 

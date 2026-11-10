@@ -395,9 +395,9 @@ impl Render for WelcomePage {
         };
 
         let welcome_label = if self.fallback_to_recent_projects {
-            t!("Welcome back to Zed Lite")
+            t!("Welcome back to Zite")
         } else {
-            t!("Welcome to Zed Lite")
+            t!("Welcome to Zite")
         };
 
         h_flex()

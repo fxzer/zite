@@ -8566,9 +8566,9 @@ pub async fn apply_restored_multiworkspace_state(
 actions!(
     wu,
     [
-        /// Opens the Zed Lite log file.
+        /// Opens the Zite log file.
         OpenLog,
-        /// Reveals the Zed Lite log file in the system file manager.
+        /// Reveals the Zite log file in the system file manager.
         RevealLogInFileManager
     ]
 );
@@ -9563,10 +9563,10 @@ async fn confirm_quit_warning(
             window.prompt(
                 PromptLevel::Warning,
                 &warning,
-                Some(&t!("Closing Zed Lite now stops it.")),
+                Some(&t!("Closing Zite now stops it.")),
                 &[
                     PromptButton::cancel(t!("Cancel")),
-                    PromptButton::new(t!("Close Zed Lite")),
+                    PromptButton::new(t!("Close Zite")),
                 ],
                 cx,
             )

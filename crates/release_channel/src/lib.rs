@@ -192,8 +192,8 @@ impl ReleaseChannel {
     /// Returns the display name for this [`ReleaseChannel`].
     pub fn display_name(&self) -> &'static str {
         match self {
-            ReleaseChannel::Dev => "Zed Lite Dev",
-            ReleaseChannel::Stable => "Zed Lite",
+            ReleaseChannel::Dev => "Zite Dev",
+            ReleaseChannel::Stable => "Zite",
         }
     }
 

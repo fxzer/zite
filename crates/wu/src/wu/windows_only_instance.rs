@@ -123,8 +123,8 @@ fn send_args_to_instance(args: &Args) -> anyhow::Result<()> {
     }
 
     let (server, server_name) =
-        IpcOneShotServer::<IpcHandshake>::new().context("Handshake before Zed Lite spawn")?;
-    let url = format!("zed-lite-cli://{server_name}");
+        IpcOneShotServer::<IpcHandshake>::new().context("Handshake before Zite spawn")?;
+    let url = format!("zite-cli://{server_name}");
 
     let request = {
         let mut paths = vec![];
@@ -179,7 +179,7 @@ fn send_args_to_instance(args: &Args) -> anyhow::Result<()> {
         .spawn({
             let exit_status = exit_status.clone();
             move || {
-                let (_, handshake) = server.accept().context("Handshake after Zed Lite spawn")?;
+                let (_, handshake) = server.accept().context("Handshake after Zite spawn")?;
                 let (tx, rx) = (handshake.requests, handshake.responses);
 
                 tx.send(request)?;

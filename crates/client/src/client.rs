@@ -688,8 +688,8 @@ impl ProtoClient for Client {
     }
 }
 
-/// prefix for the zed-lite:// url scheme
-pub const ZED_URL_SCHEME: &str = "zed-lite";
+/// prefix for the zite:// url scheme
+pub const ZED_URL_SCHEME: &str = "zite";
 
 #[cfg(test)]
 mod tests {

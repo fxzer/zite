@@ -551,7 +551,7 @@ impl UsageCard {
                 .text_size(ui(11.))
                 .text_color(text_faint(cx))
                 .child(t!(
-                    "Sign in to another account in the CLI and Zed Lite remembers it here."
+                    "Sign in to another account in the CLI and Zite remembers it here."
                 ))
                 .into_any_element(),
         );

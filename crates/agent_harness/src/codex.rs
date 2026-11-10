@@ -163,8 +163,8 @@ impl CodexHarness {
                     "initialize",
                     json!({
                         "clientInfo": {
-                            "name": "zed-lite",
-                            "title": "Zed Lite",
+                            "name": "zite",
+                            "title": "Zite",
                             "version": env!("CARGO_PKG_VERSION"),
                         },
                         "capabilities": { "experimentalApi": true },
@@ -932,8 +932,8 @@ async fn run_session(session: Session) {
                 "initialize",
                 json!({
                     "clientInfo": {
-                        "name": "zed-lite",
-                        "title": "Zed Lite",
+                        "name": "zite",
+                        "title": "Zite",
                         "version": env!("CARGO_PKG_VERSION"),
                     },
                     "capabilities": { "experimentalApi": true },

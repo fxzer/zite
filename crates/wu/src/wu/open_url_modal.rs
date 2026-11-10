@@ -54,10 +54,10 @@ impl OpenUrlModal {
             return;
         }
 
-        // Handle zite://, zed-lite:// and wu:// URLs internally.
+        // Handle zite://, zite:// and wu:// URLs internally.
         if url.starts_with("zite://")
             || url.starts_with("zite-cli://")
-            || url.starts_with("zed-lite://")
+            || url.starts_with("zite://")
             || url.starts_with("zed-lite-cli://")
             || url.starts_with("wu://")
             || url.starts_with("wu-cli://")

@@ -941,7 +941,7 @@ async fn run_session(session: Session) {
                         Err(e) => {
                             if let Some(request_id) = wire::unreadable_control_request_id(line) {
                                 log::warn!("couldn't read a claude request ({e}); answering with an error");
-                                let line = control_error_line(&request_id, "Zed Lite couldn't read this request.");
+                                let line = control_error_line(&request_id, "Zite couldn't read this request.");
                                 stdin_tx.send(StdinMsg::Line(line)).ok();
                             } else {
                                 log::debug!("unparseable frame (skipped): {e}");
@@ -1187,7 +1187,7 @@ fn handle_control_request(
         }
         subtype => {
             log::warn!("claude sent an unsupported {subtype} request; answering with an error");
-            let error = format!("Zed Lite can't answer {subtype} requests.");
+            let error = format!("Zite can't answer {subtype} requests.");
             let line = control_error_line(&req.request_id, &error);
             stdin_tx.send(StdinMsg::Line(line)).ok();
             return;
@@ -1278,7 +1278,7 @@ fn answer_elicitation(
     let request_id = req.request_id;
     let Some(question) = elicitation_question(&req.request) else {
         log::warn!(
-            "declining a {} question from {} that Zed Lite can't show",
+            "declining a {} question from {} that Zite can't show",
             req.request.text("mode").unwrap_or("form"),
             req.request
                 .text("mcp_server_name")

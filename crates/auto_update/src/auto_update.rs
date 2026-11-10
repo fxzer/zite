@@ -346,7 +346,7 @@ pub fn init(client: Arc<Client>, cx: &mut App) {
 pub fn check(_: &Check, window: &mut Window, cx: &mut App) {
     drop(window.prompt(
         gpui::PromptLevel::Info,
-        &t!("Zed Lite is up to date"),
+        &t!("Zite is up to date"),
         Some("Auto-update is disabled for this custom build."),
         &[PromptButton::ok(t!("OK"))],
         cx,
@@ -1166,7 +1166,7 @@ async fn install_release_macos(
     _running_app_path: PathBuf,
     _background_executor: &BackgroundExecutor,
 ) -> Result<Option<PathBuf>> {
-    anyhow::bail!("auto-update is permanently disabled for custom Zed Lite builds");
+    anyhow::bail!("auto-update is permanently disabled for custom Zite builds");
 }
 
 /// Removes stale installer dirs from the system temp dir. Older Zed versions

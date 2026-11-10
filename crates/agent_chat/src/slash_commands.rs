@@ -117,14 +117,14 @@ impl AppCommand {
 
     fn description(self) -> SharedString {
         match self {
-            AppCommand::Model => t!("Zed Lite: choose model and reasoning"),
-            AppCommand::New => t!("Zed Lite: start a new chat"),
-            AppCommand::Resume => t!("Zed Lite: open chat history"),
-            AppCommand::Settings => t!("Zed Lite: open settings"),
-            AppCommand::Diff => t!("Zed Lite: open changes"),
-            AppCommand::Files => t!("Zed Lite: open project files"),
-            AppCommand::Terminal => t!("Zed Lite: open a terminal"),
-            AppCommand::Stop => t!("Zed Lite: stop the agent"),
+            AppCommand::Model => t!("Zite: choose model and reasoning"),
+            AppCommand::New => t!("Zite: start a new chat"),
+            AppCommand::Resume => t!("Zite: open chat history"),
+            AppCommand::Settings => t!("Zite: open settings"),
+            AppCommand::Diff => t!("Zite: open changes"),
+            AppCommand::Files => t!("Zite: open project files"),
+            AppCommand::Terminal => t!("Zite: open a terminal"),
+            AppCommand::Stop => t!("Zite: stop the agent"),
         }
     }
 

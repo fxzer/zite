@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Normalized macOS Memory Benchmark for Zed and Zed Lite
+Normalized macOS Memory Benchmark for Zed and Zite
 Measures physical footprint (using macOS footprint tool) across:
 1. Main editor process (Idle & Workspace)
 2. Process tree (Editor + Language Servers / Child processes)
@@ -154,7 +154,7 @@ def run_single_measurement(name, binary_path, project_path, settle_time=25):
 def main():
     default_wu = Path("/Applications/Zite.app/Contents/MacOS/wu")
     if not default_wu.exists():
-        default_wu = Path("/Applications/Zed Lite.app/Contents/MacOS/wu")
+        default_wu = Path("/Applications/Zite.app/Contents/MacOS/wu")
 
     parser = argparse.ArgumentParser(description="Normalized macOS Memory Benchmark for Zed vs Zite")
     parser.add_argument("--runs", type=int, default=3, help="Number of benchmark runs")

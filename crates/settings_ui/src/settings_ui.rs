@@ -827,7 +827,7 @@ fn open_settings_editor_with(
         cx.open_window(
             WindowOptions {
                 titlebar: Some(TitlebarOptions {
-                    title: Some(t!("Zed Lite \u{2014} Settings")),
+                    title: Some(t!("Zite \u{2014} Settings")),
                     appears_transparent: true,
                     traffic_light_position: Some(point(px(12.0), px(12.0))),
                 }),

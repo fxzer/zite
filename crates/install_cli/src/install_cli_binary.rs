@@ -94,7 +94,7 @@ pub fn install_cli_binary(window: &mut Window, cx: &mut Context<Workspace>) {
                 PromptLevel::Warning,
                 &t!("CLI should already be installed"),
                 Some(&t!(
-                    "If you installed Zed Lite from our official release add ~/.local/bin to your PATH.\n\nIf you installed Zed Lite from a different source like your package manager, then you may need to create an alias/symlink manually.\n\nDepending on your package manager, the CLI might be named zeditor, zedit, zed-editor or something else."
+                    "If you installed Zite from our official release add ~/.local/bin to your PATH.\n\nIf you installed Zite from a different source like your package manager, then you may need to create an alias/symlink manually.\n\nDepending on your package manager, the CLI might be named zeditor, zedit, zed-editor or something else."
                 )),
                 &[PromptButton::ok(t!("OK"))],
             );
@@ -116,10 +116,10 @@ pub fn install_cli_binary(window: &mut Window, cx: &mut Context<Workspace>) {
                         |cx| {
                             cx.new(|cx| {
                                 MessageNotification::new(
-                                    t!("You can add `zed-lite` to your PATH manually."),
+                                    t!("You can add `zite` to your PATH manually."),
                                     cx,
                                 )
-                                .with_title(t!("Couldn't install the Zed Lite CLI"))
+                                .with_title(t!("Couldn't install the Zite CLI"))
                                 .more_info_message(t!("Show me how"))
                                 .more_info_url(CANT_INSTALL_DOCS_URL)
                             })
@@ -137,7 +137,7 @@ pub fn install_cli_binary(window: &mut Window, cx: &mut Context<Workspace>) {
                 Toast::new(
                     NotificationId::unique::<InstalledZedCli>(),
                     t!(
-                        "Installed `zed-lite` to {path}. You can launch {app} from your terminal.",
+                        "Installed `zite` to {path}. You can launch {app} from your terminal.",
                         path = path.to_string_lossy(),
                         app = ReleaseChannel::global(cx).display_name()
                     )
@@ -149,5 +149,5 @@ pub fn install_cli_binary(window: &mut Window, cx: &mut Context<Workspace>) {
         register_wu_scheme(cx).await.log_err();
         Ok(())
     })
-    .detach_and_prompt_err(&t!("Cannot install the Zed Lite CLI"), window, cx, |_, _, _| None);
+    .detach_and_prompt_err(&t!("Cannot install the Zite CLI"), window, cx, |_, _, _| None);
 }

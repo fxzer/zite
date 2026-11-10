@@ -400,7 +400,7 @@ fn render_install_cli_section(tab_index: &mut isize) -> impl IntoElement {
                 .child(Label::new(t!("Terminal Command")))
                 .child(
                     Label::new(t!(
-                        "Open files and folders from the terminal with the zed-lite command"
+                        "Open files and folders from the terminal with the zite command"
                     ))
                     .color(Color::Muted),
                 ),

@@ -135,7 +135,7 @@ impl OpenRequest {
                 format!("wu://{stripped}")
             } else if let Some(stripped) = url.strip_prefix("zite-cli://") {
                 format!("wu-cli://{stripped}")
-            } else if let Some(stripped) = url.strip_prefix("zed-lite://") {
+            } else if let Some(stripped) = url.strip_prefix("zite://") {
                 format!("wu://{stripped}")
             } else if let Some(stripped) = url.strip_prefix("zed-lite-cli://") {
                 format!("wu-cli://{stripped}")

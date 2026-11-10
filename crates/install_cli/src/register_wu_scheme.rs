@@ -4,7 +4,7 @@ use gpui::{AsyncApp, actions};
 actions!(
     cli,
     [
-        /// Registers the zed-lite:// URL scheme handler.
+        /// Registers the zite:// URL scheme handler.
         RegisterWuScheme
     ]
 );
