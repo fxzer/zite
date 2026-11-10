@@ -100,7 +100,7 @@ use wu_actions::{
     OpenWuUrl, Quit,
 };
 
-const DOCS_URL: &str = "https://github.com/fxzer/zed-lite#readme";
+const DOCS_URL: &str = "https://github.com/fxzer/zite#readme";
 
 actions!(
     wu,

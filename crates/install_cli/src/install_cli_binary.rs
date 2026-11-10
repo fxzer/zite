@@ -19,7 +19,7 @@ actions!(
 );
 
 const CANT_INSTALL_DOCS_URL: &str =
-    "https://github.com/fxzer/zed-lite#readme";
+    "https://github.com/fxzer/zite#readme";
 
 /// Attempts to install the CLI symlink. Returns the installed path on success,
 /// or `None` if the user dismissed the macOS administrator authentication

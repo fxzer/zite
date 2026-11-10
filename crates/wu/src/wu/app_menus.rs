@@ -344,13 +344,13 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::action(
                     t!("Documentation"),
                     super::OpenBrowser {
-                        url: "https://github.com/fxzer/zed-lite#readme".into(),
+                        url: "https://github.com/fxzer/zite#readme".into(),
                     },
                 ),
                 MenuItem::action(
                     t!("Zite Repository"),
                     super::OpenBrowser {
-                        url: "https://github.com/fxzer/zed-lite".into(),
+                        url: "https://github.com/fxzer/zite".into(),
                     },
                 ),
             ],
