@@ -91,7 +91,7 @@ impl<T: InventoryContents> InventoryFor<T> {
             .map(|dirs| {
                 dirs.keys().any(|dir| {
                     dir.file_name()
-                        .is_some_and(|name| name == ".wu" || name == ".zed")
+                        .is_some_and(|name| name == ".zed-lite" || name == ".wu" || name == ".zed")
                 })
             })
             .unwrap_or(false);
@@ -503,7 +503,7 @@ impl Inventory {
             .filter(|(_, dirs)| {
                 dirs.keys().any(|dir| {
                     dir.file_name()
-                        .is_some_and(|name| name == ".wu" || name == ".zed")
+                        .is_some_and(|name| name == ".zed-lite" || name == ".wu" || name == ".zed")
                 })
             })
             .map(|(id, _)| *id)

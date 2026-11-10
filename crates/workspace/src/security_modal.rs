@@ -188,7 +188,7 @@ impl Render for SecurityModal {
                             )
                             .child(
                                 Label::new(t!(
-                                    "Review .wu/settings.json for any extensions or commands configured by this project."
+                                    "Review .zed-lite/settings.json for any extensions or commands configured by this project."
                                 ))
                                 .color(Color::Muted),
                             ),

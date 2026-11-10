@@ -10,6 +10,6 @@
   "Install pkgs.rsync from nixpkgs": "请从 nixpkgs 安装 pkgs.rsync",
   "OK": "确定",
   "Please install rsync using your package manager": "请使用包管理器安装 rsync",
-  "Wu was installed via a package manager.": "Wu 是通过包管理器安装的。",
+  "Zed Lite was installed via a package manager.": "Zed Lite 是通过包管理器安装的。",
   "rsync is required for auto-updates but is not installed. {install_hint}": "自动更新需要 rsync，但尚未安装。{install_hint}"
 }

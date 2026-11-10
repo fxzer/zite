@@ -821,6 +821,49 @@ impl SearchPanel {
         }
     }
 
+    fn all_directory_path_keys(&self) -> HashSet<String> {
+        let mut keys = HashSet::default();
+        for file in &self.files {
+            if !file.directory.is_empty() {
+                let mut full_path = String::new();
+                for component in Path::new(file.directory.as_ref()).components() {
+                    let part = component.as_os_str().to_string_lossy();
+                    if !full_path.is_empty() {
+                        full_path.push('/');
+                    }
+                    full_path.push_str(&part);
+                    keys.insert(full_path.clone());
+                }
+            }
+        }
+        keys
+    }
+
+    pub(crate) fn is_all_collapsed(&self) -> bool {
+        if self.files.is_empty() {
+            return false;
+        }
+        match self.view_mode {
+            SearchResultViewMode::Flat => {
+                self.files
+                    .iter()
+                    .all(|file| self.collapsed_files.contains(&file.buffer_id))
+            }
+            SearchResultViewMode::Tree => {
+                let all_files_collapsed = self
+                    .files
+                    .iter()
+                    .all(|file| self.collapsed_files.contains(&file.buffer_id));
+                let all_dirs_collapsed = self.tree_directories.is_empty()
+                    || self
+                        .tree_directories
+                        .iter()
+                        .all(|dir| self.collapsed_dirs.contains(&dir.path_key));
+                all_files_collapsed && all_dirs_collapsed
+            }
+        }
+    }
+
     fn collapse_all_entries(
         &mut self,
         _: &CollapseAllEntries,
@@ -829,8 +872,7 @@ impl SearchPanel {
     ) {
         self.collapsed_files
             .extend(self.files.iter().map(|file| file.buffer_id));
-        self.collapsed_dirs
-            .extend(self.tree_directories.iter().map(|dir| dir.path_key.clone()));
+        self.collapsed_dirs.extend(self.all_directory_path_keys());
         self.rebuild_entries();
         cx.notify();
     }
@@ -1388,13 +1430,35 @@ impl SearchPanel {
                         &ClearResults,
                         has_query || has_results,
                     ))
-                    .child(action_button(
-                        "search-panel-collapse-all",
-                        IconName::ListCollapse,
-                        n!("Collapse All"),
-                        &CollapseAllEntries,
-                        has_results,
-                    ))
+                    .child({
+                        let is_all_collapsed = self.is_all_collapsed();
+                        let focus_handle = query_focus_handle.clone();
+                        let (icon, label, action): (IconName, &'static str, &'static dyn Action) =
+                            if is_all_collapsed {
+                                (IconName::ListExpand, n!("Expand All"), &ExpandAllEntries)
+                            } else {
+                                (IconName::ListCollapse, n!("Collapse All"), &CollapseAllEntries)
+                            };
+                        IconButton::new("search-panel-collapse-all", icon)
+                            .shape(IconButtonShape::Square)
+                            .icon_size(IconSize::Small)
+                            .disabled(!has_results)
+                            .tooltip(move |_, cx| {
+                                Tooltip::for_action_in(
+                                    i18n::translate(label),
+                                    action,
+                                    &focus_handle,
+                                    cx,
+                                )
+                            })
+                            .on_click(cx.listener(move |this, _, window, cx| {
+                                if is_all_collapsed {
+                                    this.expand_all_entries(&ExpandAllEntries, window, cx);
+                                } else {
+                                    this.collapse_all_entries(&CollapseAllEntries, window, cx);
+                                }
+                            }))
+                    })
                     .child(
                         IconButton::new(
                             "search-panel-toggle-view-mode",
@@ -1489,10 +1553,21 @@ impl SearchPanel {
         let dir = self.tree_directories.get(dir_index)?;
         let is_expanded = !self.collapsed_dirs.contains(&dir.path_key);
         let colors = cx.theme().colors();
-        let folder_icon = if is_expanded {
-            IconName::FolderOpen
+        let folder_icon = if let Some(icon_path) =
+            file_icons::FileIcons::get_folder_icon(is_expanded, Path::new(dir.name.as_ref()), cx)
+        {
+            Icon::from_path(icon_path)
+                .color(Color::Muted)
+                .size(IconSize::Small)
         } else {
-            IconName::Folder
+            let folder_icon = if is_expanded {
+                IconName::FolderOpen
+            } else {
+                IconName::Folder
+            };
+            Icon::new(folder_icon)
+                .color(Color::Muted)
+                .size(IconSize::Small)
         };
         let count = dir.match_count;
         let item = ListItem::new(("search-panel-dir", dir_index))
@@ -1500,11 +1575,7 @@ impl SearchPanel {
             .indent_step_size(INDENT_STEP)
             .toggle(is_expanded)
             .on_toggle(cx.listener(move |this, _, _, cx| this.toggle_directory(dir_index, cx)))
-            .start_slot(
-                Icon::new(folder_icon)
-                    .color(Color::Muted)
-                    .size(IconSize::Small),
-            )
+            .start_slot(folder_icon)
             .child(
                 h_flex()
                     .min_w_0()
@@ -1543,12 +1614,17 @@ impl SearchPanel {
     ) -> Option<AnyElement> {
         let file = self.files.get(file_index)?;
         let is_expanded = !self.collapsed_files.contains(&file.buffer_id);
-        let icon =
-            file_icons::FileIcons::get_icon(file.project_path.path.as_std_path(), cx).map(|icon| {
-                Icon::from_path(icon)
-                    .color(Color::Muted)
-                    .size(IconSize::Small)
-            });
+        let icon = if let Some(icon_path) =
+            file_icons::FileIcons::get_icon(file.project_path.path.as_std_path(), cx)
+        {
+            Icon::from_path(icon_path)
+                .color(Color::Muted)
+                .size(IconSize::Small)
+        } else {
+            Icon::new(IconName::File)
+                .color(Color::Muted)
+                .size(IconSize::Small)
+        };
         let count = file.matches.len();
         let colors = cx.theme().colors();
         let replace_button = self.replace_enabled.then(|| {
@@ -1570,7 +1646,7 @@ impl SearchPanel {
             .indent_step_size(INDENT_STEP)
             .toggle(is_expanded)
             .on_toggle(cx.listener(move |this, _, _, cx| this.toggle_file(file_index, cx)))
-            .when_some(icon, |this, icon| this.start_slot(icon))
+            .start_slot(icon)
             .child(
                 h_flex()
                     .min_w_0()
@@ -2364,6 +2440,41 @@ mod tests {
                 0,
                 "replaced matches are gone after the refresh"
             );
+        });
+    }
+
+    #[gpui::test]
+    async fn test_collapse_and_expand_all_entries(cx: &mut TestAppContext) {
+        let (_, _, panel, mut cx) = setup(cx).await;
+
+        panel.update_in(&mut cx, |panel, window, cx| {
+            panel
+                .query_editor
+                .update(cx, |editor, cx| editor.set_text("ONE", window, cx));
+            panel.search(SearchMode::Manual, cx);
+        });
+        cx.run_until_parked();
+
+        panel.read_with(&cx, |panel, _| {
+            assert_eq!(panel.files.len(), 3);
+            assert_eq!(panel.entries.len(), 10);
+            assert!(!panel.is_all_collapsed());
+        });
+
+        panel.update_in(&mut cx, |panel, window, cx| {
+            panel.collapse_all_entries(&CollapseAllEntries, window, cx);
+        });
+        panel.read_with(&cx, |panel, _| {
+            assert!(panel.is_all_collapsed());
+            assert_eq!(panel.entries.len(), 3, "only file headers remain");
+        });
+
+        panel.update_in(&mut cx, |panel, window, cx| {
+            panel.expand_all_entries(&ExpandAllEntries, window, cx);
+        });
+        panel.read_with(&cx, |panel, _| {
+            assert!(!panel.is_all_collapsed());
+            assert_eq!(panel.entries.len(), 10, "all matches are expanded again");
         });
     }
 

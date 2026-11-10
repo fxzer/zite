@@ -198,7 +198,7 @@ impl Render for KeyContextView {
                 }),
             )
             .child(Label::new(t!("Keyboard Context")).size(LabelSize::Large))
-            .child(Label::new(t!("This view lets you determine the current context stack for creating custom key bindings in Wu. When a keyboard shortcut is triggered, it also shows all the possible contexts it could have triggered in, and which one matched.")))
+            .child(Label::new(t!("This view lets you determine the current context stack for creating custom key bindings in Zed Lite. When a keyboard shortcut is triggered, it also shows all the possible contexts it could have triggered in, and which one matched.")))
             .child(
                 h_flex()
                     .mt_4()

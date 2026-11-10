@@ -827,7 +827,7 @@ fn open_settings_editor_with(
         cx.open_window(
             WindowOptions {
                 titlebar: Some(TitlebarOptions {
-                    title: Some(t!("Wu \u{2014} Settings")),
+                    title: Some(t!("Zed Lite \u{2014} Settings")),
                     appears_transparent: true,
                     traffic_light_position: Some(point(px(12.0), px(12.0))),
                 }),
@@ -1761,7 +1761,7 @@ fn all_language_names(cx: &App) -> Vec<SharedString> {
         .languages
         .language_names()
         .into_iter()
-        .filter(|name| name.as_ref() != "Wu Keybind Context")
+        .filter(|name| name.as_ref() != "Zed Keybind Context")
         .map(Into::into)
         .collect()
 }

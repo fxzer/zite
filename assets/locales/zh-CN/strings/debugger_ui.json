@@ -126,7 +126,7 @@
   "Working Directory": "工作目录",
   "Worktree parent path: {parent_dir}": "工作树父路径：{parent_dir}",
   "Write to Selected Memory Range": "写入所选内存范围",
-  "Wu cannot determine how to run this debug scenario. `build` field was not provided and Debug Adapter won't accept provided configuration because: {error}": "Wu 无法确定如何运行此调试场景。未提供 `build` 字段，且调试适配器不接受所提供的配置，原因：{error}",
+  "Zed Lite cannot determine how to run this debug scenario. `build` field was not provided and Debug Adapter won't accept provided configuration because: {error}": "Zed Lite 无法确定如何运行此调试场景。未提供 `build` 字段，且调试适配器不接受所提供的配置，原因：{error}",
   "Yes": "是",
   "error: {error}": "错误：{error}",
   "history-{number}": "历史记录 {number}",

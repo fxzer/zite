@@ -176,6 +176,7 @@ pub enum IconName {
     Link,
     Linux,
     ListCollapse,
+    ListExpand,
     ListTree,
     LoadCircle,
     LocationEdit,

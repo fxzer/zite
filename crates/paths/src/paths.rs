@@ -1,4 +1,4 @@
-//! Paths to locations used by Wu.
+//! Paths to locations used by Zed-Lite.
 
 use anyhow::Context as _;
 use std::env;
@@ -16,7 +16,7 @@ pub const EDITORCONFIG_NAME: &str = ".editorconfig";
 /// and state directory paths.
 ///
 /// Forks should change this to avoid colliding with Zed's user data.
-pub const APP_NAME: &str = "Wu";
+pub const APP_NAME: &str = "Zed-Lite";
 
 /// Lowercased form of [`APP_NAME`], for use in XDG-style paths on
 /// Linux/FreeBSD and the macOS `~/.config` fallback.
@@ -54,30 +54,30 @@ static CUSTOM_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved data directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
-/// On macOS, this is `~/Library/Application Support/Wu`.
-/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/wu`.
-/// On Windows, this is `%LOCALAPPDATA%\Wu`.
+/// On macOS, this is `~/Library/Application Support/Zed-Lite`.
+/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/zed-lite`.
+/// On Windows, this is `%LOCALAPPDATA%\Zed-Lite`.
 static CURRENT_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved config directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
-/// On macOS, this is `~/.config/wu`.
-/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/wu`.
-/// On Windows, this is `%APPDATA%\Wu`.
+/// On macOS, this is `~/.config/zed-lite`.
+/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/zed-lite`.
+/// On Windows, this is `%APPDATA%\Zed-Lite`.
 static CONFIG_DIR: OnceLock<PathBuf> = OnceLock::new();
 
-/// Returns the relative path to the wu_server directory on the ssh host.
+/// Returns the relative path to the remote server directory on the ssh host.
 pub fn remote_server_dir_relative() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".wu_server").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zed_lite_server").unwrap());
     *CACHED
 }
 
 // Remove this once 223 goes stable
-/// Returns the relative path to the wu_wsl_server directory on the wsl host.
+/// Returns the relative path to the remote wsl server directory on the wsl host.
 pub fn remote_wsl_server_dir_relative() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".wu_wsl_server").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zed_lite_wsl_server").unwrap());
     *CACHED
 }
 
@@ -145,7 +145,7 @@ pub fn custom_data_dir_instance_hash() -> Option<u64> {
     Some(hash)
 }
 
-/// Returns the path to the configuration directory used by Wu.
+/// Returns the path to the configuration directory used by Zed-Lite.
 pub fn config_dir() -> &'static PathBuf {
     CONFIG_DIR.get_or_init(|| {
         if let Some(custom_dir) = CUSTOM_DATA_DIR.get() {
@@ -167,7 +167,7 @@ pub fn config_dir() -> &'static PathBuf {
     })
 }
 
-/// Returns the path to the data directory used by Wu.
+/// Returns the path to the data directory used by Zed-Lite.
 pub fn data_dir() -> &'static PathBuf {
     CURRENT_DATA_DIR.get_or_init(|| {
         if let Some(custom_dir) = CUSTOM_DATA_DIR.get() {
@@ -216,7 +216,7 @@ pub fn state_dir() -> &'static PathBuf {
     })
 }
 
-/// Returns the path to the temp directory used by Wu.
+/// Returns the path to the temp directory used by Zed-Lite.
 pub fn temp_dir() -> &'static PathBuf {
     static TEMP_DIR: OnceLock<PathBuf> = OnceLock::new();
     TEMP_DIR.get_or_init(|| {
@@ -257,19 +257,19 @@ pub fn logs_dir() -> &'static PathBuf {
     })
 }
 
-/// Returns the path to the Wu server directory on this SSH host.
+/// Returns the path to the Zed-Lite server directory on this SSH host.
 pub fn remote_server_state_dir() -> &'static PathBuf {
     static REMOTE_SERVER_STATE: OnceLock<PathBuf> = OnceLock::new();
     REMOTE_SERVER_STATE.get_or_init(|| data_dir().join("server_state"))
 }
 
-/// Returns the path to the `Wu.log` file.
+/// Returns the path to the `Zed-Lite.log` file.
 pub fn log_file() -> &'static PathBuf {
     static LOG_FILE: OnceLock<PathBuf> = OnceLock::new();
     LOG_FILE.get_or_init(|| logs_dir().join(format!("{}.log", APP_NAME)))
 }
 
-/// Returns the path to the `Wu.log.old` file.
+/// Returns the path to the `Zed-Lite.log.old` file.
 pub fn old_log_file() -> &'static PathBuf {
     static OLD_LOG_FILE: OnceLock<PathBuf> = OnceLock::new();
     OLD_LOG_FILE.get_or_init(|| logs_dir().join(format!("{}.log.old", APP_NAME)))
@@ -340,7 +340,7 @@ pub fn debug_scenarios_file() -> &'static PathBuf {
 /// Returns the path to the user-global `AGENTS.md` file.
 ///
 /// This file holds personal agent instructions that apply to every project the
-/// user opens, and is loaded into the native Wu agent's system prompt.
+/// user opens, and is loaded into the native Zed-Lite agent's system prompt.
 pub fn agents_file() -> &'static PathBuf {
     static AGENTS_FILE: OnceLock<PathBuf> = OnceLock::new();
     AGENTS_FILE.get_or_init(|| config_dir().join("AGENTS.md"))
@@ -458,7 +458,7 @@ pub fn embeddings_dir() -> &'static PathBuf {
 
 /// Returns the path to the languages directory.
 ///
-/// This is where language servers are downloaded to for languages built-in to Wu.
+/// This is where language servers are downloaded to for languages built-in to Zed-Lite.
 pub fn languages_dir() -> &'static PathBuf {
     static LANGUAGES_DIR: OnceLock<PathBuf> = OnceLock::new();
     LANGUAGES_DIR.get_or_init(|| data_dir().join("languages"))
@@ -466,7 +466,7 @@ pub fn languages_dir() -> &'static PathBuf {
 
 /// Returns the path to the debug adapters directory
 ///
-/// This is where debug adapters are downloaded to for DAPs that are built-in to Wu.
+/// This is where debug adapters are downloaded to for DAPs that are built-in to Zed-Lite.
 pub fn debug_adapters_dir() -> &'static PathBuf {
     static DEBUG_ADAPTERS_DIR: OnceLock<PathBuf> = OnceLock::new();
     DEBUG_ADAPTERS_DIR.get_or_init(|| data_dir().join("debug_adapters"))
@@ -498,13 +498,13 @@ pub fn remote_servers_dir() -> &'static PathBuf {
     REMOTE_SERVERS_DIR.get_or_init(|| data_dir().join("remote_servers"))
 }
 
-/// Returns the relative path to a `.wu` folder within a project.
+/// Returns the relative path to a `.zed-lite` folder within a project.
 pub fn local_settings_folder_name() -> &'static str {
-    ".wu"
+    ".zed-lite"
 }
 
 /// Returns the relative path to a `.zed` folder within a project, used as a
-/// fallback when there is no `.wu` folder.
+/// fallback when there is no `.zed-lite` folder.
 pub fn legacy_local_settings_folder_name() -> &'static str {
     ".zed"
 }
@@ -514,8 +514,8 @@ pub fn local_vscode_folder_name() -> &'static str {
     ".vscode"
 }
 
-/// Picks the `.wu` config file over its `.zed` counterpart. The `.zed` file is
-/// only used when it exists and the `.wu` one does not.
+/// Picks the `.zed-lite` config file over its `.zed` counterpart. The `.zed` file is
+/// only used when it exists and the `.zed-lite` one does not.
 pub fn resolve_local_config_path<P: AsRef<RelPath>>(
     path: P,
     legacy_path: P,
@@ -531,12 +531,12 @@ pub fn resolve_local_config_path<P: AsRef<RelPath>>(
 /// Returns the relative path to a `settings.json` file within a project.
 pub fn local_settings_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".wu/settings.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/settings.json").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `.zed/settings.json` file within a project, used as a
-/// fallback when there is no `.wu/settings.json`.
+/// fallback when there is no `.zed-lite/settings.json`.
 pub fn legacy_local_settings_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
         LazyLock::new(|| RelPath::from_unix_str(".zed/settings.json").unwrap());
@@ -546,12 +546,12 @@ pub fn legacy_local_settings_file_relative_path() -> &'static RelPath {
 /// Returns the relative path to a `tasks.json` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".wu/tasks.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/tasks.json").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `.zed/tasks.json` file within a project, used as a
-/// fallback when there is no `.wu/tasks.json`.
+/// fallback when there is no `.zed-lite/tasks.json`.
 pub fn legacy_local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
         LazyLock::new(|| RelPath::from_unix_str(".zed/tasks.json").unwrap());
@@ -574,15 +574,15 @@ pub fn task_file_name() -> &'static str {
 }
 
 /// Returns the relative path to a `debug.json` file within a project.
-/// .wu/debug.json
+/// .zed-lite/debug.json
 pub fn local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".wu/debug.json").unwrap());
+        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/debug.json").unwrap());
     *CACHED
 }
 
 /// Returns the relative path to a `.zed/debug.json` file within a project, used as a
-/// fallback when there is no `.wu/debug.json`.
+/// fallback when there is no `.zed-lite/debug.json`.
 pub fn legacy_local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
         LazyLock::new(|| RelPath::from_unix_str(".zed/debug.json").unwrap());

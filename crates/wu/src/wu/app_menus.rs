@@ -59,11 +59,11 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
 
     vec![
         Menu {
-            name: "Wu".into(),
+            name: "Zed Lite".into(),
             disabled: false,
             window_menu: false,
             items: vec![
-                MenuItem::action(t!("About Wu"), wu_actions::About),
+                MenuItem::action(t!("About Zed Lite"), wu_actions::About),
                 MenuItem::action(t!("Check for Updates"), auto_update::Check),
                 MenuItem::separator(),
                 MenuItem::submenu(Menu::new(t!("Settings")).items([
@@ -101,13 +101,13 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::action(t!("Install CLI"), install_cli::InstallCliBinary),
                 MenuItem::separator(),
                 #[cfg(target_os = "macos")]
-                MenuItem::action(t!("Hide Wu"), super::Hide),
+                MenuItem::action(t!("Hide Zed Lite"), super::Hide),
                 #[cfg(target_os = "macos")]
                 MenuItem::action(t!("Hide Others"), super::HideOthers),
                 #[cfg(target_os = "macos")]
                 MenuItem::action(t!("Show All"), super::ShowAll),
                 MenuItem::separator(),
-                MenuItem::action(t!("Quit Wu"), Quit),
+                MenuItem::action(t!("Quit Zed Lite"), Quit),
             ],
         },
         Menu {
@@ -344,13 +344,13 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::action(
                     t!("Documentation"),
                     super::OpenBrowser {
-                        url: "https://wu.dstrml.org/docs".into(),
+                        url: "https://github.com/fxzer/zed-lite#readme".into(),
                     },
                 ),
                 MenuItem::action(
-                    t!("Wu Repository"),
+                    t!("Zed Lite Repository"),
                     super::OpenBrowser {
-                        url: "https://github.com/dstrml/wu".into(),
+                        url: "https://github.com/fxzer/zed-lite".into(),
                     },
                 ),
             ],

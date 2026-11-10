@@ -6245,6 +6245,7 @@ impl BackgroundScanner {
             || entry.path.file_name() == Some(DOT_GIT)
             || entry.path.file_name() == Some(local_settings_folder_name())
             || entry.path.file_name() == Some(legacy_local_settings_folder_name())
+            || entry.path.file_name() == Some(".wu")
             || entry.path.file_name() == Some(local_vscode_folder_name())
             || state.scanned_dirs.contains(&entry.id) // If we've ever scanned it, keep scanning
             || state

@@ -63,7 +63,7 @@ actions!(
         OpenServerSettings,
         /// Quits the application.
         Quit,
-        /// Shows information about Wu.
+        /// Shows information about Zed Lite.
         About,
         /// Opens the documentation website.
         OpenDocs,
@@ -731,6 +731,32 @@ pub mod git_panel {
         [
             /// Toggles focus on the git panel.
             ToggleFocus,
+        ]
+    );
+}
+
+pub mod agent_chat {
+    use gpui::actions;
+
+    actions!(
+        agent_chat,
+        [
+            /// Legacy action compatibility: toggles focus (no-op).
+            ToggleFocus,
+            /// Legacy action compatibility: send (no-op).
+            Send,
+            /// Legacy action compatibility: toggle dictation (no-op).
+            ToggleDictation,
+            /// Legacy action compatibility: select previous command (no-op).
+            SelectPreviousCommand,
+            /// Legacy action compatibility: select next command (no-op).
+            SelectNextCommand,
+            /// Legacy action compatibility: accept command (no-op).
+            AcceptCommand,
+            /// Legacy action compatibility: dismiss commands (no-op).
+            DismissCommands,
+            /// Legacy action compatibility: new chat (no-op).
+            NewChat,
         ]
     );
 }

@@ -235,8 +235,8 @@ pub fn prevent_root_execution() {
     if is_root && !allow_root {
         eprintln!(
             "\
-Error: Running Wu as root or via sudo is unsupported.
-       Doing so (even once) may subtly break things for all subsequent non-root usage of Wu.
+Error: Running Zed Lite as root or via sudo is unsupported.
+       Doing so (even once) may subtly break things for all subsequent non-root usage of Zed Lite.
        It is untested and not recommended, don't complain when things break.
        If you wish to proceed anyways, set `ZED_ALLOW_ROOT=true` in your environment."
         );

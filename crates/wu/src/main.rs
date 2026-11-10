@@ -74,7 +74,7 @@ fn build_application() -> Application {
 }
 
 fn files_not_created_on_launch(errors: HashMap<io::ErrorKind, Vec<&Path>>) {
-    let message = "Wu failed to launch";
+    let message = "Zed Lite failed to launch";
     let error_details = errors
         .into_iter()
         .flat_map(|(kind, paths)| {
@@ -136,7 +136,7 @@ fn fail_to_open_window_async(e: anyhow::Error, cx: &mut AsyncApp) {
 
 fn fail_to_open_window(e: anyhow::Error, _cx: &mut App) {
     eprintln!(
-        "Wu failed to open a window: {e:?}. See https://zed.dev/docs/linux for troubleshooting steps."
+        "Zed Lite failed to open a window: {e:?}. See https://github.com/fxzer/zed-lite#readme for troubleshooting steps."
     );
     #[cfg(not(any(target_os = "linux", target_os = "freebsd")))]
     {
@@ -156,10 +156,10 @@ fn fail_to_open_window(e: anyhow::Error, _cx: &mut App) {
             proxy
                 .add_notification(
                     notification_id,
-                    Notification::new("Wu failed to launch")
+                    Notification::new("Zed Lite failed to launch")
                         .body(Some(
                             format!(
-                                "{e:?}. See https://zed.dev/docs/linux for troubleshooting steps."
+                                "{e:?}. See https://github.com/fxzer/zed-lite#readme for troubleshooting steps."
                             )
                             .as_str(),
                         ))
@@ -321,7 +321,7 @@ fn main() {
             client::os_info::os_name(),
             client::os_info::os_version(),
         );
-        println!("Wu System Specs (from CLI):\n{}", system_specs);
+        println!("Zed Lite System Specs (from CLI):\n{}", system_specs);
         return;
     }
 
@@ -333,7 +333,7 @@ fn main() {
         .unwrap();
 
     log::info!(
-        "========== starting wu version {}, sha {} ==========",
+        "========== starting zed-lite version {}, sha {} ==========",
         app_version,
         app_commit_sha
             .as_ref()
@@ -374,11 +374,11 @@ fn main() {
         }
     };
     if failed_single_instance_check {
-        println!("wu is already running");
+        println!("zed-lite is already running");
         #[cfg(any(target_os = "linux", target_os = "freebsd"))]
         if !args.paths_or_urls.is_empty() || !args.diff.is_empty() {
             println!(
-                "Could not open {:?} {:?}, use the `wu` CLI to open paths in the running instance",
+                "Could not open {:?} {:?}, use the `zed-lite` CLI to open paths in the running instance",
                 args.paths_or_urls, args.diff
             );
         }
@@ -474,7 +474,7 @@ fn main() {
         handle_keymap_file_changes(user_keymap_file_rx, user_keymap_watcher, cx);
 
         let user_agent = format!(
-            "Wu/{} ({}; {})",
+            "Zed-Lite/{} ({}; {})",
             AppVersion::global(cx),
             std::env::consts::OS,
             std::env::consts::ARCH
@@ -1416,7 +1416,7 @@ fn stdout_is_a_pty() -> bool {
 }
 
 #[derive(Parser, Debug)]
-#[command(name = "wu", disable_version_flag = true, max_term_width = 100)]
+#[command(name = "zed-lite", disable_version_flag = true, max_term_width = 100)]
 struct Args {
     /// A sequence of space-separated paths or urls that you want to open.
     ///
@@ -1434,14 +1434,14 @@ struct Args {
     /// Sets a custom directory for all user data (e.g., database, extensions, logs).
     ///
     /// This overrides the default platform-specific data directory location.
-    /// On macOS, the default is `~/Library/Application Support/Wu`.
-    /// On Linux/FreeBSD, the default is `$XDG_DATA_HOME/wu`.
-    /// On Windows, the default is `%LOCALAPPDATA%\Wu`.
+    /// On macOS, the default is `~/Library/Application Support/Zed-Lite`.
+    /// On Linux/FreeBSD, the default is `$XDG_DATA_HOME/zed-lite`.
+    /// On Windows, the default is `%LOCALAPPDATA%\Zed-Lite`.
     #[arg(long, value_name = "DIR", verbatim_doc_comment)]
     user_data_dir: Option<String>,
 
     /// The username and WSL distribution to use when opening paths. If not specified,
-    /// Wu will attempt to open the paths directly.
+    /// Zed Lite will attempt to open the paths directly.
     ///
     /// The username is optional, and if not specified, the default user for the distribution
     /// will be used.

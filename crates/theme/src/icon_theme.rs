@@ -421,10 +421,10 @@ fn icon_keys_by_association(
 }
 
 /// The name of the built-in icon theme that every other icon theme falls back to.
-pub const DEFAULT_ICON_THEME_NAME: &str = "Wu Classic";
+pub const DEFAULT_ICON_THEME_NAME: &str = "Zed Lite Classic";
 
 /// The name [`DEFAULT_ICON_THEME_NAME`] had before, still found in older user settings.
-pub const LEGACY_DEFAULT_ICON_THEME_NAME: &str = "Wu (Default)";
+pub const LEGACY_DEFAULT_ICON_THEME_NAME: &str = "Zed Lite (Default)";
 
 /// The name of the bundled icon theme the default settings use in dark mode.
 pub const SYMBOLS_ICON_THEME_NAME: &str = "Symbols Dark";
@@ -432,7 +432,7 @@ pub const SYMBOLS_ICON_THEME_NAME: &str = "Symbols Dark";
 /// The name of the bundled icon theme the default settings use in light mode.
 pub const SYMBOLS_ICON_THEME_LIGHT_NAME: &str = "Symbols Light";
 
-/// The names of every icon theme that ships with Wu.
+/// The names of every icon theme that ships with Zed Lite.
 pub const BUNDLED_ICON_THEME_NAMES: &[&str] =
     &[SYMBOLS_ICON_THEME_NAME, SYMBOLS_ICON_THEME_LIGHT_NAME];
 

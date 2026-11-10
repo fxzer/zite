@@ -363,7 +363,7 @@ pub fn init(cx: &mut App) {
                     .collect::<Vec<_>>();
 
                 if paths.is_empty() {
-                    let message = t!("Invalid path specified when trying to open a folder inside WSL.\n\nPlease note that Wu currently does not support opening network share folders inside WSL.");
+                    let message = t!("Invalid path specified when trying to open a folder inside WSL.\n\nPlease note that Zed Lite currently does not support opening network share folders inside WSL.");
 
                     cx.prompt(gpui::PromptLevel::Critical, &t!("Invalid path"), Some(&message), &[gpui::PromptButton::ok(t!("OK"))]).await.log_err();
                     return;

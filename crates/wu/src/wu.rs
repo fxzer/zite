@@ -100,7 +100,7 @@ use wu_actions::{
     OpenWuUrl, Quit,
 };
 
-const DOCS_URL: &str = "https://wu.dstrml.org/docs";
+const DOCS_URL: &str = "https://github.com/fxzer/zed-lite#readme";
 
 actions!(
     wu,
@@ -373,7 +373,7 @@ pub fn build_window_options(display_uuid: Option<Uuid>, cx: &mut App) -> WindowO
             height: px(240.0),
         }),
         tabbing_identifier: if use_system_window_tabs {
-            Some(String::from("wu"))
+            Some(String::from("zed-lite"))
         } else {
             None
         },
@@ -602,7 +602,7 @@ fn show_software_emulation_warning_if_needed(
             )
         };
         let message = t!(
-            "Wu uses {graphics_api} for rendering and requires a compatible GPU.\n\nCurrently you are using a software emulated GPU ({device_name}) which\nwill result in awful performance.\n\nFor troubleshooting see: {docs_url}\nSet ZED_ALLOW_EMULATED_GPU=1 env var to permanently override.",
+            "Zed Lite uses {graphics_api} for rendering and requires a compatible GPU.\n\nCurrently you are using a software emulated GPU ({device_name}) which\nwill result in awful performance.\n\nFor troubleshooting see: {docs_url}\nSet ZED_ALLOW_EMULATED_GPU=1 env var to permanently override.",
             graphics_api = graphics_api,
             device_name = specs.device_name,
             docs_url = docs_url
@@ -1405,7 +1405,7 @@ fn open_about_window(cx: &mut App) {
     cx.open_window(
         WindowOptions {
             titlebar: Some(TitlebarOptions {
-                title: Some(t!("About Wu")),
+                title: Some(t!("About Zed Lite")),
                 appears_transparent: true,
                 traffic_light_position: Some(point(px(12.), px(12.))),
             }),
@@ -5467,6 +5467,7 @@ mod tests {
             let expected_namespaces = vec![
                 "action",
                 "activity_indicator",
+                "agent_chat",
                 "app_menu",
                 "auto_update",
                 "branch_picker",

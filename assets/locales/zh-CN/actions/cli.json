@@ -1,10 +1,10 @@
 {
   "cli::InstallCliBinary": {
-    "description": "将 Wu 命令行工具安装到系统 PATH。",
+    "description": "将 Zed Lite 命令行工具安装到系统 PATH。",
     "name": "安装命令行工具"
   },
   "cli::RegisterWuScheme": {
-    "description": "注册 wu:// 链接的处理程序。",
-    "name": "注册 wu:// 链接"
+    "description": "注册 zed-lite:// 链接的处理程序。",
+    "name": "注册 zed-lite:// 链接"
   }
 }

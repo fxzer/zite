@@ -101,19 +101,19 @@ impl UpdateButton {
     }
 
     pub fn checking() -> Self {
-        Self::new(IconName::LoadCircle, t!("Checking for Wu Updates…"))
+        Self::new(IconName::LoadCircle, t!("Checking for Zed Lite Updates…"))
             .icon_animate(true)
             .disabled(true)
     }
 
     pub fn downloading(progress: Option<f32>) -> Self {
-        Self::new(IconName::Download, t!("Downloading Wu Update…"))
+        Self::new(IconName::Download, t!("Downloading Zed Lite Update…"))
             .progress(progress)
             .disabled(true)
     }
 
     pub fn installing(version: impl Into<SharedString>) -> Self {
-        Self::new(IconName::LoadCircle, t!("Installing Wu Update…"))
+        Self::new(IconName::LoadCircle, t!("Installing Zed Lite Update…"))
             .icon_animate(true)
             .tooltip(version)
             .disabled(true)

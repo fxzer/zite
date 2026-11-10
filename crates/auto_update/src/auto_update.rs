@@ -231,7 +231,7 @@ pub struct ReleaseAsset {
     pub digest: Option<String>,
 }
 
-const GITHUB_RELEASES_API_URL: &str = "https://api.github.com/repos/dstrml/wu/releases";
+const GITHUB_RELEASES_API_URL: &str = "https://api.github.com/repos/fxzer/zed-lite/releases";
 
 #[derive(Deserialize)]
 struct GitHubRelease {
@@ -249,10 +249,10 @@ struct GitHubReleaseAsset {
 
 fn github_asset_name(asset: &str, os: &str, arch: &str) -> Result<String> {
     match (asset, os) {
-        ("zed", "macos") => Ok(format!("Wu-{arch}.dmg")),
-        ("zed", "linux") => Ok(format!("wu-linux-{arch}.tar.gz")),
-        ("zed", "windows") => Ok(format!("Wu-{arch}.exe")),
-        ("wu-remote-server", _) => Ok(format!("wu-remote-server-{os}-{arch}.gz")),
+        ("zed", "macos") => Ok(format!("Zed-Lite-{arch}.dmg")),
+        ("zed", "linux") => Ok(format!("zed-lite-linux-{arch}.tar.gz")),
+        ("zed", "windows") => Ok(format!("Zed-Lite-{arch}.exe")),
+        ("wu-remote-server", _) => Ok(format!("zed-lite-remote-server-{os}-{arch}.gz")),
         _ => anyhow::bail!("no release asset for {asset} on {os}"),
     }
 }
@@ -346,7 +346,7 @@ pub fn init(client: Arc<Client>, cx: &mut App) {
 pub fn check(_: &Check, window: &mut Window, cx: &mut App) {
     drop(window.prompt(
         gpui::PromptLevel::Info,
-        &t!("Wu is up to date"),
+        &t!("Zed Lite is up to date"),
         Some("Auto-update is disabled for this custom build."),
         &[PromptButton::ok(t!("OK"))],
         cx,
@@ -362,9 +362,9 @@ pub fn release_notes_url(cx: &mut App) -> Option<String> {
             let mut current_version = auto_updater.current_version.clone();
             current_version.pre = semver::Prerelease::EMPTY;
             current_version.build = semver::BuildMetadata::EMPTY;
-            format!("https://github.com/dstrml/wu/releases/tag/v{current_version}")
+            format!("https://github.com/fxzer/zed-lite/releases/tag/v{current_version}")
         }
-        ReleaseChannel::Dev => "https://github.com/dstrml/wu/commits/main/".to_string(),
+        ReleaseChannel::Dev => "https://github.com/fxzer/zed-lite/commits/main/".to_string(),
     };
     Some(url)
 }
@@ -845,9 +845,9 @@ impl AutoUpdater {
 
     async fn target_path(installer_dir: &InstallerDir) -> Result<PathBuf> {
         let filename = match OS {
-            "macos" => anyhow::Ok("Wu.dmg"),
-            "linux" => Ok("wu.tar.gz"),
-            "windows" => Ok("Wu.exe"),
+            "macos" => anyhow::Ok("Zed-Lite.dmg"),
+            "linux" => Ok("zed-lite.tar.gz"),
+            "windows" => Ok("Zed-Lite.exe"),
             unsupported_os => anyhow::bail!("not supported: {unsupported_os}"),
         }?;
 
@@ -1166,7 +1166,7 @@ async fn install_release_macos(
     _running_app_path: PathBuf,
     _background_executor: &BackgroundExecutor,
 ) -> Result<Option<PathBuf>> {
-    anyhow::bail!("auto-update is permanently disabled for custom Wu builds");
+    anyhow::bail!("auto-update is permanently disabled for custom Zed Lite builds");
 }
 
 /// Removes stale installer dirs from the system temp dir. Older Zed versions
