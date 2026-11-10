@@ -24,7 +24,12 @@ futures.workspace = true
 gpui.workspace = true
 i18n.workspace = true
 inventory.workspace = true
+<<<<<<< fb9e819194037e316681dc0647c1b67bc97c1947
 log.workspace = true
+=======
+log = { workspace = true, features = ["kv_unstable_std"] }
+migrator.workspace = true
+>>>>>>> bb14c713b8a7abee84a0eb6fdb2182d422c06ad9
 paths.workspace = true
 release_channel.workspace = true
 schemars.workspace = true
@@ -36,11 +41,11 @@ settings_json = { workspace = true, features = ["editing"] }
 settings_macros.workspace = true
 smallvec.workspace = true
 util.workspace = true
-zlog.workspace = true
 
 [dev-dependencies]
 fs = { workspace = true, features = ["test-support"] }
 gpui = { workspace = true, features = ["test-support"] }
+zlog.workspace = true
 
 indoc.workspace = true
 pretty_assertions.workspace = true

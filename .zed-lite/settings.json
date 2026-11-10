@@ -1,5 +1,8 @@
 {
   "languages": {
+    "Docker Compose": {
+      "tab_size": 2,
+    },
     "Markdown": {
       "tab_size": 2,
       "formatter": "prettier",
@@ -18,6 +21,21 @@
       "preferred_line_length": 120,
       "formatter": "prettier",
     },
+<<<<<<< fb9e819194037e316681dc0647c1b67bc97c1947:.zed-lite/settings.json
+=======
+    "JavaScript": {
+      "tab_size": 2,
+      "formatter": "prettier",
+    },
+    "TypeScript": {
+      "tab_size": 2,
+      "formatter": "prettier",
+    },
+    "CSS": {
+      "tab_size": 2,
+      "formatter": "prettier",
+    },
+>>>>>>> bb14c713b8a7abee84a0eb6fdb2182d422c06ad9:.zed/settings.json
     "Rust": {
       "tasks": {
         "variables": {
@@ -39,6 +57,7 @@
   "formatter": "auto",
   "remove_trailing_whitespace_on_save": true,
   "ensure_final_newline_on_save": true,
+<<<<<<< fb9e819194037e316681dc0647c1b67bc97c1947:.zed-lite/settings.json
   "file_scan_exclusions": [
     "**/.git",
     "**/.svn",
@@ -50,5 +69,8 @@
     "**/.classpath",
     "**/.settings",
   ],
+=======
+  "file_scan_exclusions": ["...", "crates/agent/src/tools/evals/fixtures"],
+>>>>>>> bb14c713b8a7abee84a0eb6fdb2182d422c06ad9:.zed/settings.json
   "read_only_files": ["**/.rustup/**", "**/.cargo/registry/**", "**/.cargo/git/**", "target/**/*.rs", "**/*.lock"],
 }

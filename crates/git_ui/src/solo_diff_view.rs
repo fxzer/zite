@@ -450,6 +450,7 @@ impl Item for SoloDiffView {
         self.editor.for_each_project_item(cx, f)
     }
 
+<<<<<<< fb9e819194037e316681dc0647c1b67bc97c1947
     fn buffer_kind(&self, _: &App) -> ItemBufferKind {
         ItemBufferKind::Singleton
     }
@@ -463,6 +464,10 @@ impl Item for SoloDiffView {
                 let file = buffer.file()?;
                 Some(ProjectPath::from_file(file.as_ref(), cx))
             })
+=======
+    fn active_project_path(&self, cx: &App) -> Option<ProjectPath> {
+        self.editor.read(cx).active_project_path(cx)
+>>>>>>> bb14c713b8a7abee84a0eb6fdb2182d422c06ad9
     }
 
     fn set_nav_history(

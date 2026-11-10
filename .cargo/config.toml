@@ -1,5 +1,9 @@
+<<<<<<< fb9e819194037e316681dc0647c1b67bc97c1947
 [build]
 jobs = 4
+=======
+[target.'cfg(all())']
+>>>>>>> bb14c713b8a7abee84a0eb6fdb2182d422c06ad9
 # v0 mangling scheme provides more detailed backtraces around closures
 rustflags = ["-C", "symbol-mangling-version=v0", "--cfg", "tokio_unstable"]
 
@@ -33,4 +37,4 @@ rustflags = [
 ]
 
 [env]
-MACOSX_DEPLOYMENT_TARGET = "10.15.7"
+MACOSX_DEPLOYMENT_TARGET = "12.0"

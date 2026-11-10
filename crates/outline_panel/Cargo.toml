@@ -21,9 +21,13 @@ editor.workspace = true
 file_icons.workspace = true
 fuzzy.workspace = true
 futures.workspace = true
+git.workspace = true
 gpui.workspace = true
+<<<<<<< fb9e819194037e316681dc0647c1b67bc97c1947
 i18n.workspace = true
 itertools.workspace = true
+=======
+>>>>>>> bb14c713b8a7abee84a0eb6fdb2182d422c06ad9
 language.workspace = true
 log.workspace = true
 menu.workspace = true
@@ -43,6 +47,7 @@ worktree.workspace = true
 wu_actions.workspace = true
 
 [dev-dependencies]
+buffer_diff.workspace = true
 lsp.workspace = true
 search = { workspace = true, features = ["test-support"] }
 pretty_assertions.workspace = true
