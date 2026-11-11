@@ -9,44 +9,23 @@
 
 ---
 
-**Zite** (formerly Zite) is a high-performance native code editor written in Rust, focusing purely on speed, minimal memory footprint, and an uncompromised text editing experience. All bundled AI agents, speech dictation models, and heavy neural runtime dependencies have been completely stripped out, returning the editor to its core mission: blazing-fast, distraction-free code editing.
+**Zite** (formerly Zed Lite) is a high-performance native code editor written in Rust, focusing purely on speed, minimal memory footprint, and an uncompromised text editing experience. All bundled AI agents, speech dictation models, and heavy neural runtime dependencies have been completely stripped out, returning the editor to its core mission: blazing-fast, distraction-free code editing.
 
-## 🌟 Key Custom Feature: Search Tree View
+## 🌟 Key Custom Features
 
-In stock Zed and traditional editors, multi-file search results are presented in a flat path list. In large monorepos with dozens of nested directories, this quickly becomes visually noisy and loses structural context.
-
-Zite introduces a seamless **dual-mode switcher** in the project search panel:
-
-| Mode | Features |
-| :--- | :--- |
-| **Tree View** | Aggregates search hits into an interactive directory tree with foldable folders, indentation lines, high-fidelity file/directory icons, and hit counts per branch. |
-| **Flat View** | Preserves the traditional compact list view for rapid single-file inspection. |
-
-- **Instant Switching**: Toggle effortlessly via the `ListTree` button on the search toolbar.
-- **Preference Persistence**: Your view mode choice is remembered across sessions.
+- **Ultra-Lightweight (52k LOC stripped)**: Completely purged AI agents, voice dictation, and heavy runtimes. Link times improved by 40% - 60%, app size down by 30 - 50 MB, and heavy-workload memory reduced by over 50%.
+- **Project Search Tree View**: Toggle search hits into a foldable directory tree with branch counts for clean multi-file navigation in large repos.
+- **Customizable Activity Bar**: Place the activity bar horizontally on top to save screen width, or dock it vertically on the left/right:
+  ```json
+  "activity_bar": { "position": "top" } // Options: "top" | "left" | "right"
+  ```
 
 ---
 
-## ⚡ Additional Highlights & Enhancements
+## ⚡ Upstream Tracking & Coexistence
 
-### 1. Completely Detached AI Modules (~52k LOC Removed)
-- Removed `agent_chat`, `agent_harness`, `dictation` (audio capture), and `mermaid_render`.
-- Eliminated heavy C/C++ bindings such as ONNX Runtime (`ort`), `cpal`, and `rubato`.
-- Full linking speed improved by ~40% - 60%, binary size reduced by 30 - 50MB, cold-start memory reduced by 30 - 80MB.
-- Activity bar simplified to files, search, Git, and terminal.
-
-### 2. Isolated Bundle ID & Coexistence with Official Zed
-- Bundle ID: `dev.zed.Zite`, installed as `/Applications/Zite.app`.
-- Runs side-by-side with official `Zed.app` without configuration conflicts or cache collisions.
-- Styled with a distinctive dark tech-focused app icon.
-
-### 3. Absorbed Upstream Non-AI Enhancements
-- **Sort by Extension**: Set `project_panel.sort_order = "extension"` to group files of the same type in the project tree.
-- **Show Source in Markdown Preview**: Right-click the preview tab to return directly to markdown source.
-- **Cmd+Q Crash Fix**: Integrated `minidump-writer` patch to eliminate macOS crash prompts on application quit.
-
-### 4. Removed Silent Auto-Update Overwrites
-- Neutralized the background poll-and-replace mechanism to ensure local modifications remain untouched.
+- **Absorbed Upstream Enhancements**: Selectively tracks official non-AI improvements, including file tree sorting by extension, Markdown preview toggle to source, and quit crash fixes.
+- **Isolated Coexistence & Update Shield**: Standalone identity (`Zite.app`) runs alongside official Zed without conflict; disabled background auto-updates to prevent custom builds from being overwritten.
 
 ---
 
