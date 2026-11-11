@@ -502,10 +502,24 @@ pub fn local_settings_file_relative_path() -> &'static RelPath {
     *CACHED
 }
 
+/// Returns the legacy `.zed/settings.json` relative path for transparent backward compatibility.
+pub fn legacy_local_settings_file_relative_path() -> &'static RelPath {
+    static CACHED: LazyLock<&'static RelPath> =
+        LazyLock::new(|| RelPath::from_unix_str(".zed/settings.json").unwrap());
+    *CACHED
+}
+
 /// Returns the relative path to a `tasks.json` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
         LazyLock::new(|| RelPath::from_unix_str(".zite/tasks.json").unwrap());
+    *CACHED
+}
+
+/// Returns the legacy `.zed/tasks.json` relative path for transparent backward compatibility.
+pub fn legacy_local_tasks_file_relative_path() -> &'static RelPath {
+    static CACHED: LazyLock<&'static RelPath> =
+        LazyLock::new(|| RelPath::from_unix_str(".zed/tasks.json").unwrap());
     *CACHED
 }
 
@@ -529,6 +543,13 @@ pub fn task_file_name() -> &'static str {
 pub fn local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
         LazyLock::new(|| RelPath::from_unix_str(".zite/debug.json").unwrap());
+    *CACHED
+}
+
+/// Returns the legacy `.zed/debug.json` relative path for transparent backward compatibility.
+pub fn legacy_local_debug_file_relative_path() -> &'static RelPath {
+    static CACHED: LazyLock<&'static RelPath> =
+        LazyLock::new(|| RelPath::from_unix_str(".zed/debug.json").unwrap());
     *CACHED
 }
 

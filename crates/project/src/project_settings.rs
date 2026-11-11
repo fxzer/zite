@@ -7,9 +7,11 @@ use git::repository::DEFAULT_WORKTREE_DIRECTORY;
 use gpui::{AsyncApp, BorrowAppContext, Context, Entity, EventEmitter, Subscription, Task};
 use lsp::{DEFAULT_LSP_REQUEST_TIMEOUT_SECS, LanguageServerName};
 use paths::{
-    EDITORCONFIG_NAME, debug_task_file_name, local_debug_file_relative_path,
-    local_settings_file_relative_path, local_tasks_file_relative_path,
-    local_vscode_launch_file_relative_path, local_vscode_tasks_file_relative_path, task_file_name,
+    EDITORCONFIG_NAME, debug_task_file_name, legacy_local_debug_file_relative_path,
+    legacy_local_settings_file_relative_path, legacy_local_tasks_file_relative_path,
+    local_debug_file_relative_path, local_settings_file_relative_path,
+    local_tasks_file_relative_path, local_vscode_launch_file_relative_path,
+    local_vscode_tasks_file_relative_path, task_file_name,
 };
 use rpc::{
     AnyProtoClient, TypedEnvelope,
@@ -992,7 +994,17 @@ impl SettingsObserver {
                 directory_depth: local_settings_file_relative_path().components().count(),
             },
             LocalSettingsFile {
+                path: legacy_local_settings_file_relative_path(),
+                kind: LocalSettingsKind::Settings,
+                directory_depth: legacy_local_settings_file_relative_path().components().count(),
+            },
+            LocalSettingsFile {
                 path: local_tasks_file_relative_path(),
+                kind: LocalSettingsKind::Tasks,
+                directory_depth: 1,
+            },
+            LocalSettingsFile {
+                path: legacy_local_tasks_file_relative_path(),
                 kind: LocalSettingsKind::Tasks,
                 directory_depth: 1,
             },
@@ -1003,6 +1015,11 @@ impl SettingsObserver {
             },
             LocalSettingsFile {
                 path: local_debug_file_relative_path(),
+                kind: LocalSettingsKind::Debug,
+                directory_depth: 1,
+            },
+            LocalSettingsFile {
+                path: legacy_local_debug_file_relative_path(),
                 kind: LocalSettingsKind::Debug,
                 directory_depth: 1,
             },
