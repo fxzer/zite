@@ -574,11 +574,14 @@ impl KeymapFile {
             Some((name, Some(action_input))) => {
                 let action_input_string = action_input.to_string();
                 (
-                    cx.build_action(name, Some(action_input.clone())),
+                    Self::build_action_with_legacy_fallback(name, Some(action_input.clone()), cx),
                     Some(action_input_string),
                 )
             }
-            Some((name, None)) => (cx.build_action(name, None), None),
+            Some((name, None)) => (
+                Self::build_action_with_legacy_fallback(name, None, cx),
+                None,
+            ),
             None => (Ok(NoAction.boxed_clone()), None),
         };
 
@@ -610,6 +613,30 @@ impl KeymapFile {
         };
 
         Ok((action, action_input_string))
+    }
+
+    fn build_action_with_legacy_fallback(
+        name: &str,
+        input: Option<Value>,
+        cx: &App,
+    ) -> Result<Box<dyn Action>, ActionBuildError> {
+        match cx.build_action(name, input.clone()) {
+            Ok(action) => Ok(action),
+            Err(e @ ActionBuildError::NotFound { .. }) => {
+                if let Some(suffix) = name
+                    .strip_prefix("wu::")
+                    .or_else(|| name.strip_prefix("zed::"))
+                    .or_else(|| name.strip_prefix("zed-lite::"))
+                {
+                    let fallback_name = format!("zite::{suffix}");
+                    if let Ok(action) = cx.build_action(&fallback_name, input) {
+                        return Ok(action);
+                    }
+                }
+                Err(e)
+            }
+            Err(e) => Err(e),
+        }
     }
 
     /// Creates a JSON schema generator, suitable for generating json schemas
