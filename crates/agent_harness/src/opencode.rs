@@ -38,7 +38,7 @@ const DEFAULT_STARTUP_TIMEOUT: Duration = Duration::from_secs(300);
 const RETRY_REPORT_ATTEMPT: u64 = 3;
 const RETRY_ABORT_ATTEMPT: u64 = 8;
 const DEFAULT_STALL_BOUND: Duration = Duration::from_secs(60);
-const STALL_ENV: &str = "WU_OPENCODE_STALL_MS";
+const STALL_ENV: &str = "ZITE_OPENCODE_STALL_MS";
 const COMMAND_CACHE_TTL: Duration = Duration::from_secs(10);
 pub const UNTITLED_CHAT: &str = n!("Untitled chat");
 

@@ -21,9 +21,9 @@ pub(crate) fn home_dir() -> Option<PathBuf> {
     home_dir_with(&|key| std::env::var_os(key), Platform::current())
 }
 
-// The CLIs walk their working folder on startup; from Wu's `/` that reaches Desktop, Photos and friends.
+// The CLIs walk their working folder on startup; from Zite's `/` that reaches Desktop, Photos and friends.
 pub(crate) fn scratch_dir() -> PathBuf {
-    let dir = std::env::temp_dir().join("wu-agent");
+    let dir = std::env::temp_dir().join("zite-agent");
     match std::fs::create_dir_all(&dir) {
         Ok(()) => dir,
         Err(error) => {

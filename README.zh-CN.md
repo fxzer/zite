@@ -1,7 +1,7 @@
 <p align="center"><a href="README.md">English</a> | 中文</p>
 
 <div align="center">
-  <img src="crates/wu/resources/app-icon.png" alt="Zite" width="128">
+  <img src="crates/zite/resources/app-icon.png" alt="Zite" width="128">
   <h1>Zite</h1>
   <p>极速、纯粹、极致轻量的原生代码编辑器。</p>
   <p>基于 Zed 核心架构打造 · 剔除 AI 冗余 · 纯粹文本编辑</p>

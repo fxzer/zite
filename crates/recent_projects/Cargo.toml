@@ -46,7 +46,7 @@ ui.workspace = true
 util.workspace = true
 workspace.workspace = true
 worktree.workspace = true
-wu_actions.workspace = true
+zite_actions.workspace = true
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows-registry.workspace = true

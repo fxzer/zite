@@ -17,7 +17,7 @@ use settings::{
     FontWeightContent, InactiveOpacity, MinimumContrast, PixelSetting,
 };
 use ui::prelude::*;
-use wu_actions::editor::{MoveDown, MoveUp};
+use zite_actions::editor::{MoveDown, MoveUp};
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum NumberFieldMode {

@@ -57,7 +57,7 @@ use workspace::{
     Pane, RestoreOnStartupBehavior, TabBarSettings, WorkspaceSettings, item::ProjectItemKind,
     searchable::SearchOptions,
 };
-use wu_actions::preview::{
+use zite_actions::preview::{
     markdown::OpenPreview as OpenMarkdownPreview, svg::OpenPreview as OpenSvgPreview,
 };
 

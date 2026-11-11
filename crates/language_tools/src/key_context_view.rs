@@ -83,7 +83,7 @@ impl KeyContextView {
                         "".to_string()
                     };
                     let mut name = binding.action().name();
-                    if name == "wu::NoAction" {
+                    if name == "zite::NoAction" {
                         name = "(null)"
                     }
 
@@ -136,7 +136,7 @@ impl KeyContextView {
         if let Some(last_action) = a {
             last_action.partial_eq(b)
         } else {
-            b.name() == "wu::NoAction"
+            b.name() == "zite::NoAction"
         }
     }
 }
@@ -212,19 +212,19 @@ impl Render for KeyContextView {
                         Button::new("view_default_keymap", t!("View Default Keymap"))
                             .style(ButtonStyle::Filled)
                             .key_binding(ui::KeyBinding::for_action(
-                                &wu_actions::OpenDefaultKeymap,
+                                &zite_actions::OpenDefaultKeymap,
                                 cx
                             ))
                             .on_click(|_, window, cx| {
-                                window.dispatch_action(wu_actions::OpenDefaultKeymap.boxed_clone(), cx);
+                                window.dispatch_action(zite_actions::OpenDefaultKeymap.boxed_clone(), cx);
                             }),
                     )
                     .child(
                         Button::new("edit_your_keymap", t!("Edit Keymap File"))
                             .style(ButtonStyle::Filled)
-                            .key_binding(ui::KeyBinding::for_action(&wu_actions::OpenKeymapFile, cx))
+                            .key_binding(ui::KeyBinding::for_action(&zite_actions::OpenKeymapFile, cx))
                             .on_click(|_, window, cx| {
-                                window.dispatch_action(wu_actions::OpenKeymapFile.boxed_clone(), cx);
+                                window.dispatch_action(zite_actions::OpenKeymapFile.boxed_clone(), cx);
                             }),
                     ),
             )

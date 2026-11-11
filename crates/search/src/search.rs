@@ -10,7 +10,7 @@ use ui::{IconButtonShape, Tooltip, prelude::*};
 use util::paths::PathMatcher;
 use workspace::notifications::NotificationId;
 use workspace::{Toast, Workspace};
-pub use wu_actions::search::{
+pub use zite_actions::search::{
     FocusSearch, SelectNextMatch, SelectPreviousMatch, ToggleCaseSensitive, ToggleIncludeIgnored,
 };
 

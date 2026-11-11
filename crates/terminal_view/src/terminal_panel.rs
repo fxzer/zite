@@ -1397,10 +1397,10 @@ impl Render for FailedToSpawnTerminal {
             .menu(move |window, cx| {
                 Some(ContextMenu::build(window, cx, |context_menu, _, _| {
                     context_menu
-                        .action(t!("Open Settings"), wu_actions::OpenSettings.boxed_clone())
+                        .action(t!("Open Settings"), zite_actions::OpenSettings.boxed_clone())
                         .action(
                             t!("Edit settings.json"),
-                            wu_actions::OpenSettingsFile.boxed_clone(),
+                            zite_actions::OpenSettingsFile.boxed_clone(),
                         )
                 }))
             })
@@ -1434,7 +1434,7 @@ impl Render for FailedToSpawnTerminal {
                         ButtonLike::new("open-settings-ui")
                             .child(Label::new(t!("Edit Settings")).size(LabelSize::Small))
                             .on_click(|_, window, cx| {
-                                window.dispatch_action(wu_actions::OpenSettings.boxed_clone(), cx);
+                                window.dispatch_action(zite_actions::OpenSettings.boxed_clone(), cx);
                             }),
                         popover_menu.into_any_element(),
                     )),

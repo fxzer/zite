@@ -39,7 +39,7 @@ use workspace::{
     item::{Item, ItemEvent},
     workspace_error::{ErrorAction, ErrorSeverity, WorkspaceError},
 };
-use wu_actions::ExtensionCategoryFilter;
+use zite_actions::ExtensionCategoryFilter;
 
 use crate::components::{ExtensionCard, extension_provides_label, remote_extension_status};
 use crate::extension_version_selector::{
@@ -47,7 +47,7 @@ use crate::extension_version_selector::{
 };
 
 actions!(
-    wu,
+    zite,
     [
         /// Installs an extension from a local directory for development.
         InstallDevExtension,
@@ -56,7 +56,7 @@ actions!(
 
 /// Rebuilds an installed dev extension.
 #[derive(Clone, Debug, Default, PartialEq, Deserialize, JsonSchema, gpui::Action)]
-#[action(namespace = wu)]
+#[action(namespace = zite)]
 #[serde(deny_unknown_fields)]
 pub struct RebuildDevExtension {
     /// The ID of the dev extension to rebuild.
@@ -118,7 +118,7 @@ pub fn init(cx: &mut App) {
         };
         workspace
             .register_action(
-                move |workspace, action: &wu_actions::Extensions, window, cx| {
+                move |workspace, action: &zite_actions::Extensions, window, cx| {
                     let provides_filter = action.category_filter.map(|category| match category {
                         ExtensionCategoryFilter::Themes => ExtensionProvides::Themes,
                         ExtensionCategoryFilter::IconThemes => ExtensionProvides::IconThemes,
@@ -485,7 +485,7 @@ impl ExtensionsPage {
             workspace
                 .update(cx, |_workspace, cx| {
                     window.dispatch_action(
-                        wu_actions::theme_selector::Toggle {
+                        zite_actions::theme_selector::Toggle {
                             themes_filter: Some(themes),
                         }
                         .boxed_clone(),
@@ -504,7 +504,7 @@ impl ExtensionsPage {
             workspace
                 .update(cx, |_workspace, cx| {
                     window.dispatch_action(
-                        wu_actions::icon_theme_selector::Toggle {
+                        zite_actions::icon_theme_selector::Toggle {
                             themes_filter: Some(icon_themes),
                         }
                         .boxed_clone(),

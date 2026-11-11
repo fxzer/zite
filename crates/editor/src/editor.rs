@@ -245,8 +245,8 @@ use workspace::{
     notifications::{DetachAndPromptErr, NotificationId, NotifyResultExt, NotifyTaskExt},
     searchable::SearchEvent,
 };
-pub use wu_actions::editor::RevealInFileManager;
-use wu_actions::editor::{MoveDown, MoveUp};
+pub use zite_actions::editor::RevealInFileManager;
+use zite_actions::editor::{MoveDown, MoveUp};
 
 use crate::{
     bookmarks::BookmarksTabState,
@@ -8667,7 +8667,7 @@ impl Editor {
 
     fn copy_path(
         &mut self,
-        _: &wu_actions::workspace::CopyPath,
+        _: &zite_actions::workspace::CopyPath,
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) {
@@ -8682,7 +8682,7 @@ impl Editor {
 
     fn copy_relative_path(
         &mut self,
-        _: &wu_actions::workspace::CopyRelativePath,
+        _: &zite_actions::workspace::CopyRelativePath,
         _window: &mut Window,
         cx: &mut Context<Self>,
     ) {

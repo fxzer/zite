@@ -1,0 +1,11 @@
+[
+  {
+    "label": "Debug Zite (CodeLLDB)",
+    "adapter": "CodeLLDB",
+    "build": {
+      "label": "Build Zite",
+      "command": "cargo",
+      "args": ["build", "-p", "zite", "--bin", "zite"],
+    },
+  },
+]

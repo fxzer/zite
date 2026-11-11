@@ -31,7 +31,7 @@ use walkdir::WalkDir;
 
 use std::io::IsTerminal;
 
-const URL_PREFIX: [&'static str; 7] = ["zite://", "zite://", "wu://", "http://", "https://", "file://", "ssh://"];
+const URL_PREFIX: [&'static str; 7] = ["zite://", "zite://", "zite://", "http://", "https://", "file://", "ssh://"];
 
 struct Detect;
 
@@ -479,12 +479,6 @@ fn run() -> Result<()> {
     #[cfg(unix)]
     util::prevent_root_execution();
 
-    // Exit flatpak sandbox if needed
-    #[cfg(target_os = "linux")]
-    {
-        flatpak::try_restart_to_host();
-        flatpak::ld_extra_libs();
-    }
 
     // Intercept version designators
     #[cfg(target_os = "macos")]
@@ -517,9 +511,6 @@ fn run() -> Result<()> {
     if let Some(dir) = &user_data_dir {
         paths::set_custom_data_dir(dir).context("Could not use --user-data-dir")?;
     }
-
-    #[cfg(target_os = "linux")]
-    let args = flatpak::set_bin_if_no_escape(args);
 
     let app = Detect::detect(args.zed.as_deref()).context("Bundle detection")?;
 
@@ -831,7 +822,7 @@ fn anonymous_fd(path: &str) -> Option<fs::File> {
 }
 
 /// Shows an interactive prompt asking the user to choose the default open
-/// behavior for `wu <path>`. Returns `None` if the prompt cannot be shown
+/// behavior for `zite <path>`. Returns `None` if the prompt cannot be shown
 /// (e.g. stdin is not a terminal) or the user cancels.
 fn prompt_open_behavior() -> Option<cli::CliBehaviorSetting> {
     if !std::io::stdin().is_terminal() {
@@ -896,9 +887,9 @@ mod linux {
                 let cli = env::current_exe()?;
                 let dir = cli.parent().context("no parent path for cli")?;
 
-                // libexec is the standard, lib/wu is for Arch (and other non-libexec distros),
-                // ./wu is for the target directory in development builds.
-                let possible_locations = ["../libexec/wu-editor", "../lib/wu/wu-editor", "./wu"];
+                // libexec is the standard, lib/zite is for Arch (and other non-libexec distros),
+                // ./zite is for the target directory in development builds.
+                let possible_locations = ["../libexec/zite-editor", "../lib/zite/zite-editor", "./zite"];
                 possible_locations
                     .iter()
                     .find_map(|p| dir.join(p).canonicalize().ok().filter(|path| path != &cli))
@@ -935,7 +926,7 @@ mod linux {
                 .unwrap_or_else(|| paths::data_dir().clone());
 
             let sock_path = data_dir.join(format!(
-                "zed-lite-{}.sock",
+                "zite-{}.sock",
                 *release_channel::RELEASE_CHANNEL_NAME
             ));
             let sock = UnixDatagram::unbound()?;
@@ -1016,141 +1007,6 @@ mod linux {
 }
 
 #[cfg(target_os = "linux")]
-mod flatpak {
-    use std::ffi::OsString;
-    use std::path::{Path, PathBuf};
-    use std::process::Command;
-    use std::{env, process};
-
-    const EXTRA_LIB_ENV_NAME: &str = "ZED_FLATPAK_LIB_PATH";
-    const NO_ESCAPE_ENV_NAME: &str = "ZED_FLATPAK_NO_ESCAPE";
-
-    fn restart_cli_args(flatpak_dir: &Path, invocation_args: &[OsString]) -> Vec<OsString> {
-        let mut args = Vec::with_capacity(invocation_args.len() + 2);
-
-        if !invocation_args.iter().any(|arg| arg == "--zed") {
-            // Positional paths consume all following arguments, so launcher options must precede them.
-            args.push("--zed".into());
-            args.push(flatpak_dir.join("libexec").join("wu-editor").into());
-        }
-
-        args.extend_from_slice(invocation_args);
-        args
-    }
-
-    /// Adds bundled libraries to LD_LIBRARY_PATH if running under flatpak
-    pub fn ld_extra_libs() {
-        let mut paths = if let Ok(paths) = env::var("LD_LIBRARY_PATH") {
-            env::split_paths(&paths).collect()
-        } else {
-            Vec::new()
-        };
-
-        if let Ok(extra_path) = env::var(EXTRA_LIB_ENV_NAME) {
-            paths.push(extra_path.into());
-        }
-
-        unsafe { env::set_var("LD_LIBRARY_PATH", env::join_paths(paths).unwrap()) };
-    }
-
-    /// Restarts outside of the sandbox if currently running within it
-    pub fn try_restart_to_host() {
-        if let Some(flatpak_dir) = get_flatpak_dir() {
-            let mut args = vec!["/usr/bin/flatpak-spawn".into(), "--host".into()];
-            args.append(&mut get_xdg_env_args());
-            args.push("--env=ZED_UPDATE_EXPLANATION=Please use flatpak to update zed".into());
-            args.push(
-                format!(
-                    "--env={EXTRA_LIB_ENV_NAME}={}",
-                    flatpak_dir.join("lib").to_str().unwrap()
-                )
-                .into(),
-            );
-            args.push(flatpak_dir.join("bin").join("wu").into());
-
-            let invocation_args = env::args_os().skip(1).collect::<Vec<_>>();
-            args.extend(restart_cli_args(&flatpak_dir, &invocation_args));
-
-            let error = exec::execvp("/usr/bin/flatpak-spawn", args);
-            eprintln!("failed restart cli on host: {:?}", error);
-            process::exit(1);
-        }
-    }
-
-    pub fn set_bin_if_no_escape(mut args: super::Args) -> super::Args {
-        if env::var(NO_ESCAPE_ENV_NAME).is_ok()
-            && env::var("FLATPAK_ID").is_ok_and(|id| id.starts_with("me.farshed.Wu"))
-            && args.zed.is_none()
-        {
-            args.zed = Some("/app/libexec/wu-editor".into());
-            unsafe { env::set_var("ZED_UPDATE_EXPLANATION", "Please use flatpak to update zed") };
-        }
-        args
-    }
-
-    fn get_flatpak_dir() -> Option<PathBuf> {
-        if env::var(NO_ESCAPE_ENV_NAME).is_ok() {
-            return None;
-        }
-
-        if let Ok(flatpak_id) = env::var("FLATPAK_ID") {
-            if !flatpak_id.starts_with("me.farshed.Wu") {
-                return None;
-            }
-
-            let install_dir = Command::new("/usr/bin/flatpak-spawn")
-                .arg("--host")
-                .arg("flatpak")
-                .arg("info")
-                .arg("--show-location")
-                .arg(flatpak_id)
-                .output()
-                .unwrap();
-            let install_dir = PathBuf::from(String::from_utf8(install_dir.stdout).unwrap().trim());
-            Some(install_dir.join("files"))
-        } else {
-            None
-        }
-    }
-
-    fn get_xdg_env_args() -> Vec<OsString> {
-        let xdg_keys = [
-            "XDG_DATA_HOME",
-            "XDG_CONFIG_HOME",
-            "XDG_CACHE_HOME",
-            "XDG_STATE_HOME",
-        ];
-        env::vars()
-            .filter(|(key, _)| xdg_keys.contains(&key.as_str()))
-            .map(|(key, val)| format!("--env=FLATPAK_{}={}", key, val).into())
-            .collect()
-    }
-
-    #[cfg(test)]
-    mod tests {
-        use clap::Parser as _;
-
-        use super::*;
-
-        #[test]
-        fn test_restart_cli_args() {
-            let flatpak_dir = Path::new("/flatpak");
-            let args = restart_cli_args(flatpak_dir, &["project".into()]);
-            let parsed =
-                crate::Args::try_parse_from(std::iter::once(OsString::from("wu")).chain(args))
-                    .unwrap();
-
-            assert_eq!(parsed.zed, Some(flatpak_dir.join("libexec/wu-editor")));
-            assert_eq!(parsed.paths_with_position, ["project"]);
-
-            let invocation_args = ["--zed".into(), "/custom/zed-editor".into()];
-            assert_eq!(
-                restart_cli_args(flatpak_dir, &invocation_args),
-                invocation_args
-            );
-        }
-    }
-}
 
 #[cfg(target_os = "windows")]
 mod windows {
@@ -1275,9 +1131,9 @@ mod windows {
                 let cli = std::env::current_exe()?;
                 let dir = cli.parent().context("no parent path for cli")?;
 
-                // ../Wu.exe is the standard, lib/wu is for MSYS2, ./wu.exe is for the target
+                // ../Zite.exe is the standard, lib/zite is for MSYS2, ./zite.exe is for the target
                 // directory in development builds.
-                let possible_locations = ["../Wu.exe", "../lib/wu/wu-editor.exe", "./wu.exe"];
+                let possible_locations = ["../Zite.exe", "../lib/zite/zite-editor.exe", "./zite.exe"];
                 possible_locations
                     .iter()
                     .find_map(|p| dir.join(p).canonicalize().ok().filter(|path| path != &cli))
@@ -1486,7 +1342,7 @@ mod mac_os {
             user_data_dir: Option<&str>,
         ) -> io::Result<ExitStatus> {
             let path = match self {
-                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/wu"),
+                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/zite"),
                 Bundle::LocalPath { executable, .. } => executable.clone(),
             };
 
@@ -1500,7 +1356,7 @@ mod mac_os {
 
         fn path(&self) -> PathBuf {
             match self {
-                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/wu"),
+                Bundle::App { app_bundle, .. } => app_bundle.join("Contents/MacOS/zite"),
                 Bundle::LocalPath { executable, .. } => executable.clone(),
             }
         }

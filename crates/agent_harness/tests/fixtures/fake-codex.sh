@@ -12,7 +12,7 @@ fail_turn() { # $1 = request id, $2 = message
 read -r line || exit 1
 has "$line" '"method":"initialize"' || exit 1
 has "$line" '"experimentalApi":true' || exit 1
-has "$line" '"name":"wu"' || exit 1
+has "$line" '"name":"zite"' || exit 1
 emit "{\"id\":$(rid "$line"),\"result\":{\"userAgent\":\"fake-codex\"}}"
 
 read -r line || exit 1

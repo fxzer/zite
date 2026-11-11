@@ -163,7 +163,7 @@ impl NodeRuntime {
                 Ok(instance) => {
                     log::log!(
                         log_level,
-                        "using Wu managed Node.js at {} since {}",
+                        "using Zite managed Node.js at {} since {}",
                         instance.installation_path.display(),
                         why_using_managed
                     );
@@ -658,7 +658,7 @@ impl ManagedNodeRuntime {
                         true
                     } else {
                         log::warn!(
-                            "Wu managed Node.js binary at {} failed check with output: {:?}",
+                            "Zite managed Node.js binary at {} failed check with output: {:?}",
                             node_binary.display(),
                             output
                         );

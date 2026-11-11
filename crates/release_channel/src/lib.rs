@@ -30,7 +30,7 @@ fn compile_time_release_channel_name() -> String {
 
 #[cfg(not(__do_not_set_zed_release_channel))]
 fn compile_time_release_channel_name() -> String {
-    include_str!("../../wu/RELEASE_CHANNEL").trim().to_string()
+    include_str!("../../zite/RELEASE_CHANNEL").trim().to_string()
 }
 
 #[doc(hidden)]
@@ -44,8 +44,8 @@ pub static RELEASE_CHANNEL: LazyLock<ReleaseChannel> =
 #[cfg(target_os = "windows")]
 pub fn app_identifier() -> &'static str {
     match *RELEASE_CHANNEL {
-        ReleaseChannel::Dev => "Zed-Lite-Dev",
-        ReleaseChannel::Stable => "Zed-Lite",
+        ReleaseChannel::Dev => "Zite-Dev",
+        ReleaseChannel::Stable => "Zite",
     }
 }
 
@@ -210,8 +210,8 @@ impl ReleaseChannel {
     /// This also has to match the bundle identifier for Zed on macOS.
     pub fn app_id(&self) -> &'static str {
         match self {
-            ReleaseChannel::Dev => "dev.zed.Zed-Lite-Dev",
-            ReleaseChannel::Stable => "dev.zed.Zed-Lite",
+            ReleaseChannel::Dev => "dev.zed.Zite-Dev",
+            ReleaseChannel::Stable => "dev.zed.Zite",
         }
     }
 

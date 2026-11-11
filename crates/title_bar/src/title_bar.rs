@@ -45,7 +45,7 @@ use workspace::{
     Workspace,
 };
 
-use wu_actions::OpenRemote;
+use zite_actions::OpenRemote;
 
 pub use onboarding_banner::restore_banner;
 
@@ -517,20 +517,20 @@ impl TitleBar {
             )
             .menu(|window, cx| {
                 Some(ContextMenu::build(window, cx, |menu, _, _| {
-                    menu.action(t!("Settings"), wu_actions::OpenSettings.boxed_clone())
-                        .action(t!("Keymap"), Box::new(wu_actions::OpenKeymap))
+                    menu.action(t!("Settings"), zite_actions::OpenSettings.boxed_clone())
+                        .action(t!("Keymap"), Box::new(zite_actions::OpenKeymap))
                         .action(
                             t!("Themes…"),
-                            wu_actions::theme_selector::Toggle::default().boxed_clone(),
+                            zite_actions::theme_selector::Toggle::default().boxed_clone(),
                         )
                         .action(
                             t!("Extensions"),
-                            wu_actions::Extensions::default().boxed_clone(),
+                            zite_actions::Extensions::default().boxed_clone(),
                         )
                         .separator()
                         .action(
                             t!("Command Palette…"),
-                            wu_actions::command_palette::Toggle.boxed_clone(),
+                            zite_actions::command_palette::Toggle.boxed_clone(),
                         )
                 }))
             })
@@ -800,12 +800,12 @@ impl TitleBar {
                     .label_size(LabelSize::Small)
                     .color(Color::Muted)
                     .on_click(|_, window, cx| {
-                        window.dispatch_action(Box::new(wu_actions::OpenRecent::default()), cx)
+                        window.dispatch_action(Box::new(zite_actions::OpenRecent::default()), cx)
                     })
                     .tooltip(|_window, cx| {
                         Tooltip::for_action(
                             t!("More Open Projects"),
-                            &wu_actions::OpenRecent::default(),
+                            &zite_actions::OpenRecent::default(),
                             cx,
                         )
                     }),
@@ -869,7 +869,7 @@ impl TitleBar {
                 move |_window, cx| {
                     Tooltip::for_action(
                         t!("Recent Projects"),
-                        &wu_actions::OpenRecent::default(),
+                        &zite_actions::OpenRecent::default(),
                         cx,
                     )
                 },
@@ -975,7 +975,7 @@ impl TitleBar {
                     move |_window, cx| {
                         Tooltip::with_meta(
                             t!("Worktree"),
-                            Some(&wu_actions::git::Worktree),
+                            Some(&zite_actions::git::Worktree),
                             t!("Currently In Use: {worktree}", worktree = worktree_label),
                             cx,
                         )
@@ -1036,7 +1036,7 @@ impl TitleBar {
                         };
                         Tooltip::with_meta(
                             t!("Branch & Stash"),
-                            Some(&wu_actions::git::Branch),
+                            Some(&zite_actions::git::Branch),
                             meta,
                             cx,
                         )
@@ -1077,7 +1077,7 @@ mod tests {
     #[test]
     fn project_tab_names_use_folder_names() {
         let key = |paths: &[&str]| ProjectGroupKey::new(None, PathList::new(paths));
-        assert_eq!(project_group_name(&key(&["/code/wu"])), "wu");
+        assert_eq!(project_group_name(&key(&["/code/zite"])), "zite");
         assert_eq!(
             project_group_name(&key(&["/code/api", "/code/web"])),
             "api, web"

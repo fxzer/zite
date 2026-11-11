@@ -1019,7 +1019,7 @@ pub(crate) fn render_buffer_header(
                         .when_some(abs_path, |menu, abs_path| {
                             menu.entry(
                                 t!("Copy Path"),
-                                Some(Box::new(wu_actions::workspace::CopyPath)),
+                                Some(Box::new(zite_actions::workspace::CopyPath)),
                                 window.handler_for(&editor, move |_, _, cx| {
                                     cx.write_to_clipboard(ClipboardItem::new_string(
                                         abs_path.to_string_lossy().into_owned(),
@@ -1030,7 +1030,7 @@ pub(crate) fn render_buffer_header(
                         .when_some(relative_path, |menu, relative_path| {
                             menu.entry(
                                 t!("Copy Relative Path"),
-                                Some(Box::new(wu_actions::workspace::CopyRelativePath)),
+                                Some(Box::new(zite_actions::workspace::CopyRelativePath)),
                                 window.handler_for(&editor, move |_, _, cx| {
                                     cx.write_to_clipboard(ClipboardItem::new_string(
                                         relative_path.display(path_style).to_string(),

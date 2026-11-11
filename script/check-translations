@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Checks that every translated string and command has its Simplified Chinese text.
-# Usage: script/check-translations [--binary path/to/wu] [--strings-only]
+# Usage: script/check-translations [--binary path/to/zite] [--strings-only]
 
 set -euo pipefail
 
@@ -30,7 +30,7 @@ trap 'rm -f "$dump"' EXIT
 if [[ -n "$binary" ]]; then
     "$binary" --dump-all-actions > "$dump"
 else
-    cargo run --package wu --bin wu --quiet -- --dump-all-actions > "$dump"
+    cargo run --package zite --bin zite --quiet -- --dump-all-actions > "$dump"
 fi
 
-WU_ACTIONS_DUMP="$dump" cargo test --package i18n --quiet
+ZITE_ACTIONS_DUMP="$dump" cargo test --package i18n --quiet

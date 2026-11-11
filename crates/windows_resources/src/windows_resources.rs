@@ -38,14 +38,14 @@ fn product_version() -> String {
     format!("{pkg_version}+{metadata}")
 }
 
-const ICON_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../wu/resources/windows");
+const ICON_DIR: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../zite/resources/windows");
 const MANIFEST_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/resources/manifest.xml");
 
 pub fn compile(manifest: bool) -> Result<(), Box<dyn std::error::Error>> {
     let channel = option_env!("RELEASE_CHANNEL").unwrap_or("dev");
     let (icon_filename, product_name) = match channel {
-        "stable" => ("app-icon.ico", "Wu"),
-        _ => ("app-icon-dev.ico", "Wu Dev"),
+        "stable" => ("app-icon.ico", "Zite"),
+        _ => ("app-icon-dev.ico", "Zite Dev"),
     };
     let icon = std::path::PathBuf::from(ICON_DIR).join(icon_filename);
     let icon_escaped = icon.to_string_lossy().replace('\\', "\\\\");

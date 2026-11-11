@@ -131,7 +131,7 @@ impl AppCommand {
     /// Dispatched by name so this crate needn't depend on every panel crate.
     pub fn action_name(self) -> Option<&'static str> {
         match self {
-            AppCommand::Settings => Some("wu::OpenSettings"),
+            AppCommand::Settings => Some("zite::OpenSettings"),
             AppCommand::Diff => Some("git_panel::ToggleFocus"),
             AppCommand::Files => Some("project_panel::ToggleFocus"),
             AppCommand::Terminal => Some("terminal_panel::ToggleFocus"),
@@ -171,7 +171,7 @@ pub(crate) fn command_items(agent_commands: &[SlashCommand]) -> Vec<CommandItem>
     for command in AppCommand::ALL {
         let mut name = command.name().to_string();
         while items.iter().any(|item| item.name == name) {
-            name = format!("wu:{name}");
+            name = format!("zite:{name}");
         }
         items.push(CommandItem {
             name,
@@ -266,12 +266,12 @@ mod tests {
     }
 
     #[test]
-    fn wu_commands_step_aside_for_agent_commands() {
+    fn zite_commands_step_aside_for_agent_commands() {
         let items = command_items(&[agent("review"), agent("model")]);
         let names: Vec<&str> = items.iter().map(|item| item.name.as_str()).collect();
-        assert_eq!(&names[..3], ["review", "model", "wu:model"]);
+        assert_eq!(&names[..3], ["review", "model", "zite:model"]);
         assert_eq!(
-            app_command_for_text(" /wu:model ", &items),
+            app_command_for_text(" /zite:model ", &items),
             Some(AppCommand::Model)
         );
         assert_eq!(app_command_for_text("/model", &items), None);

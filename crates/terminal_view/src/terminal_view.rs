@@ -1089,8 +1089,8 @@ impl TerminalView {
     }
 }
 
-fn terminal_rerun_override(task: &TaskId) -> wu_actions::Rerun {
-    wu_actions::Rerun {
+fn terminal_rerun_override(task: &TaskId) -> zite_actions::Rerun {
+    zite_actions::Rerun {
         task_id: Some(task.0.clone()),
         allow_concurrent_runs: Some(true),
         use_new_terminal: Some(false),

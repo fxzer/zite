@@ -303,7 +303,7 @@ pub struct ExtensionIndexLanguageEntry {
 }
 
 actions!(
-    wu,
+    zite,
     [
         /// Reloads all installed extensions.
         ReloadExtensions

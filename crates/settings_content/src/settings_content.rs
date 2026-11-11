@@ -237,8 +237,8 @@ pub struct SettingsContent {
     /// Default: true
     pub auto_update: Option<bool>,
 
-    /// This base keymap settings adjusts the default keybindings in Wu to be similar
-    /// to other common code editors. By default, Wu's keymap closely follows VSCode's
+    /// This base keymap settings adjusts the default keybindings in Zite to be similar
+    /// to other common code editors. By default, Zite's keymap closely follows VSCode's
     /// keymap, with minor adjustments, this corresponds to the "VSCode" setting.
     ///
     /// Default: VSCode
@@ -293,20 +293,20 @@ pub struct SettingsContent {
     /// Default: off
     pub reduce_motion: Option<ReduceMotionMode>,
 
-    /// The URL of the Wu server to connect to.
+    /// The URL of the Zite server to connect to.
     pub server_url: Option<String>,
 
     /// The URL used as the key for credential storage.
     ///
     /// When set, credentials are stored under this URL instead of `server_url`.
-    /// This allows running multiple Wu instances side by side without them
+    /// This allows running multiple Zite instances side by side without them
     /// overwriting each other's keychain entries.
     pub credentials_url: Option<String>,
 
     /// Configuration for session-related features
     pub session: Option<SessionSettingsContent>,
 
-    /// Configuration of the terminal in Wu.
+    /// Configuration of the terminal in Zite.
     pub terminal: Option<TerminalSettingsContent>,
 
     pub title_bar: Option<TitleBarSettingsContent>,
@@ -428,7 +428,7 @@ pub enum ProfileBase {
     /// Apply profile settings on top of the user's current settings.
     #[default]
     User,
-    /// Apply profile settings on top of Wu's default settings, ignoring user customizations.
+    /// Apply profile settings on top of Zite's default settings, ignoring user customizations.
     Default,
 }
 
@@ -439,7 +439,7 @@ pub struct SettingsProfile {
     /// What base settings to start from before applying this profile's overrides.
     ///
     /// - `user`: Apply on top of user's settings (default)
-    /// - `default`: Apply on top of Wu's default settings, ignoring user customizations
+    /// - `default`: Apply on top of Zite's default settings, ignoring user customizations
     #[serde(default)]
     pub base: ProfileBase,
 
@@ -470,7 +470,7 @@ pub struct ExtensionsSettingsContent {
 
 /// Base key bindings scheme. Base keymaps can be overridden with user keymaps.
 ///
-/// Default: Wu
+/// Default: Zite
 #[derive(
     Copy,
     Clone,
@@ -499,7 +499,7 @@ pub enum BaseKeymapContent {
 
 impl strum::VariantNames for BaseKeymapContent {
     const VARIANTS: &'static [&'static str] = &[
-        "Wu",
+        "Zite",
         "VSCode",
         "JetBrains",
         "Sublime Text",
@@ -518,7 +518,7 @@ pub struct DebuggerSettingsContent {
     ///
     /// Default: line
     pub stepping_granularity: Option<SteppingGranularity>,
-    /// Whether the breakpoints should be reused across Wu sessions.
+    /// Whether the breakpoints should be reused across Zite sessions.
     ///
     /// Default: true
     pub save_breakpoints: Option<bool>,
@@ -530,7 +530,7 @@ pub struct DebuggerSettingsContent {
     ///
     /// Default: 2000ms
     pub timeout: Option<u64>,
-    /// Whether to log messages between active debug adapters and Wu
+    /// Whether to log messages between active debug adapters and Zite
     ///
     /// Default: true
     pub log_dap_communications: Option<bool>,
@@ -809,7 +809,7 @@ pub struct FileFinderSettingsContent {
     /// Default: true
     pub skip_focus_for_active_in_search: Option<bool>,
     /// Whether to use gitignored files when searching.
-    /// Only the file Wu had indexed will be used, not necessary all the gitignored files.
+    /// Only the file Zite had indexed will be used, not necessary all the gitignored files.
     ///
     /// Default: Smart
     pub include_ignored: Option<IncludeIgnoredContent>,
@@ -833,7 +833,7 @@ pub struct FileFinderSettingsContent {
 pub enum IncludeIgnoredContent {
     /// Use all gitignored files
     All,
-    /// Use only the files Wu had indexed
+    /// Use only the files Zite had indexed
     Indexed,
     /// Be smart and search for ignored when called from a gitignored worktree
     #[default]
@@ -1040,7 +1040,7 @@ pub struct MarkdownPreviewSettingsContent {
 #[with_fallible_options]
 #[derive(Clone, Debug, Serialize, Deserialize, JsonSchema, MergeFrom, Default, PartialEq)]
 pub struct AgentChatSettingsContent {
-    /// Show agent chats in Wu. When off, the agent panel, its commands and all agent work are
+    /// Show agent chats in Zite. When off, the agent panel, its commands and all agent work are
     /// hidden, and running agents stop.
     ///
     /// Default: true
@@ -1081,7 +1081,7 @@ pub struct AgentChatSettingsContent {
     ///
     /// Default: false
     pub notifications: Option<bool>,
-    /// Only notify when Wu is not the active app.
+    /// Only notify when Zite is not the active app.
     ///
     /// Default: true
     pub notify_only_in_background: Option<bool>,
@@ -1107,7 +1107,7 @@ pub struct AgentChatSettingsContent {
     ///
     /// Default: "queue"
     pub while_working: Option<AgentChatWhileWorking>,
-    /// Ask before quitting or restarting Wu while an agent is working, since that stops it.
+    /// Ask before quitting or restarting Zite while an agent is working, since that stops it.
     ///
     /// Default: true
     pub confirm_quit_while_working: Option<bool>,

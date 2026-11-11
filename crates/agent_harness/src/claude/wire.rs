@@ -230,7 +230,7 @@ pub(crate) fn unreadable_control_request_id(line: &str) -> Option<String> {
         .map(str::to_owned)
 }
 
-/// The error Claude answered one of Wu's own control requests with.
+/// The error Claude answered one of Zite's own control requests with.
 pub(crate) fn control_error(line: &str, request_id_prefix: &str) -> Option<String> {
     if !line.contains(request_id_prefix) {
         return None;
@@ -380,16 +380,16 @@ mod tests {
     use super::*;
 
     #[test]
-    fn control_errors_are_read_only_for_wu_requests() {
-        let rejected = r#"{"type":"control_response","response":{"subtype":"error","request_id":"wu-set-mode-1","error":"auto mode unavailable for this model"}}"#;
+    fn control_errors_are_read_only_for_zite_requests() {
+        let rejected = r#"{"type":"control_response","response":{"subtype":"error","request_id":"zite-set-mode-1","error":"auto mode unavailable for this model"}}"#;
         assert_eq!(
-            control_error(rejected, "wu-set-mode-").as_deref(),
+            control_error(rejected, "zite-set-mode-").as_deref(),
             Some("auto mode unavailable for this model")
         );
-        let accepted = r#"{"type":"control_response","response":{"subtype":"success","request_id":"wu-set-mode-1"}}"#;
-        assert_eq!(control_error(accepted, "wu-set-mode-"), None);
+        let accepted = r#"{"type":"control_response","response":{"subtype":"success","request_id":"zite-set-mode-1"}}"#;
+        assert_eq!(control_error(accepted, "zite-set-mode-"), None);
         let other = r#"{"type":"control_response","response":{"subtype":"error","request_id":"int_1","error":"x"}}"#;
-        assert_eq!(control_error(other, "wu-set-mode-"), None);
+        assert_eq!(control_error(other, "zite-set-mode-"), None);
     }
 
     #[test]

@@ -1,4 +1,4 @@
-use super::register_wu_scheme;
+use super::register_zite_scheme;
 use anyhow::Result;
 use gpui::{AppContext as _, AsyncApp, Context, PromptButton, PromptLevel, Window, actions};
 use i18n::t;
@@ -28,7 +28,6 @@ const CANT_INSTALL_DOCS_URL: &str =
 async fn install_script(cx: &AsyncApp) -> Result<Option<PathBuf>> {
     let cli_path = cx.update(|cx| cx.path_for_auxiliary_executable("cli"))?;
     let link_path = Path::new("/usr/local/bin/zite");
-    let legacy_link_path = Path::new("/usr/local/bin/zed-lite");
     let bin_dir_path = link_path.parent().unwrap();
 
     // Don't re-create symlink if it points to the same CLI binary.
@@ -39,12 +38,10 @@ async fn install_script(cx: &AsyncApp) -> Result<Option<PathBuf>> {
     // If the symlink is not there or is outdated, first try replacing it
     // without escalating.
     smol::fs::remove_file(link_path).await.log_err();
-    smol::fs::remove_file(legacy_link_path).await.log_err();
     let zite_symlinked = smol::fs::unix::symlink(&cli_path, link_path)
         .await
         .log_err()
         .is_some();
-    let _ = smol::fs::unix::symlink(&cli_path, legacy_link_path).await.log_err();
     if zite_symlinked {
         return Ok(Some(link_path.into()));
     }
@@ -57,14 +54,11 @@ async fn install_script(cx: &AsyncApp) -> Result<Option<PathBuf>> {
             &format!(
                 "do shell script \" \
                     mkdir -p \'{}\' && \
-                    ln -sf \'{}\' \'{}\' && \
                     ln -sf \'{}\' \'{}\' \
                 \" with administrator privileges",
                 bin_dir_path.to_string_lossy(),
                 cli_path.to_string_lossy(),
                 link_path.to_string_lossy(),
-                cli_path.to_string_lossy(),
-                legacy_link_path.to_string_lossy(),
             ),
         ])
         .output()
@@ -106,7 +100,7 @@ pub fn install_cli_binary(window: &mut Window, cx: &mut Context<Workspace>) {
             // The user dismissed the administrator prompt; nothing to do.
             Ok(None) => return Ok(()),
             Err(error) => {
-                log::error!("failed to install wu CLI: {error:#}");
+                log::error!("failed to install zite CLI: {error:#}");
                 workspace.update(cx, |workspace, cx| {
                     struct CliInstallFailed;
 
@@ -146,7 +140,7 @@ pub fn install_cli_binary(window: &mut Window, cx: &mut Context<Workspace>) {
                 cx,
             )
         })?;
-        register_wu_scheme(cx).await.log_err();
+        register_zite_scheme(cx).await.log_err();
         Ok(())
     })
     .detach_and_prompt_err(&t!("Cannot install the Zite CLI"), window, cx, |_, _, _| None);

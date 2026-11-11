@@ -152,21 +152,21 @@ def run_single_measurement(name, binary_path, project_path, settle_time=25):
 
 
 def main():
-    default_wu = Path("/Applications/Zite.app/Contents/MacOS/wu")
-    if not default_wu.exists():
-        default_wu = Path("/Applications/Zite.app/Contents/MacOS/wu")
+    default_zite = Path("/Applications/Zite.app/Contents/MacOS/zite")
+    if not default_zite.exists():
+        default_zite = Path("/Applications/Zite.app/Contents/MacOS/zite")
 
     parser = argparse.ArgumentParser(description="Normalized macOS Memory Benchmark for Zed vs Zite")
     parser.add_argument("--runs", type=int, default=3, help="Number of benchmark runs")
     parser.add_argument("--settle", type=int, default=20, help="Settle time in seconds per run")
     parser.add_argument("--project", type=Path, default=None, help="Project directory to open")
-    parser.add_argument("--wu", type=Path, default=default_wu)
+    parser.add_argument("--zite", type=Path, default=default_zite)
     parser.add_argument("--zed", type=Path, default=Path("/Applications/Zed.app/Contents/MacOS/zed"))
     parser.add_argument("--name1", type=str, default="Zite")
     parser.add_argument("--name2", type=str, default="Zed")
     args = parser.parse_args()
 
-    targets = [(args.name1, args.wu), (args.name2, args.zed)]
+    targets = [(args.name1, args.zite), (args.name2, args.zed)]
     for name, bin_path in targets:
         if not bin_path.exists() or not os.access(bin_path, os.X_OK):
             sys.exit(f"Binary not found or executable: {bin_path}")

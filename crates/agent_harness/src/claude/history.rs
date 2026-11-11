@@ -447,8 +447,8 @@ mod tests {
     #[test]
     fn project_folders_use_the_cli_naming() {
         assert_eq!(
-            project_dir(Path::new("/c"), Path::new("/Volumes/Main/dev/lab/wu")),
-            Path::new("/c/projects/-Volumes-Main-dev-lab-wu")
+            project_dir(Path::new("/c"), Path::new("/Volumes/Main/dev/lab/zite")),
+            Path::new("/c/projects/-Volumes-Main-dev-lab-zite")
         );
         assert_eq!(
             project_dir(Path::new("/c"), Path::new("/a/my.app_v2")),

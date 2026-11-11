@@ -33,7 +33,7 @@ fn play(sound: Sound, cx: &mut App) {
     let bytes = bytes.into_owned();
     cx.background_spawn(async move {
         let path = std::env::temp_dir().join(format!(
-            "wu-agent-sound-{}-{:?}.wav",
+            "zite-agent-sound-{}-{:?}.wav",
             std::process::id(),
             sound
         ));
@@ -62,9 +62,9 @@ async fn run_player(path: &std::path::Path) -> anyhow::Result<()> {
             "-NoProfile",
             "-NonInteractive",
             "-Command",
-            "(New-Object Media.SoundPlayer $env:WU_SOUND_PATH).PlaySync()",
+            "(New-Object Media.SoundPlayer $env:ZITE_SOUND_PATH).PlaySync()",
         ])
-        .env("WU_SOUND_PATH", path)
+        .env("ZITE_SOUND_PATH", path)
         .status()
         .await?;
     Ok(())
@@ -123,8 +123,8 @@ pub(crate) fn watch(store: &Entity<AgentStore>, cx: &mut App) {
         if !settings.enabled {
             return;
         }
-        let wu_active = cx.active_window().is_some();
-        if settings.notify_only_in_background && wu_active {
+        let zite_active = cx.active_window().is_some();
+        if settings.notify_only_in_background && zite_active {
             return;
         }
         let play_sound = match sound {

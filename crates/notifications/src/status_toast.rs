@@ -4,7 +4,7 @@ use gpui::{DismissEvent, Entity, EventEmitter, FocusHandle, Focusable, IntoEleme
 use i18n::t;
 use ui::{Tooltip, prelude::*};
 use workspace::{ToastAction, ToastView};
-use wu_actions::toast;
+use zite_actions::toast;
 
 #[derive(RegisterComponent)]
 pub struct StatusToast {

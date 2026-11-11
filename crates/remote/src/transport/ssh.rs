@@ -641,7 +641,7 @@ impl SshRemoteConnection {
         let destination = connection_options.ssh_destination();
 
         let temp_dir = tempfile::Builder::new()
-            .prefix("wu-ssh-session")
+            .prefix("zite-ssh-session")
             .tempdir()?;
 
         // On non-Windows, check if the user already has an active ControlMaster
@@ -842,7 +842,7 @@ impl SshRemoteConnection {
             _ => version.to_string(),
         };
         let binary_name = format!(
-            "wu-remote-server-{}-{}{}",
+            "zite-remote-server-{}-{}{}",
             release_channel.dev_name(),
             version_str,
             if self.ssh_platform.os.is_windows() {
@@ -2215,9 +2215,9 @@ mod tests {
         assert_eq!(
             sftp_put_command(
                 "/tmp/Zed Repro/remote_server",
-                ".wu_server/downloaded server",
+                ".zite_server/downloaded server",
             ),
-            "put \"/tmp/Zed Repro/remote_server\" \".wu_server/downloaded server\"\n"
+            "put \"/tmp/Zed Repro/remote_server\" \".zite_server/downloaded server\"\n"
         );
     }
 
@@ -2226,9 +2226,9 @@ mod tests {
         assert_eq!(
             sftp_put_command(
                 r#"/tmp/Zed "Nightly"/remote_server"#,
-                ".wu_server/remote_server",
+                ".zite_server/remote_server",
             ),
-            "put \"/tmp/Zed \\\"Nightly\\\"/remote_server\" \".wu_server/remote_server\"\n"
+            "put \"/tmp/Zed \\\"Nightly\\\"/remote_server\" \".zite_server/remote_server\"\n"
         );
     }
 
@@ -2245,9 +2245,9 @@ mod tests {
         assert_eq!(
             sftp_put_command(
                 r"/tmp/zed\server/remote_server",
-                ".wu_server/remote_server",
+                ".zite_server/remote_server",
             ),
-            "put \"/tmp/zed\\\\server/remote_server\" \".wu_server/remote_server\"\n"
+            "put \"/tmp/zed\\\\server/remote_server\" \".zite_server/remote_server\"\n"
         );
     }
 
@@ -2256,9 +2256,9 @@ mod tests {
         assert_eq!(
             sftp_put_command(
                 r"C:\Users\Smit\Zed Repro\remote_server",
-                ".wu_server/remote_server",
+                ".zite_server/remote_server",
             ),
-            "put \"C:\\\\Users\\\\Smit\\\\Zed Repro\\\\remote_server\" \".wu_server/remote_server\"\n"
+            "put \"C:\\\\Users\\\\Smit\\\\Zed Repro\\\\remote_server\" \".zite_server/remote_server\"\n"
         );
     }
 

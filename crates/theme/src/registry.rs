@@ -158,7 +158,7 @@ impl ThemeRegistry {
         }
     }
 
-    /// Inserts theme families that ship with Wu. Removing a user or extension theme with the same
+    /// Inserts theme families that ship with Zite. Removing a user or extension theme with the same
     /// name restores the bundled one.
     pub fn insert_bundled_theme_families(&self, families: impl IntoIterator<Item = ThemeFamily>) {
         let mut state = self.state.write();

@@ -27,7 +27,7 @@ use ui::{
 };
 use util::{ResultExt, paths::PathExt};
 use workspace::{DismissDecision, ModalView, Workspace};
-pub use wu_actions::{ShowIncomingCalls, ShowOutgoingCalls, ToggleDirection};
+pub use zite_actions::{ShowIncomingCalls, ShowOutgoingCalls, ToggleDirection};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum CallHierarchyMode {

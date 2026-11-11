@@ -1276,7 +1276,7 @@ async fn live_opencode_turn() {
     let mut run = request("Reply with the single word ok and nothing else.");
     run.cwd = project.path().to_string_lossy().into_owned();
     run.model = Some(
-        std::env::var("WU_OPENCODE_LIVE_MODEL").unwrap_or_else(|_| "opencode/big-pickle".into()),
+        std::env::var("ZITE_OPENCODE_LIVE_MODEL").unwrap_or_else(|_| "opencode/big-pickle".into()),
     );
     run.permission = PermissionMode::Ask;
     let mut stream = harness.run(run, controls).await.unwrap();
@@ -1312,11 +1312,11 @@ async fn live_ask_mode_asks_before_commands_and_subagents() {
     let project = tempfile::tempdir().unwrap();
     for (prompt, expected) in [
         (
-            "Use your bash tool to run exactly: echo wu-live . Do nothing else.",
-            "Run `echo wu-live",
+            "Use your bash tool to run exactly: echo zite-live . Do nothing else.",
+            "Run `echo zite-live",
         ),
         (
-            "Use the task tool to launch a general subagent that runs `echo wu-sub` with its bash tool. Do not run bash yourself.",
+            "Use the task tool to launch a general subagent that runs `echo zite-sub` with its bash tool. Do not run bash yourself.",
             "Start a general subagent?",
         ),
     ] {
@@ -1324,7 +1324,7 @@ async fn live_ask_mode_asks_before_commands_and_subagents() {
         let mut run = request(prompt);
         run.cwd = project.path().to_string_lossy().into_owned();
         run.model = Some(
-            std::env::var("WU_OPENCODE_LIVE_MODEL")
+            std::env::var("ZITE_OPENCODE_LIVE_MODEL")
                 .unwrap_or_else(|_| "opencode/big-pickle".into()),
         );
         run.permission = PermissionMode::Ask;

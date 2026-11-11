@@ -818,7 +818,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -952,7 +952,7 @@ dependencies = [
  "theme_settings",
  "ui",
  "util",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -1251,7 +1251,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -1789,7 +1789,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -2482,7 +2482,7 @@ dependencies = [
  "tempfile",
  "util",
  "uuid",
- "wu_env_vars",
+ "zite_env_vars",
 ]
 
 [[package]]
@@ -2569,7 +2569,7 @@ dependencies = [
  "unindent",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
  "zlog",
 ]
 
@@ -2661,7 +2661,7 @@ dependencies = [
  "unindent",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
  "zlog",
 ]
 
@@ -2912,7 +2912,7 @@ dependencies = [
  "util",
  "uuid",
  "workspace",
- "wu_actions",
+ "zite_actions",
  "zlog",
  "ztracing",
 ]
@@ -3404,7 +3404,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -3506,7 +3506,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
  "zlog",
 ]
 
@@ -4146,7 +4146,7 @@ dependencies = [
  "util",
  "watch",
  "workspace",
- "wu_actions",
+ "zite_actions",
  "zlog",
  "ztracing",
 ]
@@ -4189,8 +4189,8 @@ dependencies = [
  "util",
  "watch",
  "workspace",
- "wu_actions",
  "zeroize",
+ "zite_actions",
  "zlog",
  "ztracing",
 ]
@@ -5319,7 +5319,7 @@ dependencies = [
  "util",
  "util_macros",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -5682,7 +5682,7 @@ dependencies = [
  "ui_input",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -5927,7 +5927,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
  "zlog",
 ]
 
@@ -6498,7 +6498,7 @@ dependencies = [
  "urlencoding",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -6907,7 +6907,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -7415,7 +7415,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
  "zlog",
 ]
 
@@ -7579,7 +7579,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -7615,7 +7615,7 @@ dependencies = [
  "util",
  "workspace",
  "worktree",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -8301,7 +8301,7 @@ dependencies = [
  "ui_input",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -8410,7 +8410,7 @@ dependencies = [
  "ui",
  "windows 0.61.3",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -8825,7 +8825,7 @@ dependencies = [
  "walkdir",
  "workspace",
  "worktree",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -9412,7 +9412,7 @@ dependencies = [
  "windows-registry 0.6.1",
  "workspace",
  "worktree",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -10160,7 +10160,7 @@ dependencies = [
  "util",
  "util_macros",
  "workspace",
- "wu_actions",
+ "zite_actions",
  "ztracing",
 ]
 
@@ -10446,7 +10446,7 @@ dependencies = [
  "theme_settings",
  "ui",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -10483,7 +10483,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -11075,7 +11075,7 @@ dependencies = [
  "multi_buffer",
  "ui",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -11303,7 +11303,7 @@ dependencies = [
  "sha2",
  "shellexpand",
  "util",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -11331,7 +11331,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -11459,7 +11459,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -11557,7 +11557,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -11789,7 +11789,7 @@ dependencies = [
  "ui",
  "util",
  "workspace",
- "wu_actions",
+ "zite_actions",
 ]
 
 [[package]]
@@ -14850,7 +14850,7 @@ dependencies = [
  "url",
  "util",
  "uuid",
- "wu_actions",
+ "zite_actions",
  "zlog",
 ]
 
@@ -14918,163 +14918,6 @@ name = "writeable"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
-
-[[package]]
-name = "wu"
-version = "1.5.0"
-dependencies = [
- "activity_indicator",
- "anyhow",
- "ashpd",
- "askpass",
- "assets",
- "auto_update",
- "auto_update_ui",
- "breadcrumbs",
- "call_hierarchy",
- "chrono",
- "clap",
- "cli",
- "client",
- "clock",
- "cocoa",
- "collections",
- "command_palette",
- "component_preview",
- "dap_adapters",
- "db",
- "debug_adapter_extension",
- "debugger_tools",
- "debugger_ui",
- "diagnostics",
- "editor",
- "encoding_selector",
- "env_logger 0.11.8",
- "etw_tracing",
- "extension",
- "extension_host",
- "extensions_ui",
- "file_finder",
- "fs",
- "futures",
- "git",
- "git_hosting_providers",
- "git_ui",
- "git_ui_core",
- "go_to_line",
- "gpui",
- "gpui_platform",
- "gpui_tokio",
- "http_client",
- "i18n",
- "image",
- "image_viewer",
- "inspector_ui",
- "install_cli",
- "itertools 0.14.0",
- "json_schema_store",
- "keymap_editor",
- "language",
- "language_extension",
- "language_onboarding",
- "language_selector",
- "language_tools",
- "languages",
- "libc",
- "line_ending_selector",
- "log",
- "lsp_locations",
- "markdown",
- "markdown_preview",
- "menu",
- "mimalloc",
- "node_runtime",
- "notifications",
- "objc",
- "onboarding",
- "outline",
- "outline_panel",
- "parking_lot",
- "paths",
- "picker",
- "pkg-config",
- "pretty_assertions",
- "profiling",
- "project",
- "project_panel",
- "project_symbols",
- "proto",
- "rayon",
- "recent_projects",
- "release_channel",
- "remote",
- "remote_server",
- "reqwest_client",
- "rope",
- "search",
- "semver",
- "serde",
- "serde_json",
- "session",
- "settings",
- "settings_profile_selector",
- "settings_ui",
- "shellexpand",
- "smol",
- "snippet_provider",
- "snippets_ui",
- "spin 0.10.0",
- "svg_preview",
- "sysinfo",
- "system_specs",
- "tab_switcher",
- "tabular_data_preview",
- "tasks_ui",
- "tempfile",
- "terminal_view",
- "theme",
- "theme_extension",
- "theme_selector",
- "theme_settings",
- "time",
- "time_format",
- "title_bar",
- "toolchain_selector",
- "tracing",
- "ui",
- "ui_prompt",
- "url",
- "urlencoding",
- "util",
- "uuid",
- "watch",
- "windows 0.61.3",
- "windows_resources",
- "workspace",
- "wu_actions",
- "wu_env_vars",
- "zed-reqwest",
- "zlog",
- "zlog_settings",
- "ztracing",
-]
-
-[[package]]
-name = "wu_actions"
-version = "0.1.0"
-dependencies = [
- "gpui",
- "schemars",
- "serde",
- "util",
-]
-
-[[package]]
-name = "wu_env_vars"
-version = "0.1.0"
-dependencies = [
- "env_var",
-]
 
 [[package]]
 name = "x11-clipboard"
@@ -15601,6 +15444,163 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 3.0.3",
+]
+
+[[package]]
+name = "zite"
+version = "1.5.0"
+dependencies = [
+ "activity_indicator",
+ "anyhow",
+ "ashpd",
+ "askpass",
+ "assets",
+ "auto_update",
+ "auto_update_ui",
+ "breadcrumbs",
+ "call_hierarchy",
+ "chrono",
+ "clap",
+ "cli",
+ "client",
+ "clock",
+ "cocoa",
+ "collections",
+ "command_palette",
+ "component_preview",
+ "dap_adapters",
+ "db",
+ "debug_adapter_extension",
+ "debugger_tools",
+ "debugger_ui",
+ "diagnostics",
+ "editor",
+ "encoding_selector",
+ "env_logger 0.11.8",
+ "etw_tracing",
+ "extension",
+ "extension_host",
+ "extensions_ui",
+ "file_finder",
+ "fs",
+ "futures",
+ "git",
+ "git_hosting_providers",
+ "git_ui",
+ "git_ui_core",
+ "go_to_line",
+ "gpui",
+ "gpui_platform",
+ "gpui_tokio",
+ "http_client",
+ "i18n",
+ "image",
+ "image_viewer",
+ "inspector_ui",
+ "install_cli",
+ "itertools 0.14.0",
+ "json_schema_store",
+ "keymap_editor",
+ "language",
+ "language_extension",
+ "language_onboarding",
+ "language_selector",
+ "language_tools",
+ "languages",
+ "libc",
+ "line_ending_selector",
+ "log",
+ "lsp_locations",
+ "markdown",
+ "markdown_preview",
+ "menu",
+ "mimalloc",
+ "node_runtime",
+ "notifications",
+ "objc",
+ "onboarding",
+ "outline",
+ "outline_panel",
+ "parking_lot",
+ "paths",
+ "picker",
+ "pkg-config",
+ "pretty_assertions",
+ "profiling",
+ "project",
+ "project_panel",
+ "project_symbols",
+ "proto",
+ "rayon",
+ "recent_projects",
+ "release_channel",
+ "remote",
+ "remote_server",
+ "reqwest_client",
+ "rope",
+ "search",
+ "semver",
+ "serde",
+ "serde_json",
+ "session",
+ "settings",
+ "settings_profile_selector",
+ "settings_ui",
+ "shellexpand",
+ "smol",
+ "snippet_provider",
+ "snippets_ui",
+ "spin 0.10.0",
+ "svg_preview",
+ "sysinfo",
+ "system_specs",
+ "tab_switcher",
+ "tabular_data_preview",
+ "tasks_ui",
+ "tempfile",
+ "terminal_view",
+ "theme",
+ "theme_extension",
+ "theme_selector",
+ "theme_settings",
+ "time",
+ "time_format",
+ "title_bar",
+ "toolchain_selector",
+ "tracing",
+ "ui",
+ "ui_prompt",
+ "url",
+ "urlencoding",
+ "util",
+ "uuid",
+ "watch",
+ "windows 0.61.3",
+ "windows_resources",
+ "workspace",
+ "zed-reqwest",
+ "zite_actions",
+ "zite_env_vars",
+ "zlog",
+ "zlog_settings",
+ "ztracing",
+]
+
+[[package]]
+name = "zite_actions"
+version = "0.1.0"
+dependencies = [
+ "gpui",
+ "schemars",
+ "serde",
+ "util",
+]
+
+[[package]]
+name = "zite_env_vars"
+version = "0.1.0"
+dependencies = [
+ "env_var",
 ]
 
 [[package]]

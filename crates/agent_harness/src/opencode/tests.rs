@@ -967,7 +967,7 @@ async fn read_http_request_headers(socket: &mut tokio::net::TcpStream) {
 )]
 fn http_client_never_proxies_the_loopback_server() {
     const NAME: &str = "opencode::tests::http_client_never_proxies_the_loopback_server";
-    const CHILD: &str = "WU_OPENCODE_PROXY_PROBE";
+    const CHILD: &str = "ZITE_OPENCODE_PROXY_PROBE";
     if std::env::var_os(CHILD).is_none() {
         // reqwest reads the proxy from the environment, so the body runs in a child process.
         let output = std::process::Command::new(std::env::current_exe().unwrap())
@@ -1891,7 +1891,7 @@ fn wildcards_match_like_opencode() {
 }
 
 #[test]
-fn modes_decide_which_asks_wu_answers_itself() {
+fn modes_decide_which_asks_zite_answers_itself() {
     assert!(auto_approves(PermissionMode::FullAccess, "bash"));
     assert!(auto_approves(PermissionMode::AcceptEdits, "edit"));
     assert!(!auto_approves(PermissionMode::AcceptEdits, "bash"));
@@ -3024,7 +3024,7 @@ async fn spawned_server_gets_password_username_and_client() {
         std::env::var("OPENCODE_CONFIG_CONTENT").ok().as_deref(),
         "inherited config content passes through untouched"
     );
-    assert_eq!(probe["client"], "wu");
+    assert_eq!(probe["client"], "zite");
     assert_eq!(probe["username"], "opencode");
     let password = probe["password"].as_str().unwrap();
     assert_eq!(probe["legacy"], password);
@@ -3140,7 +3140,7 @@ async fn a_missing_project_folder_is_reported_as_such() {
     let harness = OpencodeHarness::new().with_base_url("http://127.0.0.1:9");
     let (_steer, steering) = mpsc::channel(4);
     let request: RunRequest = serde_json::from_value(
-        json!({"prompt": "hi", "cwd": "/definitely/not/a/wu/folder", "permission": "auto"}),
+        json!({"prompt": "hi", "cwd": "/definitely/not/a/zite/folder", "permission": "auto"}),
     )
     .unwrap();
     let error = harness
@@ -3158,7 +3158,7 @@ async fn a_missing_project_folder_is_reported_as_such() {
         .unwrap()
         .to_string();
     assert!(
-        error.contains("project folder not found: /definitely/not/a/wu/folder"),
+        error.contains("project folder not found: /definitely/not/a/zite/folder"),
         "{error}"
     );
 }

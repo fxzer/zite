@@ -9,7 +9,7 @@ mod updater;
 fn main() {
     i18n::set_language(i18n::Language::system());
     if let Err(e) = windows_impl::run() {
-        log::error!("Error: Wu update failed, {:?}", e);
+        log::error!("Error: Zite update failed, {:?}", e);
         windows_impl::show_error(i18n::t!("Error: {error}", error = format!("{e:?}")).to_string());
     }
 }
@@ -58,7 +58,7 @@ mod windows_impl {
             .context("No parent directory")?
             .to_path_buf();
 
-        log::info!("======= Starting Wu update =======");
+        log::info!("======= Starting Zite update =======");
         let (tx, rx) = std::sync::mpsc::channel();
         let hwnd = create_dialog_window(rx)?.0 as isize;
         let args = parse_args(std::env::args_os().skip(1));
@@ -124,7 +124,7 @@ mod windows_impl {
             MessageBoxW(
                 None,
                 &HSTRING::from(content),
-                &HSTRING::from(i18n::t!("Error: Wu update failed.").as_str()),
+                &HSTRING::from(i18n::t!("Error: Zite update failed.").as_str()),
                 MB_ICONERROR | MB_SYSTEMMODAL,
             )
         };
@@ -159,7 +159,7 @@ mod windows_impl {
         fn test_parse_args_preserves_launch_arguments() {
             let launch_arguments = vec![
                 OsString::from("--user-data-dir"),
-                OsString::from(r"C:\Wu Data"),
+                OsString::from(r"C:\Zite Data"),
             ];
             assert_eq!(
                 parse_args(launch_arguments.clone()).launch_arguments,

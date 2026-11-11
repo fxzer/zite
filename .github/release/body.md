@@ -1,1 +1,1 @@
-See [Readme](https://github.com/dstrml/wu#download) for installation instructions.
+See [Readme](https://github.com/fxzer/zite#download) for installation instructions.

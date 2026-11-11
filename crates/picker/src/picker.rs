@@ -19,7 +19,7 @@ use ui::{
 use ui_input::ErasedEditorEvent;
 use util::ResultExt;
 use workspace::ModalView;
-use wu_actions::editor::{MoveDown, MoveUp};
+use zite_actions::editor::{MoveDown, MoveUp};
 
 mod footer;
 mod head;

@@ -156,7 +156,7 @@ pub use workspace_settings::{
     FocusFollowsMouse, RestoreOnStartupBehavior, StatusBarSettings, TabBarSettings,
     WorkspaceSettings, closing_last_window_quits_app, observe_accessible_mode,
 };
-use wu_actions::{Spawn, theme::ToggleMode};
+use zite_actions::{Spawn, theme::ToggleMode};
 
 use crate::{dock::PanelSizeState, item::ItemBufferKind, notifications::NotificationId};
 use crate::{
@@ -8564,7 +8564,7 @@ pub async fn apply_restored_multiworkspace_state(
 }
 
 actions!(
-    wu,
+    zite,
     [
         /// Opens the Zite log file.
         OpenLog,
@@ -9509,7 +9509,7 @@ pub async fn restart_and_restore_workspaces(
     Ok(true)
 }
 
-/// Names work that closing Wu would stop, so quitting and restarting ask first.
+/// Names work that closing Zite would stop, so quitting and restarting ask first.
 pub struct QuitWarning(pub fn(&App) -> Option<String>);
 
 impl Global for QuitWarning {}
@@ -16608,7 +16608,7 @@ mod tests {
     async fn test_toggle_theme_mode_persists_and_updates_active_theme(cx: &mut TestAppContext) {
         use settings::{ThemeName, ThemeSelection};
         use theme::SystemAppearance;
-        use wu_actions::theme::ToggleMode;
+        use zite_actions::theme::ToggleMode;
 
         init_test(cx);
 

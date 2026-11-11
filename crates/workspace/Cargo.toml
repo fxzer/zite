@@ -69,7 +69,7 @@ ui_input.workspace = true
 url.workspace = true
 util.workspace = true
 uuid.workspace = true
-wu_actions.workspace = true
+zite_actions.workspace = true
 
 [dev-dependencies]
 client = { workspace = true, features = ["test-support"] }

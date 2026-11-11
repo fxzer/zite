@@ -1,4 +1,4 @@
-//! Paths to locations used by Zed-Lite.
+//! Paths to locations used by Zite.
 
 use anyhow::Context as _;
 use std::env;
@@ -54,16 +54,16 @@ static CUSTOM_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved data directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
-/// On macOS, this is `~/Library/Application Support/Zed-Lite`.
-/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/zed-lite`.
-/// On Windows, this is `%LOCALAPPDATA%\Zed-Lite`.
+/// On macOS, this is `~/Library/Application Support/Zite`.
+/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/zite`.
+/// On Windows, this is `%LOCALAPPDATA%\Zite`.
 static CURRENT_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved config directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
-/// On macOS, this is `~/.config/zed-lite`.
-/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/zed-lite`.
-/// On Windows, this is `%APPDATA%\Zed-Lite`.
+/// On macOS, this is `~/.config/zite`.
+/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/zite`.
+/// On Windows, this is `%APPDATA%\Zite`.
 static CONFIG_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// Returns the relative path to the remote server directory on the ssh host.
@@ -145,7 +145,7 @@ pub fn custom_data_dir_instance_hash() -> Option<u64> {
     Some(hash)
 }
 
-/// Returns the path to the configuration directory used by Zed-Lite.
+/// Returns the path to the configuration directory used by Zite.
 pub fn config_dir() -> &'static PathBuf {
     CONFIG_DIR.get_or_init(|| {
         if let Some(custom_dir) = CUSTOM_DATA_DIR.get() {
@@ -155,20 +155,11 @@ pub fn config_dir() -> &'static PathBuf {
                 .expect("failed to determine RoamingAppData directory")
                 .join(APP_NAME)
         } else if cfg!(any(target_os = "linux", target_os = "freebsd")) {
-            if let Ok(flatpak_xdg_config) = std::env::var("FLATPAK_XDG_CONFIG_HOME") {
-                flatpak_xdg_config.into()
-            } else {
-                dirs::config_dir().expect("failed to determine XDG_CONFIG_HOME directory")
-            }
-            .join(APP_NAME_LOWERCASE)
+            dirs::config_dir()
+                .expect("failed to determine XDG_CONFIG_HOME directory")
+                .join(APP_NAME_LOWERCASE)
         } else {
-            let primary = home_dir().join(".config").join(APP_NAME_LOWERCASE);
-            let legacy = home_dir().join(".config").join("zed-lite");
-            if !primary.exists() && legacy.exists() {
-                legacy
-            } else {
-                primary
-            }
+            home_dir().join(".config").join(APP_NAME_LOWERCASE)
         }
     })
 }
@@ -179,24 +170,13 @@ pub fn data_dir() -> &'static PathBuf {
         if let Some(custom_dir) = CUSTOM_DATA_DIR.get() {
             custom_dir.clone()
         } else if cfg!(target_os = "macos") {
-            let primary = home_dir()
+            home_dir()
                 .join("Library/Application Support")
-                .join(APP_NAME);
-            let legacy = home_dir()
-                .join("Library/Application Support")
-                .join("Zed-Lite");
-            if !primary.exists() && legacy.exists() {
-                legacy
-            } else {
-                primary
-            }
+                .join(APP_NAME)
         } else if cfg!(any(target_os = "linux", target_os = "freebsd")) {
-            if let Ok(flatpak_xdg_data) = std::env::var("FLATPAK_XDG_DATA_HOME") {
-                flatpak_xdg_data.into()
-            } else {
-                dirs::data_local_dir().expect("failed to determine XDG_DATA_HOME directory")
-            }
-            .join(APP_NAME_LOWERCASE)
+            dirs::data_local_dir()
+                .expect("failed to determine XDG_DATA_HOME directory")
+                .join(APP_NAME_LOWERCASE)
         } else if cfg!(target_os = "windows") {
             dirs::data_local_dir()
                 .expect("failed to determine LocalAppData directory")
@@ -211,22 +191,13 @@ pub fn state_dir() -> &'static PathBuf {
     static STATE_DIR: OnceLock<PathBuf> = OnceLock::new();
     STATE_DIR.get_or_init(|| {
         if cfg!(target_os = "macos") {
-            let primary = home_dir().join(".local").join("state").join(APP_NAME);
-            let legacy = home_dir().join(".local").join("state").join("Zed-Lite");
-            if !primary.exists() && legacy.exists() {
-                return legacy;
-            } else {
-                return primary;
-            }
+            return home_dir().join(".local").join("state").join(APP_NAME);
         }
 
         if cfg!(any(target_os = "linux", target_os = "freebsd")) {
-            return if let Ok(flatpak_xdg_state) = std::env::var("FLATPAK_XDG_STATE_HOME") {
-                flatpak_xdg_state.into()
-            } else {
-                dirs::state_dir().expect("failed to determine XDG_STATE_HOME directory")
-            }
-            .join(APP_NAME_LOWERCASE);
+            return dirs::state_dir()
+                .expect("failed to determine XDG_STATE_HOME directory")
+                .join(APP_NAME_LOWERCASE);
         } else {
             // Windows
             return dirs::data_local_dir()
@@ -236,7 +207,7 @@ pub fn state_dir() -> &'static PathBuf {
     })
 }
 
-/// Returns the path to the temp directory used by Zed-Lite.
+/// Returns the path to the temp directory used by Zite.
 pub fn temp_dir() -> &'static PathBuf {
     static TEMP_DIR: OnceLock<PathBuf> = OnceLock::new();
     TEMP_DIR.get_or_init(|| {
@@ -253,12 +224,9 @@ pub fn temp_dir() -> &'static PathBuf {
         }
 
         if cfg!(any(target_os = "linux", target_os = "freebsd")) {
-            return if let Ok(flatpak_xdg_cache) = std::env::var("FLATPAK_XDG_CACHE_HOME") {
-                flatpak_xdg_cache.into()
-            } else {
-                dirs::cache_dir().expect("failed to determine XDG_CACHE_HOME directory")
-            }
-            .join(APP_NAME_LOWERCASE);
+            return dirs::cache_dir()
+                .expect("failed to determine XDG_CACHE_HOME directory")
+                .join(APP_NAME_LOWERCASE);
         }
 
         home_dir().join(".cache").join(APP_NAME_LOWERCASE)
@@ -277,19 +245,19 @@ pub fn logs_dir() -> &'static PathBuf {
     })
 }
 
-/// Returns the path to the Zed-Lite server directory on this SSH host.
+/// Returns the path to the Zite server directory on this SSH host.
 pub fn remote_server_state_dir() -> &'static PathBuf {
     static REMOTE_SERVER_STATE: OnceLock<PathBuf> = OnceLock::new();
     REMOTE_SERVER_STATE.get_or_init(|| data_dir().join("server_state"))
 }
 
-/// Returns the path to the `Zed-Lite.log` file.
+/// Returns the path to the `Zite.log` file.
 pub fn log_file() -> &'static PathBuf {
     static LOG_FILE: OnceLock<PathBuf> = OnceLock::new();
     LOG_FILE.get_or_init(|| logs_dir().join(format!("{}.log", APP_NAME)))
 }
 
-/// Returns the path to the `Zed-Lite.log.old` file.
+/// Returns the path to the `Zite.log.old` file.
 pub fn old_log_file() -> &'static PathBuf {
     static OLD_LOG_FILE: OnceLock<PathBuf> = OnceLock::new();
     OLD_LOG_FILE.get_or_init(|| logs_dir().join(format!("{}.log.old", APP_NAME)))
@@ -360,7 +328,7 @@ pub fn debug_scenarios_file() -> &'static PathBuf {
 /// Returns the path to the user-global `AGENTS.md` file.
 ///
 /// This file holds personal agent instructions that apply to every project the
-/// user opens, and is loaded into the native Zed-Lite agent's system prompt.
+/// user opens, and is loaded into the native Zite agent's system prompt.
 pub fn agents_file() -> &'static PathBuf {
     static AGENTS_FILE: OnceLock<PathBuf> = OnceLock::new();
     AGENTS_FILE.get_or_init(|| config_dir().join("AGENTS.md"))
@@ -372,10 +340,9 @@ pub fn agents_file() -> &'static PathBuf {
 ///
 /// Windows doesn't recognize `~` as the home directory, so the env-var
 /// form (`%APPDATA%`) is used there instead. Note that this is the
-/// *typical* location: a user with `XDG_CONFIG_HOME` set or running in a
-/// Flatpak sandbox would see a different `agents_file()` at runtime than
-/// this displays. The display string trades that precision for
-/// readability in announcement copy.
+/// *typical* location: a user with `XDG_CONFIG_HOME` set would see a
+/// different `agents_file()` at runtime than this displays. The display
+/// string trades that precision for readability in announcement copy.
 #[cfg(target_os = "windows")]
 pub const GLOBAL_AGENTS_FILE_DISPLAY: &str =
     const_format::concatcp!("%APPDATA%\\", APP_NAME, "\\AGENTS.md");
@@ -478,7 +445,7 @@ pub fn embeddings_dir() -> &'static PathBuf {
 
 /// Returns the path to the languages directory.
 ///
-/// This is where language servers are downloaded to for languages built-in to Zed-Lite.
+/// This is where language servers are downloaded to for languages built-in to Zite.
 pub fn languages_dir() -> &'static PathBuf {
     static LANGUAGES_DIR: OnceLock<PathBuf> = OnceLock::new();
     LANGUAGES_DIR.get_or_init(|| data_dir().join("languages"))
@@ -486,7 +453,7 @@ pub fn languages_dir() -> &'static PathBuf {
 
 /// Returns the path to the debug adapters directory
 ///
-/// This is where debug adapters are downloaded to for DAPs that are built-in to Zed-Lite.
+/// This is where debug adapters are downloaded to for DAPs that are built-in to Zite.
 pub fn debug_adapters_dir() -> &'static PathBuf {
     static DEBUG_ADAPTERS_DIR: OnceLock<PathBuf> = OnceLock::new();
     DEBUG_ADAPTERS_DIR.get_or_init(|| data_dir().join("debug_adapters"))
@@ -523,29 +490,9 @@ pub fn local_settings_folder_name() -> &'static str {
     ".zite"
 }
 
-/// Returns the relative path to a `.zed-lite` folder within a project, used as a
-/// fallback when there is no `.zite` folder.
-pub fn legacy_local_settings_folder_name() -> &'static str {
-    ".zed-lite"
-}
-
 /// Returns the relative path to a `.vscode` folder within a project.
 pub fn local_vscode_folder_name() -> &'static str {
     ".vscode"
-}
-
-/// Picks the `.zite` config file over its legacy counterpart. The legacy file is
-/// only used when it exists and the `.zite` one does not.
-pub fn resolve_local_config_path<P: AsRef<RelPath>>(
-    path: P,
-    legacy_path: P,
-    exists: impl Fn(&RelPath) -> bool,
-) -> P {
-    if !exists(path.as_ref()) && exists(legacy_path.as_ref()) {
-        legacy_path
-    } else {
-        path
-    }
 }
 
 /// Returns the relative path to a `settings.json` file within a project.
@@ -555,26 +502,10 @@ pub fn local_settings_file_relative_path() -> &'static RelPath {
     *CACHED
 }
 
-/// Returns the relative path to a `.zed-lite/settings.json` file within a project, used as a
-/// fallback when there is no `.zite/settings.json`.
-pub fn legacy_local_settings_file_relative_path() -> &'static RelPath {
-    static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/settings.json").unwrap());
-    *CACHED
-}
-
 /// Returns the relative path to a `tasks.json` file within a project.
 pub fn local_tasks_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
         LazyLock::new(|| RelPath::from_unix_str(".zite/tasks.json").unwrap());
-    *CACHED
-}
-
-/// Returns the relative path to a `.zed-lite/tasks.json` file within a project, used as a
-/// fallback when there is no `.zite/tasks.json`.
-pub fn legacy_local_tasks_file_relative_path() -> &'static RelPath {
-    static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/tasks.json").unwrap());
     *CACHED
 }
 
@@ -598,14 +529,6 @@ pub fn task_file_name() -> &'static str {
 pub fn local_debug_file_relative_path() -> &'static RelPath {
     static CACHED: LazyLock<&'static RelPath> =
         LazyLock::new(|| RelPath::from_unix_str(".zite/debug.json").unwrap());
-    *CACHED
-}
-
-/// Returns the relative path to a `.zed-lite/debug.json` file within a project, used as a
-/// fallback when there is no `.zite/debug.json`.
-pub fn legacy_local_debug_file_relative_path() -> &'static RelPath {
-    static CACHED: LazyLock<&'static RelPath> =
-        LazyLock::new(|| RelPath::from_unix_str(".zed-lite/debug.json").unwrap());
     *CACHED
 }
 

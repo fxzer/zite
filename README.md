@@ -1,7 +1,7 @@
 <p align="center">English | <a href="README.zh-CN.md">中文</a></p>
 
 <div align="center">
-  <img src="crates/wu/resources/app-icon.png" alt="Zite" width="128">
+  <img src="crates/zite/resources/app-icon.png" alt="Zite" width="128">
   <h1>Zite</h1>
   <p>The ultra-fast, clean, and lightweight native code editor.</p>
   <p>Built on Zed's core architecture · Zero AI bloat · Pure editing experience</p>

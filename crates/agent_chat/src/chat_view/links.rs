@@ -10,7 +10,7 @@ use ui::{ContextMenu, prelude::*};
 use util::ResultExt as _;
 use workspace::{OpenOptions, OpenVisible};
 
-const FILE_SCHEME: &str = "wu-file:";
+const FILE_SCHEME: &str = "zite-file:";
 const RECHECK_MISSING: std::time::Duration = std::time::Duration::from_secs(5);
 
 pub(super) struct PathState {
@@ -370,7 +370,7 @@ mod tests {
             })
         );
         assert_eq!(
-            file_target("wu-file:/abs/a.rs:3:9", cwd),
+            file_target("zite-file:/abs/a.rs:3:9", cwd),
             Some(FileTarget {
                 path: "/abs/a.rs".into(),
                 line: Some(3)

@@ -44,7 +44,7 @@ use workspace::{
     AppState, MultiWorkspace, OpenOptions, OpenVisible, Workspace, WorkspaceSettings,
     client_side_decorations,
 };
-use wu_actions::{
+use zite_actions::{
     OpenProjectSettings, OpenSettings, OpenSettingsAt, OpenSettingsAtTarget, OpenSettingsPage,
 };
 
@@ -1612,7 +1612,7 @@ fn render_settings_item_link(
                 .tooltip(Tooltip::text(t!("Copy Link")))
                 .when_some(json_path, |this, path| {
                     this.on_click(cx.listener(move |this, _, _, cx| {
-                        let link = format!("wu://settings/{}", path);
+                        let link = format!("zite://settings/{}", path);
                         cx.write_to_clipboard(ClipboardItem::new_string(link));
                         this.last_copied_link_path = Some(path);
                         cx.notify();
@@ -3923,7 +3923,7 @@ impl SettingsWindow {
                 window.remove_window();
             }
             SettingsUiFile::Project((worktree_id, path)) => {
-                let settings_path = project_settings_file_path(*worktree_id, &path, cx);
+                let settings_path = project_settings_file_path(&path);
                 let app_state = workspace::AppState::global(cx);
 
                 let Some((workspace_window, worktree, corresponding_workspace)) = app_state
@@ -4380,7 +4380,7 @@ fn update_settings_file(
 ) -> Result<()> {
     match file {
         SettingsUiFile::Project((worktree_id, rel_path)) => {
-            let rel_path = project_settings_file_path(worktree_id, &rel_path, cx);
+            let rel_path = project_settings_file_path(&rel_path);
             let Some(settings_window) = window.root::<SettingsWindow>().flatten() else {
                 anyhow::bail!("No settings window found");
             };
@@ -4514,32 +4514,11 @@ impl ProjectSettingsUpdateQueue {
     }
 }
 
-/// Uses `.wu/settings.json`, falling back to an existing `.zed/settings.json`.
-fn project_settings_file_path(
-    worktree_id: WorktreeId,
-    project_dir: &RelPath,
-    cx: &App,
-) -> Arc<RelPath> {
-    let settings_path = project_dir.join(paths::local_settings_file_relative_path());
-    let legacy_settings_path = project_dir.join(paths::legacy_local_settings_file_relative_path());
-    let worktree = workspace::AppState::global(cx)
-        .workspace_store
-        .read(cx)
-        .workspaces()
-        .filter_map(|workspace| workspace.upgrade())
-        .find_map(|workspace| {
-            workspace
-                .read(cx)
-                .project()
-                .read(cx)
-                .worktree_for_id(worktree_id, cx)
-        });
-    paths::resolve_local_config_path(settings_path, legacy_settings_path, |candidate| {
-        worktree
-            .as_ref()
-            .is_some_and(|worktree| worktree.read(cx).entry_for_path(candidate).is_some())
-    })
-    .into()
+/// Returns the path of the project's `.zite/settings.json`.
+fn project_settings_file_path(project_dir: &RelPath) -> Arc<RelPath> {
+    project_dir
+        .join(paths::local_settings_file_relative_path())
+        .into()
 }
 
 fn update_project_setting_file(
@@ -6167,7 +6146,7 @@ mod translation_tests {
         "Sublime Text",
         "TextMate",
         "VSCode",
-        "Wu",
+        "Zite",
         "简体中文",
     ];
 

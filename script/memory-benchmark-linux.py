@@ -507,10 +507,10 @@ def main():
     parser.add_argument("--path", type=Path, default=os.getenv("OPEN_PATH"))
     parser.add_argument("--trust-project", action="store_true", help="Trust the supplied project in the isolated benchmark profiles")
     parser.add_argument("--output", type=Path)
-    parser.add_argument("--wu", type=Path, default=os.getenv("WU_BIN", str(Path.home() / ".local/wu.app/libexec/wu-editor")))
+    parser.add_argument("--zite", type=Path, default=os.getenv("ZITE_BIN", str(Path.home() / ".local/zite.app/libexec/zite-editor")))
     parser.add_argument("--zed", type=Path, default=os.getenv("ZED_BIN", str(Path.home() / ".local/zed.app/libexec/zed-editor")))
     parser.add_argument("--vscode", type=Path, default=os.getenv("VSCODE_BIN", str(Path.home() / ".local/vscode/code")))
-    parser.add_argument("--editors", nargs="+", choices=("Wu", "Zed", "VSCode"), default=["Wu", "Zed"])
+    parser.add_argument("--editors", nargs="+", choices=("Zite", "Zed", "VSCode"), default=["Zite", "Zed"])
     arguments = parser.parse_args()
     if arguments.runs < 1 or arguments.samples < 1 or arguments.settle < 0 or arguments.interval <= 0:
         parser.error("Runs/samples/interval must be positive; settle must be nonnegative")
@@ -519,7 +519,7 @@ def main():
     for executable in ("xdotool", "xwininfo"):
         if not shutil.which(executable):
             parser.error(f"Missing required command: {executable}")
-    available = {"Wu": arguments.wu, "Zed": arguments.zed, "VSCode": arguments.vscode}
+    available = {"Zite": arguments.zite, "Zed": arguments.zed, "VSCode": arguments.vscode}
     binaries = {name: available[name].resolve() for name in arguments.editors}
     for binary in binaries.values():
         if not binary.is_file() or not os.access(binary, os.X_OK):
@@ -531,7 +531,7 @@ def main():
             if not shutil.which(executable):
                 parser.error(f"Active workloads require {executable}")
     timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    output = (arguments.output or Path.home() / ".local/state/wu-memory-benchmark" / timestamp).resolve()
+    output = (arguments.output or Path.home() / ".local/state/zite-memory-benchmark" / timestamp).resolve()
     output.mkdir(parents=True, exist_ok=False)
     report = {
         "timestamp_utc": timestamp,
@@ -598,9 +598,9 @@ def main():
     print("\nMedian of run medians:")
     for name, summary in report["summary"].items():
         print(f"{name}: PSS {summary['Pss'] / 1024:.1f} MiB; RSS {summary['Rss'] / 1024:.1f} MiB")
-    if "Wu" in report["summary"] and "Zed" in report["summary"]:
-        difference = (1 - report["summary"]["Wu"]["Pss"] / report["summary"]["Zed"]["Pss"]) * 100
-        print(f"Wu PSS reduction relative to Zed: {difference:.1f}%")
+    if "Zite" in report["summary"] and "Zed" in report["summary"]:
+        difference = (1 - report["summary"]["Zite"]["Pss"] / report["summary"]["Zed"]["Pss"]) * 100
+        print(f"Zite PSS reduction relative to Zed: {difference:.1f}%")
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ use i18n::t;
 use std::ops::Range;
 use text::PointUtf16;
 use workspace::OpenInTerminal;
-use wu_actions::preview::{
+use zite_actions::preview::{
     markdown::OpenPreview as OpenMarkdownPreview, svg::OpenPreview as OpenSvgPreview,
 };
 
@@ -270,11 +270,11 @@ pub fn deploy_context_menu(
                 )
                 .action(
                     t!("Show Incoming Calls"),
-                    Box::new(wu_actions::ShowIncomingCalls),
+                    Box::new(zite_actions::ShowIncomingCalls),
                 )
                 .action(
                     t!("Show Outgoing Calls"),
-                    Box::new(wu_actions::ShowOutgoingCalls),
+                    Box::new(zite_actions::ShowOutgoingCalls),
                 )
                 .separator()
                 .action(t!("Rename Symbol"), Box::new(Rename))

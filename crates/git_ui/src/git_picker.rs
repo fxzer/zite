@@ -488,7 +488,7 @@ impl Render for GitPicker {
 
 pub fn open_branches(
     workspace: &mut Workspace,
-    _: &wu_actions::git::Branch,
+    _: &zite_actions::git::Branch,
     window: &mut Window,
     cx: &mut Context<Workspace>,
 ) {
@@ -497,7 +497,7 @@ pub fn open_branches(
 
 pub fn open_stash(
     workspace: &mut Workspace,
-    _: &wu_actions::git::ViewStash,
+    _: &zite_actions::git::ViewStash,
     window: &mut Window,
     cx: &mut Context<Workspace>,
 ) {
@@ -535,18 +535,18 @@ pub fn popover(
 }
 
 pub fn register(workspace: &mut Workspace) {
-    workspace.register_action(|workspace, _: &wu_actions::git::Branch, window, cx| {
+    workspace.register_action(|workspace, _: &zite_actions::git::Branch, window, cx| {
         open_with_tab(workspace, GitPickerTab::Branches, window, cx);
     });
-    workspace.register_action(|workspace, _: &wu_actions::git::Switch, window, cx| {
+    workspace.register_action(|workspace, _: &zite_actions::git::Switch, window, cx| {
         open_with_tab(workspace, GitPickerTab::Branches, window, cx);
     });
     workspace.register_action(
-        |workspace, _: &wu_actions::git::CheckoutBranch, window, cx| {
+        |workspace, _: &zite_actions::git::CheckoutBranch, window, cx| {
             open_with_tab(workspace, GitPickerTab::Branches, window, cx);
         },
     );
-    workspace.register_action(|workspace, _: &wu_actions::git::ViewStash, window, cx| {
+    workspace.register_action(|workspace, _: &zite_actions::git::ViewStash, window, cx| {
         open_with_tab(workspace, GitPickerTab::Stashes, window, cx);
     });
 }

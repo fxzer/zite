@@ -307,7 +307,7 @@ impl ExtensionCard {
                             move |_, cx| {
                                 Tooltip::simple(
                                     t!(
-                                        "v{version} is not compatible with this version of Wu.",
+                                        "v{version} is not compatible with this version of Zite.",
                                         version = version
                                     ),
                                     cx,

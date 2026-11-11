@@ -3,7 +3,7 @@
     "description": "将 Zite 命令行工具安装到系统 PATH。",
     "name": "安装命令行工具"
   },
-  "cli::RegisterWuScheme": {
+  "cli::RegisterZiteScheme": {
     "description": "注册 zite:// 链接的处理程序。",
     "name": "注册 zite:// 链接"
   }

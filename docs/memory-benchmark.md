@@ -1,11 +1,11 @@
-# Wu vs. Zed vs. VS Code: memory benchmarks
+# Zite vs. Zed vs. VS Code: memory benchmarks
 
-Wu used less settled process memory than Zed and VS Code in every measured stage of this comparison:
+Zite used less settled process memory than Zed and VS Code in every measured stage of this comparison:
 
-1. **Zed:** Wu used 9.0–10.0% less at idle and 6.7–58.2% less in the workspace workflow.
-2. **VS Code:** Wu used 48% less at idle and 14.5–38.6% less in the workspace workflow.
+1. **Zed:** Zite used 9.0–10.0% less at idle and 6.7–58.2% less in the workspace workflow.
+2. **VS Code:** Zite used 48% less at idle and 14.5–38.6% less in the workspace workflow.
 
-Tested using the official Linux ARM64 releases of [Wu 1.0.10](https://github.com/dstrml/wu/releases/tag/v1.0.10), [Zed 1.21.0](https://github.com/zed-industries/zed/releases/tag/v1.21.0), and [VS Code 1.139.1](https://code.visualstudio.com/updates/v1_139).
+Tested using the official Linux ARM64 releases of [Zite 1.0.10](https://github.com/fxzer/zite/releases/tag/v1.0.10), [Zed 1.21.0](https://github.com/zed-industries/zed/releases/tag/v1.21.0), and [VS Code 1.139.1](https://code.visualstudio.com/updates/v1_139).
 
 > These are software-rendered Linux VPS results. All editors ran real graphical interfaces through Xvfb and Mesa llvmpipe, which renders on the CPU. The numbers are not estimates of memory use on a hardware-GPU desktop.
 
@@ -15,16 +15,16 @@ All values are **MiB of total process-tree PSS**, where lower is better. Totals 
 
 ### Idle
 
-| Scenario | VS Code | Zed | Wu | Less than VS Code | Less than Zed |
+| Scenario | VS Code | Zed | Zite | Less than VS Code | Less than Zed |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Welcome window | 743.5 | 420.4 | 382.5 | 48.5% | 9.0% |
 | Repository open, no source file open | 725.2 | 423.7 | 381.2 | 47.4% | 10.0% |
 
 ### Workspace workflow
 
-A snapshot of Wu's source repository, with language servers disabled to measure editor operations separately.
+A snapshot of Zite's source repository, with language servers disabled to measure editor operations separately.
 
-| Stage | VS Code | Zed | Wu | Less than VS Code | Less than Zed |
+| Stage | VS Code | Zed | Zite | Less than VS Code | Less than Zed |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Open 20 source files | 826.2 | 554.3 | 516.9 | 37.4% | 6.7% |
 | Edit, save, and scroll | 797.6 | 557.2 | 518.8 | 35.0% | 6.9% |

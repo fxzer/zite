@@ -118,7 +118,7 @@ impl Editor {
                 let mut is_bracket_pair_end = false;
                 if !text.is_empty() {
                     let mut bracket_pair_matching_end = None;
-                    // `text` can be empty when a user is using IME (e.g. Chinese Wubi Simplified)
+                    // `text` can be empty when a user is using IME (e.g. Chinese Zitebi Simplified)
                     //  and they are removing the character that triggered IME popup.
                     for (pair, enabled) in scope.brackets() {
                         if !pair.close && !pair.surround {

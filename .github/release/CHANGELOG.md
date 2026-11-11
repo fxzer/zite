@@ -1,6 +1,6 @@
 # Changelog
 
-All notable user-facing changes to Wu are listed here, newest first.
+All notable user-facing changes to Zite are listed here, newest first.
 
 ## Unreleased
 
@@ -16,7 +16,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 
 ## 1.1.15 - 2026-10-31
 
-- Fixed Wu started from Raycast still getting Raycast's env in its shell.
+- Fixed Zite started from Raycast still getting Raycast's env in its shell.
 
 ## 1.1.14 - 2026-10-31
 
@@ -29,7 +29,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 ## 1.1.13 - 2026-10-28
 
 - Subagents running in the background can now be expanded and observed via the background task indicator.
-- On WSL2, Wu can now use the GPU when started with `WGPU_ALLOW_UNDERLYING_NONCOMPLIANT_ADAPTER=1`.
+- On WSL2, Zite can now use the GPU when started with `WGPU_ALLOW_UNDERLYING_NONCOMPLIANT_ADAPTER=1`.
 - In agent chat, SVG, BMP and TIFF files are now added as file references instead of being turned into PNG attachments.
 - Added syntax highlighting for XML and SVG files.
 
@@ -42,7 +42,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 ## 1.1.11 - 2026-10-26
 
 - You can now save important messages in agent chats for later.
-- Wu Dark has a new solid look with softer colors. Previous Wu Dark is now `Wu Dark Translucent`.
+- Zite Dark has a new solid look with softer colors. Previous Zite Dark is now `Zite Dark Translucent`.
 - Typing `@` in an agent chat now shows more relevant file suggestions.
 - Images in agent chats can now be downloaded.
 - Fixed Perso-Arabic script and other text with raised or lowered letters looking scrambled on macOS.
@@ -51,7 +51,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 
 ## 1.1.10 - 2026-10-24
 
-- Agent CLIs are now kept up to date by Wu.
+- Agent CLIs are now kept up to date by Zite.
 - Agent chats are now restored on restart.
 - Typing `@` in an agent chat now lists project's files right away.
 - Typing `$` in a Claude Code chat now lists skills instead of only listing them on `/`.
@@ -62,7 +62,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 ## 1.1.9 - 2026-10-24
 
 - Start a message with `!` in an agent chat to run it as a shell command.
-- Images can now be dragged onto Wu's dock icon and dropped into one of its windows on macOS.
+- Images can now be dragged onto Zite's dock icon and dropped into one of its windows on macOS.
 - Changing the permission mode now applies to the turn immediately instead of on the next message.
 - Fixed long permission prompts pushing the Allow and Deny buttons off screen.
 - Subagents and files referred in agent chats now open in a side pane instead of a new tab.
@@ -94,17 +94,17 @@ All notable user-facing changes to Wu are listed here, newest first.
 - Claude Code skills in the chat's / menu now have their own icon, so they're easy to tell apart from commands.
 - Added an Enable Agent Chat setting. Turn it off to hide the agent panel and everything agent-releated.
 - Added more configuration options for agent chats to Settings.
-- Wu now asks before quitting or restarting while an agent is working.
+- Zite now asks before quitting or restarting while an agent is working.
 - Added "Continue Saved Chat" to the new chat menu, which picks up a chat you started in a CLI.
 - Added settings to hide Claude Code, Codex or OpenCode from the new chat menu.
-- Desktop notifications for agent chats are now off by default. On macOS, turning them on opens system preferences to allow Wu's notifications.
+- Desktop notifications for agent chats are now off by default. On macOS, turning them on opens system preferences to allow Zite's notifications.
 - Removed Claude Code's settings and info commands like /model, /usage and /context from the chat's / menu.
 
 
 ## 1.1.4 - 2026-10-08
 
 - Made the time on agent chats in the sidebar easier to read.
-- Fixed error and warning popups in the editor being see-through and hard to read in Wu Dark.
+- Fixed error and warning popups in the editor being see-through and hard to read in Zite Dark.
 - Cleaned up the context menu options in the agent chat sidebar.
 - Forked chats now continue from a real copy of the agent's own session.
 - User messages in agent chats can now be selected and copied in part.
@@ -115,7 +115,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 - Support for Intel Macs.
 - Fixed subagent tabs not showing the working indicator while a background subagent was still running.
 - Hovering the running command or agent indicator under the chat box now shows what's running in a tooltip.
-- The title bar and status bar in Wu Dark now have the same tint as the panels.
+- The title bar and status bar in Zite Dark now have the same tint as the panels.
 - Fixed the working indicator in agent chats not coming back when the agent picks up again after a background process finishes.
 - Agent Chat now supports OpenCode.
 - The line number gutter is more compact.
@@ -124,22 +124,22 @@ All notable user-facing changes to Wu are listed here, newest first.
 - Activity bar icons now follow the UI font size by default.
 - Fixed the side panel jumping wider when you start resizing it.
 - Users can now choose permission modes from the model picker.
-- Improve Wu Light's interface colors.
+- Improve Zite Light's interface colors.
 
 ## 1.1.2 - 2026-10-05
 
 - Fixed images dropped onto an agent chat opening in a preview instead of being attached.
 - When an agent is waiting on a background command or subagent, the bar under the chat box shows what's running and for how long.
 - Search inside an open agent chat with the Find bar (Cmd-F, or Ctrl-F on Windows and Linux).
-- Fixed macOS asking Wu for access to Desktop, Documents and Photos when agent chat looked up the available models.
+- Fixed macOS asking Zite for access to Desktop, Documents and Photos when agent chat looked up the available models.
 - Fixed the tab and the split and zoom buttons flickering after clicking into a chat message and scrolling away from it.
 - Fixed empty thought blocks in agent chats.
 - Thoughts in agent chats stay collapsed until you open them.
-- Claude models now use their largest context window by default, and Wu picks up the available sizes from Claude Code.
+- Claude models now use their largest context window by default, and Zite picks up the available sizes from Claude Code.
 - Agent notifications now use the system's native notifications.
 - In the model picker, effort is set with a slider and context window show every choice as a button.
-- Fixed the dark bar that showed at the top of the file tree when scrolling in Wu themes.
-- The sidebar, activity bar and tab bar in Wu Light now have solid colors.
+- Fixed the dark bar that showed at the top of the file tree when scrolling in Zite themes.
+- The sidebar, activity bar and tab bar in Zite Light now have solid colors.
 - Fixed the context window and plan usage popups in agent chats staying open when clicking elsewhere.
 - Removed the options menu from the top of the agent chat sidebar.
 - Agent chats in the sidebar no longer repeat the project name on every row, so the list is shorter and easier to scan.
@@ -150,13 +150,13 @@ All notable user-facing changes to Wu are listed here, newest first.
 - `/compact` and other slash commands now work mid-conversation in Claude chats.
 - The chat shows "Compacting conversation…" while the agent compacts and the context ring updates right after.
 - Long agent chats scroll smoothly and typing in the chat box feels instant, since only the messages on screen are drawn.
-- Fixed a black bar at the top of the file tree when scrolling with the Wu themes.
-- Fixed text in the chat box being hard to read after switching between Wu Dark and Wu Light.
+- Fixed a black bar at the top of the file tree when scrolling with the Zite themes.
+- Fixed text in the chat box being hard to read after switching between Zite Dark and Zite Light.
 
 ## 1.1.0 - 2026-10-04
 
 - The activity bar's icon size is now configurable in settings and via the `activity_bar.icon_size` property.
-- New Wu Light and Wu Dark themes.
+- New Zite Light and Zite Dark themes.
 - Symbols is the new default icon theme.
 - Geist is the new interface font, and JetBrains Mono is the new code font.
 - Redesigned tabs.
@@ -164,7 +164,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 - Agent chats support slash commands, `@` file mentions and `$` skills, with a menu that completes them as you type.
 - Attach images to a message by pasting, dropping or using the paperclip button.
 - The chat sidebar has pins, custom sections, an archive, search and grouping by project. Chats can be forked, and side chats open next to the main one.
-- Wu can play a sound and show a notification when the agent finishes, needs your input or hits an error.
+- Zite can play a sound and show a notification when the agent finishes, needs your input or hits an error.
 - Voice dictation in the chat box, using a local speech model that downloads on first use.
 - New Agent Chat page in settings.
 - Idle windows on macOS stop redrawing until something changes, which saves power.
@@ -181,7 +181,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 
 ## 1.0.9 - 2026-09-20
 
-- Files copied in the project panel can now be pasted into another Wu window or into other apps.
+- Files copied in the project panel can now be pasted into another Zite window or into other apps.
 - Closing the last tab keeps the window open by default.
 - The project panel context menu has a Get Info item (Properties on Windows and Linux) that shows a file or folder's path, size, created and modified dates, and permissions.
 - Removed the bundled Ayu and Gruvbox themes.
@@ -197,7 +197,7 @@ All notable user-facing changes to Wu are listed here, newest first.
 
 ## 1.0.7 - 2026-09-11
 
-- Files that were deleted while Wu was closed reopen as strikethrough tabs with a "file not found" message instead of a blank editor.
+- Files that were deleted while Zite was closed reopen as strikethrough tabs with a "file not found" message instead of a blank editor.
 - Tabs show the file's icon before its name.
 - The project panel's Delete action moves files to the Trash, with a separate Delete Permanently option.
 - Activity bar icons match VS Code's, with more vertical spacing, and all left-dock panels share one width.

@@ -261,7 +261,7 @@ impl ClaudeHarness {
             shutdown_child(&mut child, self.kill_grace).await;
             return Err(HarnessError::Protocol("claude child has no stdio".into()));
         };
-        const PROBE_ID: &str = "wu-initialize-probe";
+        const PROBE_ID: &str = "zite-initialize-probe";
         let discovery = async {
             let request = serde_json::json!({
                 "type": "control_request",
@@ -309,7 +309,7 @@ impl ClaudeHarness {
     }
 }
 
-// Settings and info commands answer outside the chat, and Wu has its own controls for them.
+// Settings and info commands answer outside the chat, and Zite has its own controls for them.
 const HIDDEN_COMMANDS: &[&str] = &[
     "__remote-workflow",
     "add-dir",
@@ -1136,9 +1136,9 @@ type RequestInputFn = Box<
         + Sync,
 >;
 
-const SET_MODE_REQUEST_PREFIX: &str = "wu-set-mode-";
+const SET_MODE_REQUEST_PREFIX: &str = "zite-set-mode-";
 
-/// Claude refuses `bypassPermissions` unless launched in it, so it asks instead and Wu approves.
+/// Claude refuses `bypassPermissions` unless launched in it, so it asks instead and Zite approves.
 fn live_permission_mode_name(permission: PermissionMode, launched_bypass: bool) -> &'static str {
     match permission_mode_name(permission) {
         "bypassPermissions" if !launched_bypass => "default",

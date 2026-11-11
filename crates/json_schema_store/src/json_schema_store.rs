@@ -15,7 +15,7 @@ use util::{
     schemars::{AllowTrailingCommas, DefaultDenyUnknownFields},
 };
 
-const SCHEMA_URI_PREFIX: &str = "wu://schemas/";
+const SCHEMA_URI_PREFIX: &str = "zite://schemas/";
 
 const TSCONFIG_SCHEMA: &str = include_str!("schemas/tsconfig.json");
 const PACKAGE_JSON_SCHEMA: &str = include_str!("schemas/package.json");
@@ -469,10 +469,7 @@ pub fn all_schema_file_associations(
             "url": format!("{SCHEMA_URI_PREFIX}settings"),
         },
         {
-            "fileMatch": [
-                paths::local_settings_file_relative_path(),
-                paths::legacy_local_settings_file_relative_path()
-            ],
+            "fileMatch": [paths::local_settings_file_relative_path()],
             "url": format!("{SCHEMA_URI_PREFIX}project_settings"),
         },
         {
@@ -482,16 +479,14 @@ pub fn all_schema_file_associations(
         {
             "fileMatch": [
                 schema_file_match(paths::tasks_file()),
-                paths::local_tasks_file_relative_path(),
-                paths::legacy_local_tasks_file_relative_path()
+                paths::local_tasks_file_relative_path()
             ],
             "url": format!("{SCHEMA_URI_PREFIX}tasks"),
         },
         {
             "fileMatch": [
                 schema_file_match(paths::debug_scenarios_file()),
-                paths::local_debug_file_relative_path(),
-                paths::legacy_local_debug_file_relative_path()
+                paths::local_debug_file_relative_path()
             ],
             "url": format!("{SCHEMA_URI_PREFIX}debug_tasks"),
         },

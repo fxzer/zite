@@ -241,7 +241,7 @@ pub enum IconName {
     Unpin,
     UserCheck,
     Warning,
-    Wu,
+    Zite,
     WholeWord,
     XCircle,
 }

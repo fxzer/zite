@@ -8,7 +8,7 @@
 # with base = last synced point (UPSTREAM_VERSION), ours = HEAD, theirs = the
 # new tag. The result is committed with HEAD as its only parent.
 #
-# Files Wu removed on purpose stay removed: upstream edits to files that no
+# Files Zite removed on purpose stay removed: upstream edits to files that no
 # longer exist here, and additions under dropped paths, are discarded and
 # listed. Anything else that conflicts is committed with conflict markers so
 # it can be resolved on the branch.
@@ -23,8 +23,8 @@ target=${1:?usage: script/upstream-sync <zed-tag-or-sha>}
 UPSTREAM_URL=https://github.com/zed-industries/zed.git
 VERSION_FILE=script/UPSTREAM_VERSION
 
-# Upstream changes under these paths are discarded and Wu's files kept as they
-# are. Crates that Wu removed (present at the last synced point, absent in HEAD)
+# Upstream changes under these paths are discarded and Zite's files kept as they
+# are. Crates that Zite removed (present at the last synced point, absent in HEAD)
 # are dropped too, except the ones in REVIEW_PREFIXES.
 DROPPED_PREFIXES=(
   .agents/ .cloudflare/ .factory/ .github/ .wezel/ .zed/
@@ -34,11 +34,11 @@ DROPPED_PREFIXES=(
   livekit.yaml lychee.toml renovate.json REVIEWERS.conl
   GEMINI.md CONTRIBUTING.md CODE_OF_CONDUCT.md .mailmap .git-blame-ignore-revs
 )
-# crates/zed became crates/wu. Rename detection maps most edits across, but
-# files Wu rewrote fall through here and need a human to port or discard them.
+# crates/zed became crates/zite. Rename detection maps most edits across, but
+# files Zite rewrote fall through here and need a human to port or discard them.
 REVIEW_PREFIXES=(crates/zed/)
-# Always keep Wu's version of these.
-PINNED_FILES=(crates/wu/RELEASE_CHANNEL)
+# Always keep Zite's version of these.
+PINNED_FILES=(crates/zite/RELEASE_CHANNEL)
 
 git_version=$(git version | sed -E 's/git version ([0-9]+\.[0-9]+).*/\1/')
 if [[ "$(printf '%s\n2.38\n' "$git_version" | sort -V | head -1)" != "2.38" ]]; then

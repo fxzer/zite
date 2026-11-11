@@ -1,27 +1,27 @@
 #!/usr/bin/env sh
 set -eu
 
-# Uninstalls Wu that was installed using the install.sh script
+# Uninstalls Zite that was installed using the install.sh script
 
 check_remaining_installations() {
     platform="$(uname -s)"
     if [ "$platform" = "Darwin" ]; then
-        # Check for any Wu variants in /Applications
-        remaining=$(ls -d /Applications/Wu*.app 2>/dev/null | wc -l)
+        # Check for any Zite variants in /Applications
+        remaining=$(ls -d /Applications/Zite*.app 2>/dev/null | wc -l)
         [ "$remaining" -eq 0 ]
     else
-        # Check for any Wu variants in ~/.local
-        remaining=$(ls -d "$HOME/.local/wu"*.app 2>/dev/null | wc -l)
+        # Check for any Zite variants in ~/.local
+        remaining=$(ls -d "$HOME/.local/zite"*.app 2>/dev/null | wc -l)
         [ "$remaining" -eq 0 ]
     fi
 }
 
 prompt_remove_preferences() {
-    printf "Do you want to keep your Wu preferences? [Y/n] "
+    printf "Do you want to keep your Zite preferences? [Y/n] "
     read -r response
     case "$response" in
         [nN]|[nN][oO])
-            rm -rf "$HOME/.config/wu"
+            rm -rf "$HOME/.config/zite"
             echo "Preferences removed."
             ;;
         *)
@@ -45,7 +45,7 @@ main() {
 
     "$platform"
 
-    echo "Wu has been uninstalled"
+    echo "Zite has been uninstalled"
 }
 
 linux() {
@@ -58,53 +58,53 @@ linux() {
     db_suffix="stable"
     case "$channel" in
       stable)
-        appid="me.farshed.Wu"
+        appid="dev.zed.Zite"
         db_suffix="stable"
         ;;
       dev)
-        appid="me.farshed.Wu-Dev"
+        appid="dev.zed.Zite-Dev"
         db_suffix="dev"
         ;;
       *)
         echo "Unknown release channel: ${channel}. Using stable app ID."
-        appid="me.farshed.Wu"
+        appid="dev.zed.Zite"
         db_suffix="stable"
         ;;
     esac
 
     # Remove the app directory
-    rm -rf "$HOME/.local/wu$suffix.app"
+    rm -rf "$HOME/.local/zite$suffix.app"
 
     # Remove the binary symlink
-    rm -f "$HOME/.local/bin/wu"
+    rm -f "$HOME/.local/bin/zite"
 
     # Remove the .desktop file
     rm -f "$HOME/.local/share/applications/${appid}.desktop"
 
     # Remove the database directory for this channel
-    rm -rf "$HOME/.local/share/wu/db/0-$db_suffix"
+    rm -rf "$HOME/.local/share/zite/db/0-$db_suffix"
 
     # Remove socket file
-    rm -f "$HOME/.local/share/wu/wu-$db_suffix.sock"
+    rm -f "$HOME/.local/share/zite/zite-$db_suffix.sock"
 
-    # Remove the entire Wu directory if no installations remain
+    # Remove the entire Zite directory if no installations remain
     if check_remaining_installations; then
-        rm -rf "$HOME/.local/share/wu"
+        rm -rf "$HOME/.local/share/zite"
         prompt_remove_preferences
     fi
 
-    rm -rf "$HOME/.wu_server"
+    rm -rf "$HOME/.zite_server"
 }
 
 macos() {
-    app="Wu.app"
+    app="Zite.app"
     db_suffix="stable"
-    app_id="me.farshed.Wu"
+    app_id="dev.zed.Zite"
     case "$channel" in
       dev)
-        app="Wu Dev.app"
+        app="Zite Dev.app"
         db_suffix="dev"
-        app_id="me.farshed.Wu-Dev"
+        app_id="dev.zed.Zite-Dev"
         ;;
     esac
 
@@ -114,10 +114,10 @@ macos() {
     fi
 
     # Remove the binary symlink
-    rm -f "$HOME/.local/bin/wu"
+    rm -f "$HOME/.local/bin/zite"
 
     # Remove the database directory for this channel
-    rm -rf "$HOME/Library/Application Support/Wu/db/0-$db_suffix"
+    rm -rf "$HOME/Library/Application Support/Zite/db/0-$db_suffix"
 
     # Remove app-specific files and directories
     rm -rf "$HOME/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/$app_id.sfl"*
@@ -126,15 +126,15 @@ macos() {
     rm -rf "$HOME/Library/Preferences/$app_id.plist"
     rm -rf "$HOME/Library/Saved Application State/$app_id.savedState"
 
-    # Remove the entire Wu directory if no installations remain
+    # Remove the entire Zite directory if no installations remain
     if check_remaining_installations; then
-        rm -rf "$HOME/Library/Application Support/Wu"
-        rm -rf "$HOME/Library/Logs/Wu"
+        rm -rf "$HOME/Library/Application Support/Zite"
+        rm -rf "$HOME/Library/Logs/Zite"
 
         prompt_remove_preferences
     fi
 
-    rm -rf "$HOME/.wu_server"
+    rm -rf "$HOME/.zite_server"
 }
 
 main "$@"

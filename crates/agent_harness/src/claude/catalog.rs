@@ -365,7 +365,7 @@ pub(crate) fn model_argument(
             .or(saved_size.as_deref().filter(|size| offered(size)))
             .unwrap_or(&option.default_choice)
             .to_owned(),
-        // A model Wu knows to have a single size must not get a stale size from another model.
+        // A model Zite knows to have a single size must not get a stale size from another model.
         None if known.is_some() => return base.to_owned(),
         None => match choice.map(str::to_ascii_lowercase).or(saved_size) {
             Some(size) => size,

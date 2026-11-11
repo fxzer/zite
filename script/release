@@ -18,7 +18,7 @@ fi
 
 cd "$(dirname "$0")/.."
 
-manifest=crates/wu/Cargo.toml
+manifest=crates/zite/Cargo.toml
 changelog=.github/release/CHANGELOG.md
 tag="v$version"
 
@@ -80,7 +80,7 @@ mv "$changelog.tmp" "$changelog"
 sed "s/^version = \"$current\"/version = \"$version\"/" "$manifest" > "$manifest.tmp"
 mv "$manifest.tmp" "$manifest"
 
-cargo update --quiet --package wu --offline
+cargo update --quiet --package zite --offline
 
 echo "Release notes for $version:"
 script/changelog-section "$version" | sed 's/^/  /'
@@ -98,4 +98,4 @@ fi
 
 git push --quiet origin main
 git push --quiet origin "$tag"
-echo "Pushed. Watch the release at https://github.com/dstrml/wu/actions/workflows/release.yml"
+echo "Pushed. Watch the release at https://github.com/fxzer/zite/actions/workflows/release.yml"

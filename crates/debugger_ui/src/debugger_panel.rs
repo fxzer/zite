@@ -46,7 +46,7 @@ use workspace::{
     Item, Pane, Workspace,
     dock::{DockPosition, Panel, PanelEvent},
 };
-use wu_actions::debug_panel::ToggleFocus;
+use zite_actions::debug_panel::ToggleFocus;
 
 const DEBUG_PANEL_KEY: &str = "DebugPanel";
 
@@ -643,7 +643,7 @@ impl DebugPanel {
             IconButton::new("debug-edit-debug-json", IconName::Code)
                 .icon_size(IconSize::Small)
                 .on_click(|_, window, cx| {
-                    window.dispatch_action(wu_actions::OpenProjectDebugTasks.boxed_clone(), cx);
+                    window.dispatch_action(zite_actions::OpenProjectDebugTasks.boxed_clone(), cx);
                 })
                 .tooltip(Tooltip::text(t!("Edit debug.json")))
         };
@@ -1217,7 +1217,7 @@ impl DebugPanel {
                             .read(cx)
                             .project_path_for_absolute_path(path, cx)
                             .context(
-                                "Couldn't get project path for .zed-lite/debug.json in active worktree",
+                                "Couldn't get project path for .zite/debug.json in active worktree",
                             )
                     })??;
 
@@ -1810,7 +1810,7 @@ impl Render for DebugPanel {
                                 )
                                 .on_click(|_, window, cx| {
                                     window.dispatch_action(
-                                        wu_actions::OpenProjectDebugTasks.boxed_clone(),
+                                        zite_actions::OpenProjectDebugTasks.boxed_clone(),
                                         cx,
                                     );
                                 }),
@@ -1836,9 +1836,9 @@ impl Render for DebugPanel {
                             )
                             .on_click(|_, window, cx| {
                                 window.dispatch_action(
-                                    wu_actions::Extensions {
+                                    zite_actions::Extensions {
                                         category_filter: Some(
-                                            wu_actions::ExtensionCategoryFilter::DebugAdapters,
+                                            zite_actions::ExtensionCategoryFilter::DebugAdapters,
                                         ),
                                         id: None,
                                     }

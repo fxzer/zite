@@ -100,7 +100,7 @@ fn system_locale() -> Option<String> {
     sys_locale::get_locale()
 }
 
-// Wu sets its own `AppleLanguages`, which `sys_locale` would report back, so read the global one.
+// Zite sets its own `AppleLanguages`, which `sys_locale` would report back, so read the global one.
 #[cfg(target_os = "macos")]
 fn system_locale() -> Option<String> {
     use core_foundation::{
@@ -807,10 +807,10 @@ mod tests {
         documentation: Option<String>,
     }
 
-    /// Runs only with `WU_ACTIONS_DUMP` set to the output of `wu --dump-all-actions`.
+    /// Runs only with `ZITE_ACTIONS_DUMP` set to the output of `zite --dump-all-actions`.
     #[test]
     fn simplified_chinese_commands_are_complete() {
-        let Some(dump_path) = std::env::var_os("WU_ACTIONS_DUMP") else {
+        let Some(dump_path) = std::env::var_os("ZITE_ACTIONS_DUMP") else {
             return;
         };
         let dump = std::fs::read_to_string(&dump_path)

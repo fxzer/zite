@@ -25,7 +25,7 @@ use workspace::{
     item::{Item, ItemEvent},
     open_new, register_serializable_item, with_active_or_new_workspace,
 };
-use wu_actions::OpenOnboarding;
+use zite_actions::OpenOnboarding;
 
 mod base_keymap_picker;
 mod basics_page;
@@ -34,7 +34,7 @@ mod theme_preview;
 
 /// Imports settings from Visual Studio Code.
 #[derive(Copy, Clone, Debug, Default, PartialEq, Deserialize, JsonSchema, Action)]
-#[action(namespace = wu)]
+#[action(namespace = zite)]
 #[serde(deny_unknown_fields)]
 pub struct ImportVsCodeSettings {
     #[serde(default)]
@@ -43,7 +43,7 @@ pub struct ImportVsCodeSettings {
 
 /// Imports settings from Cursor editor.
 #[derive(Copy, Clone, Debug, Default, PartialEq, Deserialize, JsonSchema, Action)]
-#[action(namespace = wu)]
+#[action(namespace = zite)]
 #[serde(deny_unknown_fields)]
 pub struct ImportCursorSettings {
     #[serde(default)]
@@ -280,7 +280,7 @@ impl Render for Onboarding {
                                     .child(
                                         h_flex()
                                             .gap_4()
-                                            .child(img("images/wu_icon.png").size(rems(2.5)).flex_none())
+                                            .child(img("images/zite_icon.png").size(rems(2.5)).flex_none())
                                             .child(
                                                 v_flex()
                                                     .child(

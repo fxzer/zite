@@ -25,7 +25,7 @@ theme.workspace = true
 ui.workspace = true
 util.workspace = true
 workspace.workspace = true
-wu_actions.workspace = true
+zite_actions.workspace = true
 
 [dev-dependencies]
 editor = { workspace = true, features = ["test-support"] }

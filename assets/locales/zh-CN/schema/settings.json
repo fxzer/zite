@@ -874,7 +874,7 @@
   "Which diagnostic indicators to show in the scrollbar:\n\nDefault: all": "在滚动条中显示哪些诊断标记：\n\n默认值：all",
   "Which files containing diagnostic errors/warnings to mark in the project panel.\n\nDefault: all": "在项目面板中标记哪些包含诊断错误/警告的文件。\n\n默认值：all",
   "Which files containing diagnostic errors/warnings to mark in the tabs.\nThis setting can take the following three values:\n\nDefault: off": "在标签页中标记哪些包含诊断错误/警告的文件。此设置可以取以下三个值：\n\n默认值：off",
-  "Which fullscreen mode the `wu::ToggleFullScreen` action enters (macOS only).\n\nDefault: native": "`wu::ToggleFullScreen` 操作进入哪种全屏模式（仅限 macOS）。\n\n默认值：native",
+  "Which fullscreen mode the `zite::ToggleFullScreen` action enters (macOS only).\n\nDefault: native": "`zite::ToggleFullScreen` 操作进入哪种全屏模式（仅限 macOS）。\n\n默认值：native",
   "Which information to show in the branch picker.\n\nDefault: on": "在分支选择器中显示哪些信息。\n\n默认值：on",
   "Which installed extensions may be updated to a newer version.\n\nUpdates are only checked for when you open the Extensions page,\nnever in the background. Set an extension's id to `false` to keep\nits current version.": "哪些已安装的扩展可以更新到新版本。\n\n只有在打开扩展页面时才会检查更新，从不在后台检查。将某个扩展的 id 设为 `false` 可保留其当前版本。",
   "Which key sends a message from the chat box.\n\nDefault: \"enter\"": "在对话输入框中用哪个键发送消息。\n\n默认值：\"enter\"",

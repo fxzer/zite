@@ -38,7 +38,7 @@ use language::{
 
 use async_channel::{self, Sender};
 use parking_lot::Mutex;
-use paths::{legacy_local_settings_folder_name, local_settings_folder_name, local_vscode_folder_name};
+use paths::{local_settings_folder_name, local_vscode_folder_name};
 use postage::{
     barrier,
     prelude::{Sink as _, Stream as _},
@@ -6244,8 +6244,6 @@ impl BackgroundScanner {
         scannable
             || entry.path.file_name() == Some(DOT_GIT)
             || entry.path.file_name() == Some(local_settings_folder_name())
-            || entry.path.file_name() == Some(legacy_local_settings_folder_name())
-            || entry.path.file_name() == Some(".wu")
             || entry.path.file_name() == Some(local_vscode_folder_name())
             || state.scanned_dirs.contains(&entry.id) // If we've ever scanned it, keep scanning
             || state

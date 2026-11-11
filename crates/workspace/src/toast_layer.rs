@@ -8,7 +8,7 @@ use gpui::{
     Task,
 };
 use ui::{animation::DefaultAnimations, prelude::*};
-use wu_actions::toast;
+use zite_actions::toast;
 
 use crate::Workspace;
 

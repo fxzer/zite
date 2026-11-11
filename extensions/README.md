@@ -1,13 +1,13 @@
-# Wu Extensions
+# Zite Extensions
 
-This directory contains extensions that ship with the Wu repository and are maintained alongside it.
+This directory contains extensions that ship with the Zite repository and are maintained alongside it.
 
 ## Structure
 
-Wu includes support for a number of languages without requiring an extension. Those languages can be found under [`crates/languages/src`](../crates/languages/src).
+Zite includes support for a number of languages without requiring an extension. Those languages can be found under [`crates/languages/src`](../crates/languages/src).
 
-Support for other languages is done via extensions. The extensions in this directory use the same [zed_extension_api](https://docs.rs/zed_extension_api/latest/zed_extension_api/) as extensions from the Zed extension registry, which Wu can install, for providing [language servers](https://zed.dev/docs/extensions/languages#language-servers), [tree-sitter grammars](https://zed.dev/docs/extensions/languages#grammar) and [tree-sitter queries](https://zed.dev/docs/extensions/languages#tree-sitter-queries).
+Support for other languages is done via extensions. The extensions in this directory use the same [zed_extension_api](https://docs.rs/zed_extension_api/latest/zed_extension_api/) as extensions from the Zed extension registry, which Zite can install, for providing [language servers](https://zed.dev/docs/extensions/languages#language-servers), [tree-sitter grammars](https://zed.dev/docs/extensions/languages#grammar) and [tree-sitter queries](https://zed.dev/docs/extensions/languages#tree-sitter-queries).
 
 ## Dev Extensions
 
-See the docs for [Developing an Extension Locally](https://zed.dev/docs/extensions/developing-extensions#developing-an-extension-locally) for how to work with one of these extensions. The same steps apply in Wu.
+See the docs for [Developing an Extension Locally](https://zed.dev/docs/extensions/developing-extensions#developing-an-extension-locally) for how to work with one of these extensions. The same steps apply in Zite.

@@ -12,7 +12,7 @@ use paths::remote_servers_dir;
 use release_channel::ReleaseChannel;
 use semver::Version;
 use serde::{Deserialize, Serialize};
-use settings::{RegisterSetting, Settings, SettingsStore};
+use settings::{RegisterSetting, Settings};
 use sha2::{Digest, Sha256};
 use smol::fs::File;
 use smol::{
@@ -26,7 +26,6 @@ use std::{
         consts::{ARCH, OS},
     },
     ffi::OsStr,
-    ffi::OsString,
     path::{Path, PathBuf},
     sync::Arc,
     time::{Duration, SystemTime},
@@ -58,9 +57,9 @@ struct UpdateLock {
 impl UpdateLock {
     fn path() -> PathBuf {
         #[cfg(test)]
-        let file_name = format!("wu-auto-update-{}.lock", std::process::id());
+        let file_name = format!("zite-auto-update-{}.lock", std::process::id());
         #[cfg(not(test))]
-        let file_name = "wu-auto-update.lock".to_string();
+        let file_name = "zite-auto-update.lock".to_string();
         paths::temp_dir().join(file_name)
     }
 
@@ -75,7 +74,7 @@ impl UpdateLock {
         match file.try_lock() {
             Ok(()) => Ok(Self { _file: file }),
             Err(std::fs::TryLockError::WouldBlock) => {
-                anyhow::bail!("another Wu instance is already checking for updates")
+                anyhow::bail!("another Zite instance is already checking for updates")
             }
             Err(std::fs::TryLockError::Error(error)) => {
                 Err(error).with_context(|| format!("locking update lock at {path:?}"))
@@ -252,7 +251,7 @@ fn github_asset_name(asset: &str, os: &str, arch: &str) -> Result<String> {
         ("zed", "macos") => Ok(format!("Zite-{arch}.dmg")),
         ("zed", "linux") => Ok(format!("zite-linux-{arch}.tar.gz")),
         ("zed", "windows") => Ok(format!("Zite-{arch}.exe")),
-        ("wu-remote-server", _) => Ok(format!("zite-remote-server-{os}-{arch}.gz")),
+        ("zite-remote-server", _) => Ok(format!("zite-remote-server-{os}-{arch}.gz")),
         _ => anyhow::bail!("no release asset for {asset} on {os}"),
     }
 }
@@ -376,7 +375,7 @@ pub fn view_release_notes(_: &ViewReleaseNotes, cx: &mut App) -> Option<()> {
 }
 
 #[cfg(not(target_os = "windows"))]
-const INSTALLER_DIR_PREFIX: &str = "wu-auto-update";
+const INSTALLER_DIR_PREFIX: &str = "zite-auto-update";
 
 #[cfg(not(target_os = "windows"))]
 struct InstallerDir(tempfile::TempDir);
@@ -404,7 +403,7 @@ impl InstallerDir {
     async fn new() -> Result<Self> {
         let installer_dir = std::env::current_exe()?
             .parent()
-            .context("No parent dir for Wu.exe")?
+            .context("No parent dir for Zite.exe")?
             .join("updates");
         if smol::fs::metadata(&installer_dir).await.is_ok() {
             smol::fs::remove_dir_all(&installer_dir).await?;
@@ -553,7 +552,7 @@ impl AutoUpdater {
             &this,
             release_channel,
             version,
-            "wu-remote-server",
+            "zite-remote-server",
             os,
             arch,
             cx,
@@ -570,7 +569,7 @@ impl AutoUpdater {
 
         if smol::fs::metadata(&version_path).await.is_err() {
             log::info!(
-                "downloading wu-remote-server {os} {arch} version {}",
+                "downloading zite-remote-server {os} {arch} version {}",
                 release.version
             );
             set_status(&t!("Downloading remote server"), cx);
@@ -605,7 +604,7 @@ impl AutoUpdater {
         })?;
 
         let release =
-            Self::get_release_asset(&this, channel, version, "wu-remote-server", os, arch, cx)
+            Self::get_release_asset(&this, channel, version, "zite-remote-server", os, arch, cx)
                 .await?;
 
         Ok(Some(release.url))
@@ -1100,7 +1099,7 @@ async fn install_release_linux(
 ) -> Result<Option<PathBuf>> {
     let home_dir = PathBuf::from(env::var("HOME").context("no HOME env var set")?);
 
-    let extracted = temp_dir.path().join("wu");
+    let extracted = temp_dir.path().join("zite");
     fs::create_dir_all(&extracted)
         .await
         .context("failed to create directory into which to extract update")?;
@@ -1128,12 +1127,12 @@ async fn install_release_linux(
     } else {
         String::default()
     };
-    let app_folder_name = format!("wu{}.app", suffix);
+    let app_folder_name = format!("zite{}.app", suffix);
 
     let from = extracted.join(&app_folder_name);
     let mut to = home_dir.join(".local");
 
-    let expected_suffix = format!("{}/libexec/wu-editor", app_folder_name);
+    let expected_suffix = format!("{}/libexec/zite-editor", app_folder_name);
 
     if let Some(prefix) = running_app_path
         .to_str()
@@ -1151,7 +1150,7 @@ async fn install_release_linux(
 
     anyhow::ensure!(
         output.status.success(),
-        "failed to copy Wu update from {:?} to {:?}: {:?}",
+        "failed to copy Zite update from {:?} to {:?}: {:?}",
         from,
         to,
         String::from_utf8_lossy(&output.stderr)
@@ -1218,7 +1217,7 @@ async fn cleanup_stale_installer_dirs() {
 async fn cleanup_windows() -> Result<()> {
     let parent = std::env::current_exe()?
         .parent()
-        .context("No parent dir for Wu.exe")?
+        .context("No parent dir for Zite.exe")?
         .to_owned();
 
     // keep in sync with crates/auto_update_helper/src/updater.rs. `updates` and
@@ -1261,7 +1260,7 @@ async fn install_release_windows(downloaded_installer: &Path) -> Result<Option<P
     // deleting the old one, and launching the new binary.
     let helper_path = std::env::current_exe()?
         .parent()
-        .context("No parent dir for Wu.exe")?
+        .context("No parent dir for Zite.exe")?
         .join("tools")
         .join("auto_update_helper.exe");
     Ok(Some(helper_path))

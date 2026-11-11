@@ -18,7 +18,7 @@
 
 - [ ] I've reviewed my own diff for quality, security, and reliability
 - [ ] Unsafe blocks (if any) have justifying comments
-- [ ] The content follows Wu's existing UI conventions and the [icon guidelines](../blob/main/crates/icons/README.md)
+- [ ] The content follows Zite's existing UI conventions and the [icon guidelines](../blob/main/crates/icons/README.md)
 - [ ] User-facing changes have an entry under Unreleased in [.github/release/CHANGELOG.md](../blob/main/.github/release/CHANGELOG.md)
 - [ ] Tests cover the new/changed behavior
 - [ ] Performance impact has been considered and is acceptable

@@ -17,7 +17,7 @@ use crate::HarnessError;
 use crate::process::{Child, Command, Stdio};
 
 pub(super) const CALL_TIMEOUT: Duration = Duration::from_secs(60);
-pub(super) const STARTUP_TIMEOUT_ENV: &str = "WU_OPENCODE_STARTUP_TIMEOUT_SECS";
+pub(super) const STARTUP_TIMEOUT_ENV: &str = "ZITE_OPENCODE_STARTUP_TIMEOUT_SECS";
 const SERVER_USERNAME: &str = "opencode";
 const HEALTH_POLL: Duration = Duration::from_millis(150);
 const BUS_RECONNECT_DELAY: Duration = Duration::from_millis(250);
@@ -203,7 +203,7 @@ impl Server {
             .env("OPENCODE_PASSWORD", &password)
             .env("OPENCODE_SERVER_PASSWORD", &password)
             .env("OPENCODE_SERVER_USERNAME", SERVER_USERNAME)
-            .env("OPENCODE_CLIENT", "wu");
+            .env("OPENCODE_CLIENT", "zite");
         crate::compose_child_path(&mut command, executable);
         match cwd {
             Some(cwd) => command.current_dir(cwd),

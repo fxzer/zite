@@ -1702,7 +1702,7 @@ mod tests {
                 [
                     {
                         "unbind": {
-                            "ctrl-a": ["wu::Unbind", "test_keymap_file::StringAction"]
+                            "ctrl-a": ["zite::Unbind", "test_keymap_file::StringAction"]
                         }
                     }
                 ]
@@ -1717,7 +1717,7 @@ mod tests {
                 assert!(
                     error_message
                         .0
-                        .contains("can't use `\"wu::Unbind\"` as an unbind target.")
+                        .contains("can't use `\"zite::Unbind\"` as an unbind target.")
                 );
             }
             other => panic!("expected SomeFailedToLoad, got {other:?}"),
@@ -1814,14 +1814,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-a"),
-                action_name: "wu::SomeAction",
+                action_name: "zite::SomeAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -1832,14 +1832,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("\\ a"),
-                action_name: "wu::SomeAction",
+                action_name: "zite::SomeAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "wu::SomeAction"
+                        "\\ a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -1850,14 +1850,14 @@ mod tests {
             "[]",
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-a"),
-                action_name: "wu::SomeAction",
+                action_name: "zite::SomeAction",
                 context: None,
                 action_arguments: Some(""),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -1868,26 +1868,26 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "wu::SomeOtherAction",
+                action_name: "zite::SomeOtherAction",
                 context: None,
                 action_arguments: None,
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 },
                 {
                     "bindings": {
-                        "ctrl-b": "wu::SomeOtherAction"
+                        "ctrl-b": "zite::SomeOtherAction"
                     }
                 }
             ]"#
@@ -1898,27 +1898,27 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "wu::SomeOtherAction",
+                action_name: "zite::SomeOtherAction",
                 context: None,
                 action_arguments: Some(r#"{"foo": "bar"}"#),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 },
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "wu::SomeOtherAction",
+                            "zite::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1933,28 +1933,28 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
             .unindent(),
             KeybindUpdateOperation::add(KeybindUpdateTarget {
                 keystrokes: &parse_keystrokes("ctrl-b"),
-                action_name: "wu::SomeOtherAction",
+                action_name: "zite::SomeOtherAction",
                 context: Some("Zed > Editor && some_condition = true"),
                 action_arguments: Some(r#"{"foo": "bar"}"#),
             }),
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 },
                 {
                     "context": "Zed > Editor && some_condition = true",
                     "bindings": {
                         "ctrl-b": [
-                            "wu::SomeOtherAction",
+                            "zite::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -1969,7 +1969,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -1977,13 +1977,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "wu::SomeAction",
+                    action_name: "zite::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "wu::SomeOtherAction",
+                    action_name: "zite::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -1992,13 +1992,13 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 },
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "wu::SomeOtherAction",
+                            "zite::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -2007,7 +2007,7 @@ mod tests {
                 },
                 {
                     "unbind": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2020,7 +2020,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2028,13 +2028,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "wu::SomeAction",
+                    action_name: "zite::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "wu::SomeOtherAction",
+                    action_name: "zite::SomeOtherAction",
                     context: None,
                     action_arguments: None,
                 },
@@ -2043,12 +2043,12 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 },
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeOtherAction"
+                        "ctrl-a": "zite::SomeOtherAction"
                     }
                 }
             ]"#
@@ -2062,7 +2062,7 @@ mod tests {
                 {
                     "context": "SomeContext",
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2070,13 +2070,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "wu::SomeAction",
+                    action_name: "zite::SomeAction",
                     context: Some("SomeContext"),
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "wu::SomeOtherAction",
+                    action_name: "zite::SomeOtherAction",
                     context: Some("SomeContext"),
                     action_arguments: None,
                 },
@@ -2086,19 +2086,19 @@ mod tests {
                 {
                     "context": "SomeContext",
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 },
                 {
                     "context": "SomeContext",
                     "bindings": {
-                        "ctrl-b": "wu::SomeOtherAction"
+                        "ctrl-b": "zite::SomeOtherAction"
                     }
                 },
                 {
                     "context": "SomeContext",
                     "unbind": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2109,7 +2109,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "a": "wu::SomeAction"
+                        "a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2117,13 +2117,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("a"),
-                    action_name: "wu::SomeAction",
+                    action_name: "zite::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "wu::SomeOtherAction",
+                    action_name: "zite::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -2133,7 +2133,7 @@ mod tests {
                 {
                     "bindings": {
                         "ctrl-b": [
-                            "wu::SomeOtherAction",
+                            "zite::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -2148,7 +2148,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "wu::SomeAction"
+                        "\\ a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2156,13 +2156,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "wu::SomeAction",
+                    action_name: "zite::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ b"),
-                    action_name: "wu::SomeOtherAction",
+                    action_name: "zite::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -2172,7 +2172,7 @@ mod tests {
                 {
                     "bindings": {
                         "\\ b": [
-                            "wu::SomeOtherAction",
+                            "zite::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }
@@ -2187,7 +2187,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "wu::SomeAction"
+                        "\\ a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2195,13 +2195,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "wu::SomeAction",
+                    action_name: "zite::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("\\ a"),
-                    action_name: "wu::SomeAction",
+                    action_name: "zite::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
@@ -2210,7 +2210,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "\\ a": "wu::SomeAction"
+                        "\\ a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2221,7 +2221,7 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 }
             ]"#
@@ -2229,13 +2229,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "wu::SomeNonexistentAction",
+                    action_name: "zite::SomeNonexistentAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "wu::SomeOtherAction",
+                    action_name: "zite::SomeOtherAction",
                     context: None,
                     action_arguments: None,
                 },
@@ -2244,12 +2244,12 @@ mod tests {
             r#"[
                 {
                     "bindings": {
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                     }
                 },
                 {
                     "bindings": {
-                        "ctrl-b": "wu::SomeOtherAction"
+                        "ctrl-b": "zite::SomeOtherAction"
                     }
                 }
             ]"#
@@ -2261,7 +2261,7 @@ mod tests {
                 {
                     "bindings": {
                         // some comment
-                        "ctrl-a": "wu::SomeAction"
+                        "ctrl-a": "zite::SomeAction"
                         // some other comment
                     }
                 }
@@ -2270,13 +2270,13 @@ mod tests {
             KeybindUpdateOperation::Replace {
                 target: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-a"),
-                    action_name: "wu::SomeAction",
+                    action_name: "zite::SomeAction",
                     context: None,
                     action_arguments: None,
                 },
                 source: KeybindUpdateTarget {
                     keystrokes: &parse_keystrokes("ctrl-b"),
-                    action_name: "wu::SomeOtherAction",
+                    action_name: "zite::SomeOtherAction",
                     context: None,
                     action_arguments: Some(r#"{"foo": "bar"}"#),
                 },
@@ -2287,7 +2287,7 @@ mod tests {
                     "bindings": {
                         // some comment
                         "ctrl-b": [
-                            "wu::SomeOtherAction",
+                            "zite::SomeOtherAction",
                             {
                                 "foo": "bar"
                             }

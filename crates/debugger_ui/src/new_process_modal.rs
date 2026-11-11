@@ -835,7 +835,7 @@ pub(super) struct ConfigureMode {
 impl ConfigureMode {
     pub(super) fn new(window: &mut Window, cx: &mut App) -> Entity<Self> {
         let program = cx.new(|cx| {
-            InputField::new(window, cx, "ENV=Wu ~/bin/program --option")
+            InputField::new(window, cx, "ENV=Zite ~/bin/program --option")
                 .label(t!("Program"))
                 .tab_stop(true)
                 .tab_index(1)
@@ -1075,7 +1075,7 @@ impl DebugDelegate {
                     };
 
                     match path.components().next_back() {
-                        Some(".zed-lite") | Some(".wu") | Some(".zed") => {
+                        Some(".zite") | Some(".zed") => {
                             path.push(RelPath::from_unix_str("debug.json").unwrap());
                         }
                         Some(".vscode") => {
@@ -1177,8 +1177,7 @@ impl DebugDelegate {
                         directory_in_worktree: dir,
                         id_base: _,
                     } => {
-                        dir.ends_with(RelPath::from_unix_str(".zed-lite").unwrap())
-                            || dir.ends_with(RelPath::from_unix_str(".wu").unwrap())
+                        dir.ends_with(RelPath::from_unix_str(".zite").unwrap())
                             || dir.ends_with(RelPath::from_unix_str(".zed").unwrap())
                     }
                     _ => false,
@@ -1506,7 +1505,7 @@ impl PickerDelegate for DebugDelegate {
                     Button::new("edit-debug-json", t!("Edit debug.json")).on_click(cx.listener(
                         |_picker, _, window, cx| {
                             window.dispatch_action(
-                                wu_actions::OpenProjectDebugTasks.boxed_clone(),
+                                zite_actions::OpenProjectDebugTasks.boxed_clone(),
                                 cx,
                             );
                             cx.emit(DismissEvent);

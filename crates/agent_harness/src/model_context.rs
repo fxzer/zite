@@ -71,7 +71,7 @@ pub(crate) fn context(
     })
 }
 
-/// The files that shape opencode's discovery run, which boots in Wu's scratch folder.
+/// The files that shape opencode's discovery run, which boots in Zite's scratch folder.
 fn opencode_files(home: &Path) -> Vec<PathBuf> {
     let data = root("XDG_DATA_HOME", home.join(".local").join("share"));
     let config = root("XDG_CONFIG_HOME", home.join(".config")).join("opencode");

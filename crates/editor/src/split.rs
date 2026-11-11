@@ -41,7 +41,7 @@ use crate::{
     actions::{DisableBreakpoint, EditLogBreakpoint, EnableBreakpoint, ToggleBreakpoint},
     display_map::Companion,
 };
-use wu_actions::OpenSettingsAt;
+use zite_actions::OpenSettingsAt;
 
 pub(crate) fn patches_for_lhs_range(
     rhs_snapshot: &MultiBufferSnapshot,

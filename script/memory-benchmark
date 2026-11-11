@@ -10,7 +10,7 @@
 #
 # Usage: script/memory-benchmark
 #   RUNS=5 SETTLE_SECONDS=30 script/memory-benchmark   # override defaults
-#   WU_BIN=... ZED_BIN=... script/memory-benchmark     # override app paths
+#   ZITE_BIN=... ZED_BIN=... script/memory-benchmark     # override app paths
 #   Linux: script/memory-benchmark --help (PSS/RSS; requires an X11 display)
 
 set -euo pipefail
@@ -26,10 +26,10 @@ fi
 
 RUNS=${RUNS:-3}
 SETTLE_SECONDS=${SETTLE_SECONDS:-20}
-WU_BIN=${WU_BIN:-/Applications/Wu.app/Contents/MacOS/wu}
+ZITE_BIN=${ZITE_BIN:-/Applications/Zite.app/Contents/MacOS/zite}
 ZED_BIN=${ZED_BIN:-/Applications/Zed.app/Contents/MacOS/zed}
 
-for binary in "$WU_BIN" "$ZED_BIN"; do
+for binary in "$ZITE_BIN" "$ZED_BIN"; do
   if [[ ! -x "$binary" ]]; then
     echo "Not found or not executable: $binary" >&2
     exit 1
@@ -93,16 +93,16 @@ median() {
   }'
 }
 
-wu_samples=()
+zite_samples=()
 zed_samples=()
 for ((run = 1; run <= RUNS; run++)); do
-  echo "Run $run/$RUNS: Wu..." >&2
-  wu_samples+=("$(measure_once "$WU_BIN")")
+  echo "Run $run/$RUNS: Zite..." >&2
+  zite_samples+=("$(measure_once "$ZITE_BIN")")
   echo "Run $run/$RUNS: Zed..." >&2
   zed_samples+=("$(measure_once "$ZED_BIN")")
 done
 
-wu_median=$(median "${wu_samples[@]}")
+zite_median=$(median "${zite_samples[@]}")
 zed_median=$(median "${zed_samples[@]}")
 
 to_mb() {
@@ -111,15 +111,15 @@ to_mb() {
 
 echo
 echo "Samples (KB):"
-echo "  Wu:  ${wu_samples[*]}"
+echo "  Zite:  ${zite_samples[*]}"
 echo "  Zed: ${zed_samples[*]}"
 echo
 echo "Median base memory footprint:"
-echo "  Wu:  $(to_mb "$wu_median") MB"
+echo "  Zite:  $(to_mb "$zite_median") MB"
 echo "  Zed: $(to_mb "$zed_median") MB"
 
 if [[ "$zed_median" -gt 0 ]]; then
-  awk -v wu="$wu_median" -v zed="$zed_median" 'BEGIN {
-    printf "  Wu uses %.0f%% less memory than Zed\n", (1 - wu / zed) * 100
+  awk -v zite="$zite_median" -v zed="$zed_median" 'BEGIN {
+    printf "  Zite uses %.0f%% less memory than Zed\n", (1 - zite / zed) * 100
   }'
 fi

@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://wu.dstrml.org/sitemap.xml
