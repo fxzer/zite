@@ -11,10 +11,14 @@ workspace = true
 [lib]
 path = "src/notifications.rs"
 doctest = false
+test = false
 
 [features]
 test-support = [
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2
 
+=======
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef
     "gpui/test-support",
     "rpc/test-support",
 ]
@@ -33,12 +37,6 @@ ui.workspace = true
 util.workspace = true
 workspace.workspace = true
 zite_actions.workspace = true
-
-[dev-dependencies]
-client = { workspace = true, features = ["test-support"] }
-gpui = { workspace = true, features = ["test-support"] }
-rpc = { workspace = true, features = ["test-support"] }
-util = { workspace = true, features = ["test-support"] }
 
 [package.metadata.cargo-shear]
 ignored = ["component"]

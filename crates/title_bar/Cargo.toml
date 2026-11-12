@@ -40,6 +40,11 @@ db.workspace = true
 git_ui_core.workspace = true
 gpui.workspace = true
 icons.workspace = true
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2
+=======
+livekit_client.workspace = true
+path.workspace = true
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef
 project.workspace = true
 recent_projects.workspace = true
 remote.workspace = true
@@ -66,5 +71,6 @@ remote = { workspace = true, features = ["test-support"] }
 rpc = { workspace = true, features = ["test-support"] }
 semver.workspace = true
 settings = { workspace = true, features = ["test-support"] }
+theme_settings.workspace = true
 util = { workspace = true, features = ["test-support"] }
 workspace = { workspace = true, features = ["test-support"] }

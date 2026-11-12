@@ -9,7 +9,13 @@ license = "GPL-3.0-or-later"
 workspace = true
 
 [lib]
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite_env_vars/Cargo.toml
 path = "src/zite_env_vars.rs"
+=======
+path = "src/zed_env_vars.rs"
+test = false
+doctest = false
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed_env_vars/Cargo.toml
 
 [features]
 default = []

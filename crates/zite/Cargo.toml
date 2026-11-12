@@ -1,8 +1,13 @@
 [package]
 description = "The fast, native VSCode alternative."
 edition.workspace = true
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
 name = "zite"
 version = "1.6.0"
+=======
+name = "zed"
+version = "1.28.1"
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
 publish.workspace = true
 license = "GPL-3.0-or-later"
 default-run = "zite"
@@ -11,6 +16,7 @@ default-run = "zite"
 workspace = true
 
 [features]
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
 # mimalloc 预留堆 arena 会多吃约 40 MB 物理内存(空载 footprint 实测 136 MB → 96 MB),
 # 与本项目低内存目标冲突,默认关闭;需要分配吞吐时 `--features mimalloc` 手动开启。
 default = []
@@ -19,6 +25,8 @@ inspector = [
     "inspector_ui/inspector",
     "ui/derive_inspector_reflection",
 ]
+=======
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
 tracy = ["ztracing/tracy"]
 # LEAK_BACKTRACE=1 cargo run --features zed/track-project-leak --profile release-fast
 track-project-leak = ["gpui/leak-detection"]
@@ -38,6 +46,12 @@ visual-tests = [
     "gpui_platform/test-support",
     "dep:image",
     "dep:tempfile",
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
+=======
+    "dep:action_log",
+    "dep:agent_servers",
+    "dep:env_logger",
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
     "workspace/test-support",
     "project/test-support",
     "editor/test-support",
@@ -55,7 +69,11 @@ name = "zite"
 path = "src/main.rs"
 
 [[bin]]
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
 name = "zite_visual_test_runner"
+=======
+name = "zed-visual-test-runner"
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
 path = "src/visual_test_runner.rs"
 required-features = ["visual-tests"]
 
@@ -84,7 +102,7 @@ debugger_ui.workspace = true
 diagnostics.workspace = true
 editor.workspace = true
 encoding_selector.workspace = true
-env_logger.workspace = true
+env_logger = { workspace = true, optional = true }
 extension.workspace = true
 extension_host.workspace = true
 extensions_ui.workspace = true
@@ -103,9 +121,12 @@ gpui_platform = { workspace = true, features = [
     "x11",
 ] }
 gpui_tokio.workspace = true
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
 i18n.workspace = true
+=======
+hang_telemetry.workspace = true
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
 image = { workspace = true, optional = true }
-spin = "0.10.0"
 itertools.workspace = true
 rayon.workspace = true
 semver.workspace = true
@@ -127,6 +148,7 @@ language_tools.workspace = true
 languages = { workspace = true, features = ["load-grammars"] }
 libc.workspace = true
 line_ending_selector.workspace = true
+lsp_command_selector.workspace = true
 log.workspace = true
 lsp_locations.workspace = true
 markdown.workspace = true
@@ -149,7 +171,12 @@ proto.workspace = true
 recent_projects.workspace = true
 release_channel.workspace = true
 remote.workspace = true
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
 reqwest.workspace = true
+=======
+repl.workspace = true
+reqwest = { workspace = true, features = ["multipart"] }
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
 reqwest_client.workspace = true
 rope.workspace = true
 search.workspace = true
@@ -192,6 +219,7 @@ zlog_settings.workspace = true
 ztracing.workspace = true
 
 [target.'cfg(target_os = "macos")'.dependencies]
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
 cocoa.workspace = true
 objc.workspace = true
 
@@ -199,13 +227,26 @@ objc.workspace = true
 etw_tracing.workspace = true
 windows.workspace = true
 gpui = { workspace = true, features = ["windows-manifest"] }
+=======
+nix = { workspace = true, features = ["user"] }
 
-[build-dependencies]
-windows_resources = { path = "../windows_resources" }
+[target.'cfg(target_os = "windows")'.dependencies]
+etw_tracing.workspace = true
+windows = { workspace = true, features = ["Win32_System_Console", "Win32_System_Pipes"] }
+gpui = { workspace = true, features = ["profiler", "windows-manifest"] }
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
+
+[target.'cfg(target_os = "windows")'.build-dependencies]
+windows_resources.workspace = true
 
 [target.'cfg(any(target_os = "linux", target_os = "freebsd"))'.dependencies]
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
 gpui = { workspace = true, features = ["wayland", "x11"] }
 ashpd.workspace = true
+=======
+gpui = { workspace = true, features = ["profiler", "wayland", "x11"] }
+ashpd = { workspace = true, features = ["notification"] }
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
 image.workspace = true
 
 [target.'cfg(any(target_os = "linux", target_os = "freebsd"))'.build-dependencies]
@@ -218,6 +259,7 @@ pkg-config = "0.3.22"
 [dev-dependencies]
 activity_indicator = { workspace = true, features = ["test-support"] }
 editor = { workspace = true, features = ["test-support"] }
+env_logger.workspace = true
 fs = { workspace = true, features = ["test-support"] }
 gpui = { workspace = true, features = ["test-support"] }
 image_viewer = { workspace = true, features = ["test-support"] }
@@ -237,6 +279,7 @@ search = { workspace = true, features = ["test-support"] }
 
 [package.metadata.bundle-dev]
 icon = ["resources/app-icon-dev@2x.png", "resources/app-icon-dev.png"]
+<<<<<<< e3e073dad02b44f8751c5b4ef6759a2318bb76b2:crates/zite/Cargo.toml
 identifier = "dev.zed.Zite-Dev"
 name = "Zite Dev"
 osx_minimum_system_version = "10.15.7"
@@ -248,6 +291,39 @@ icon = ["resources/app-icon@2x.png", "resources/app-icon.png"]
 identifier = "dev.zed.Zite"
 name = "Zite"
 osx_minimum_system_version = "10.15.7"
+=======
+identifier = "dev.zed.Zed-Dev"
+name = "Zed Dev"
+category = "Developer Tool"
+osx_minimum_system_version = "12.0"
+osx_info_plist_exts = ["resources/info/*"]
+osx_url_schemes = ["zed"]
+
+[package.metadata.bundle-nightly]
+icon = ["resources/app-icon-nightly@2x.png", "resources/app-icon-nightly.png"]
+identifier = "dev.zed.Zed-Nightly"
+name = "Zed Nightly"
+category = "Developer Tool"
+osx_minimum_system_version = "12.0"
+osx_info_plist_exts = ["resources/info/*"]
+osx_url_schemes = ["zed"]
+
+[package.metadata.bundle-preview]
+icon = ["resources/app-icon-preview@2x.png", "resources/app-icon-preview.png"]
+identifier = "dev.zed.Zed-Preview"
+name = "Zed Preview"
+category = "Developer Tool"
+osx_minimum_system_version = "12.0"
+osx_info_plist_exts = ["resources/info/*"]
+osx_url_schemes = ["zed"]
+
+[package.metadata.bundle-stable]
+icon = ["resources/app-icon@2x.png", "resources/app-icon.png"]
+identifier = "dev.zed.Zed"
+name = "Zed"
+category = "Developer Tool"
+osx_minimum_system_version = "12.0"
+>>>>>>> a35471982d8acd6ebe16871b9e9b626ab8c781ef:crates/zed/Cargo.toml
 osx_info_plist_exts = ["resources/info/*"]
 osx_url_schemes = ["zite"]
 
