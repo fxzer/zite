@@ -1956,7 +1956,7 @@ pub(crate) fn highlights_for_path(
     )
 }
 
-pub fn switch_to_project_group(key: ProjectGroupKey, window: &mut Window, cx: &mut App) {
+fn switch_to_project_group(key: ProjectGroupKey, window: &mut Window, cx: &mut App) {
     let Some(handle) = window.window_handle().downcast::<MultiWorkspace>() else {
         return;
     };
