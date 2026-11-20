@@ -96,6 +96,7 @@ cargo build ${build_flag} --package zite --package cli --target $target_triple
 cargo build ${build_flag} --package remote_server --target $target_triple
 
 echo "Creating application bundle"
+export CARGO_BUNDLE_SKIP_BUILD=true
 pushd crates/zite
 cp Cargo.toml Cargo.toml.backup
 sed \
@@ -168,7 +169,9 @@ function download_and_unpack() {
         exit 1
     fi
 
-    curl --silent --fail --location "$url" | tar -xvz -C "$temp_dir" -f - $path_to_unpack
+    local archive="${temp_dir}/archive.tar.gz"
+    curl --retry 3 --connect-timeout 15 --fail --location "$url" -o "$archive"
+    tar -xvz -C "$temp_dir" -f "$archive" "$path_to_unpack"
 
     mv "$temp_dir/$path_to_unpack" "$target_path"
 
@@ -178,6 +181,25 @@ function download_and_unpack() {
 function download_git() {
     local architecture=$1
     local target_binary=$2
+
+    local cache_dir="${HOME}/.cache/zite-build"
+    mkdir -p "${cache_dir}"
+    local cached_git="${cache_dir}/git-${GIT_VERSION}-${GIT_VERSION_SHA}-${architecture}"
+
+    if [[ -f "${cached_git}" ]]; then
+        echo "Using cached git binary from ${cached_git}"
+        cp "${cached_git}" "${target_binary}"
+        chmod +x "${target_binary}"
+        return
+    fi
+
+    if [[ -f "/Applications/Zite.app/Contents/MacOS/git" ]]; then
+        echo "Reusing git binary from existing /Applications/Zite.app"
+        cp "/Applications/Zite.app/Contents/MacOS/git" "${cached_git}"
+        cp "${cached_git}" "${target_binary}"
+        chmod +x "${target_binary}"
+        return
+    fi
 
     tmp_dir=$(mktemp -d)
     pushd "$tmp_dir"
@@ -197,7 +219,9 @@ function download_git() {
 
     popd
 
-    mv "${tmp_dir}/git" "${target_binary}"
+    mv "${tmp_dir}/git" "${cached_git}"
+    cp "${cached_git}" "${target_binary}"
+    chmod +x "${target_binary}"
     rm -rf "$tmp_dir"
 }
 
@@ -256,6 +280,8 @@ function sign_app_binaries() {
             echo "Opening /Applications/$bundle_name"
             open "/Applications/$bundle_name"
         fi
+        echo "Local installation complete - skipping DMG creation"
+        return
     elif [ "$open_result" = true ]; then
         open "$app_path"
     fi
