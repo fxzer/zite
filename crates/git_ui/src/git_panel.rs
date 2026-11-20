@@ -92,7 +92,7 @@ use util::rel_path::RelPath;
 use util::{ResultExt, TryFutureExt, markdown::MarkdownInlineCode, maybe};
 use workspace::SERIALIZATION_THROTTLE_TIME;
 use workspace::{
-    Item, ModalView, Workspace,
+    DraggedSelection, Item, ModalView, SelectedEntry, Workspace,
     dock::{DockPosition, Panel, PanelEvent},
     notifications::{DetachAndPromptErr, NotificationId, NotifyTaskExt},
 };
@@ -298,6 +298,41 @@ impl Render for StashMessageModal {
                     .child(Headline::new(self.kind.title()).size(HeadlineSize::XSmall)),
             )
             .child(div().px_3().pb_3().w_full().child(self.editor.clone()))
+    }
+}
+
+struct DraggedGitEntryView {
+    icon: Option<SharedString>,
+    filename: SharedString,
+    entry_count: usize,
+    click_offset: Point<Pixels>,
+}
+
+impl Render for DraggedGitEntryView {
+    fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let ui_font = ThemeSettings::get_global(cx).ui_font.clone();
+        h_flex()
+            .font(ui_font)
+            .pl(self.click_offset.x + px(12.))
+            .pt(self.click_offset.y + px(12.))
+            .child(
+                h_flex()
+                    .gap_1()
+                    .py_1()
+                    .px_2()
+                    .rounded_lg()
+                    .bg(cx.theme().colors().background)
+                    .map(|this| {
+                        if self.entry_count > 1 {
+                            this.child(Label::new(format!("{} entries", self.entry_count)))
+                        } else {
+                            this.when_some(self.icon.clone(), |this, icon| {
+                                this.child(Icon::from_path(icon))
+                            })
+                            .child(Label::new(self.filename.clone()))
+                        }
+                    }),
+            )
     }
 }
 
@@ -1508,6 +1543,14 @@ impl GitPanel {
         }
     }
 
+    fn row_is_marked(&self, ix: usize) -> bool {
+        match self.row_mark(ix) {
+            Some(RowMark::File(path)) => self.marked_entries.contains(&path),
+            Some(RowMark::Directory(key)) => self.marked_directories.contains(&key),
+            None => false,
+        }
+    }
+
     /// Every file in the multi-selection, in display order: files marked
     /// directly plus the descendants of marked directories.
     fn marked_file_entries(&self) -> Vec<GitStatusEntry> {
@@ -1522,6 +1565,39 @@ impl GitPanel {
             }
         }
         marked
+    }
+
+    /// Builds the drag payload for the status entry at `index`, reusing the
+    /// project panel's so terminals and panes accept it. A marked row drags
+    /// every marked row. Deleted files have no project entry and are skipped.
+    fn dragged_selection(
+        &self,
+        index: usize,
+        entry: &GitStatusEntry,
+        repo: &Repository,
+        cx: &App,
+    ) -> Option<DraggedSelection> {
+        let project = self.project.read(cx);
+        let selected_entry_for = |repo_path: &RepoPath| {
+            let project_path = repo.repo_path_to_project_path(repo_path, cx)?;
+            let entry_id = project.entry_for_path(&project_path, cx)?.id;
+            Some(SelectedEntry {
+                worktree_id: project_path.worktree_id,
+                entry_id,
+            })
+        };
+        let marked_selections = if self.row_is_marked(index) {
+            self.marked_file_entries()
+                .into_iter()
+                .filter_map(|entry| selected_entry_for(&entry.repo_path))
+                .collect()
+        } else {
+            Arc::default()
+        };
+        Some(DraggedSelection {
+            active_selection: selected_entry_for(&entry.repo_path)?,
+            marked_selections,
+        })
     }
 
     /// The entries a file operation should act on: the marked set when a
@@ -3867,7 +3943,7 @@ impl GitPanel {
                     return Ok(());
                 };
                 let fetch = repo.update(cx, |repo, cx| {
-                    repo.fetch(fetch_options.clone(), askpass, cx)
+                    repo.fetch(fetch_options.clone(), Some(askpass), cx)
                 });
 
                 let remote_message = fetch.await?;
@@ -6284,8 +6360,7 @@ impl GitPanel {
                                     commit.sha.to_string(),
                                     repo.clone(),
                                     workspace.clone(),
-                                    None,
-                                    None,
+                                    Default::default(),
                                     window,
                                     cx,
                                 );
@@ -6510,8 +6585,7 @@ impl GitPanel {
             entry.sha.to_string(),
             active_repository.downgrade(),
             self.workspace.clone(),
-            None,
-            None,
+            Default::default(),
             window,
             cx,
         );
@@ -7000,8 +7074,7 @@ impl GitPanel {
                                                 sha_for_click.clone(),
                                                 repo.clone(),
                                                 workspace.clone(),
-                                                None,
-                                                None,
+                                                Default::default(),
                                                 window,
                                                 cx,
                                             );
@@ -7760,6 +7833,10 @@ impl GitPanel {
             )
         };
 
+        let dragged_selection = self.dragged_selection(ix, entry, repo, cx);
+        let dragged_icon = file_icon.clone();
+        let dragged_filename: SharedString = display_name.clone().into();
+
         let folder_indicator = settings.folder_indicator;
         let name_row = h_flex()
             .min_w_0()
@@ -7898,6 +7975,16 @@ impl GitPanel {
                             }),
                     ),
             )
+            .when_some(dragged_selection, |this, dragged_selection| {
+                this.on_drag(dragged_selection, move |selection, click_offset, _, cx| {
+                    cx.new(|_| DraggedGitEntryView {
+                        icon: dragged_icon.clone(),
+                        filename: dragged_filename.clone(),
+                        entry_count: selection.items().count(),
+                        click_offset,
+                    })
+                })
+            })
             .on_click({
                 cx.listener(move |this, event: &ClickEvent, window, cx| {
                     if event.modifiers().shift {
@@ -12835,6 +12922,194 @@ mod tests {
     }
 
     #[gpui::test]
+    async fn test_auto_fetch(cx: &mut TestAppContext) {
+        use collections::HashSet;
+        use project::trusted_worktrees::{DbTrustedPaths, PathTrust, TrustedWorktrees};
+
+        init_test(cx);
+
+        let fs = FakeFs::new(cx.background_executor.clone());
+        fs.insert_tree(
+            "/root",
+            json!({
+                "repo": {
+                    ".git": {},
+                    "file.rs": "fn main() {}"
+                }
+            }),
+        )
+        .await;
+        fs.set_status_for_repo(
+            Path::new(path!("/root/repo/.git")),
+            &[("file.rs", StatusCode::Modified.worktree())],
+        );
+        fs.insert_branches(Path::new(path!("/root/repo/.git")), &["origin/main"]);
+        fs.set_remote_for_repo(
+            Path::new(path!("/root/repo/.git")),
+            "origin",
+            "https://example.com/repo.git",
+        );
+
+        // Use 20s interval (above the 15s minimum clamp)
+        cx.update(|cx| {
+            SettingsStore::update_global(cx, |store, cx| {
+                store
+                    .set_user_settings(
+                        r#"{"git": {"auto_fetch": {"enabled": true, "interval_secs": 20}}}"#,
+                        cx,
+                    )
+                    .unwrap();
+            });
+            project::trusted_worktrees::init(DbTrustedPaths::default(), cx);
+        });
+
+        let project =
+            Project::test_with_worktree_trust(fs.clone(), [path!("/root/repo").as_ref()], cx).await;
+
+        cx.run_until_parked();
+
+        let repo = project
+            .update(cx, |project, cx| project.active_repository(cx))
+            .expect("should have an active repository");
+        repo.read_with(cx, |repo, _| {
+            assert!(!repo.is_trusted(), "repository should start untrusted");
+        });
+
+        let fetch_count = |fs: &FakeFs| {
+            fs.with_git_state(Path::new(path!("/root/repo/.git")), false, |state| {
+                state.fetches.lock().len()
+            })
+            .unwrap()
+        };
+
+        assert_eq!(fetch_count(&fs), 0, "no fetch before timer fires");
+
+        cx.background_executor
+            .advance_clock(std::time::Duration::from_secs(40));
+        cx.run_until_parked();
+        assert_eq!(
+            fetch_count(&fs),
+            0,
+            "untrusted repository should never be auto-fetched"
+        );
+
+        let worktree_store = project.read_with(cx, |project, _| project.worktree_store());
+        let worktree_id = worktree_store.read_with(cx, |store, cx| {
+            store.worktrees().next().unwrap().read(cx).id()
+        });
+        let trusted_worktrees = cx
+            .update(|cx| TrustedWorktrees::try_get_global(cx).expect("trust global should be set"));
+        trusted_worktrees.update(cx, |store, cx| {
+            store.trust(
+                &worktree_store,
+                HashSet::from_iter([PathTrust::Worktree(worktree_id)]),
+                cx,
+            );
+        });
+        cx.run_until_parked();
+        repo.read_with(cx, |repo, _| {
+            assert!(
+                repo.is_trusted(),
+                "repository should be trusted after trusting its worktree"
+            );
+        });
+
+        // Change an unrelated setting mid-wait — should not reset the timer
+        cx.background_executor
+            .advance_clock(std::time::Duration::from_secs(10));
+        cx.run_until_parked();
+        assert_eq!(fetch_count(&fs), 0, "no fetch at 10s");
+
+        cx.update(|cx| {
+            SettingsStore::update_global(cx, |store, cx| {
+                store
+                    .set_user_settings(
+                        r#"{"git": {"auto_fetch": {"enabled": true, "interval_secs": 20}, "inline_blame": {"enabled": false}}}"#,
+                        cx,
+                    )
+                    .unwrap();
+            });
+        });
+
+        // Advance the remaining 10s — fetch should fire on the original schedule
+        cx.background_executor
+            .advance_clock(std::time::Duration::from_secs(10));
+        cx.run_until_parked();
+
+        assert!(
+            fetch_count(&fs) >= 1,
+            "unrelated settings change should not reset auto-fetch timer"
+        );
+
+        // Second fetch fires on schedule
+        let count_after_first = fetch_count(&fs);
+        cx.background_executor
+            .advance_clock(std::time::Duration::from_secs(20));
+        cx.run_until_parked();
+
+        assert!(
+            fetch_count(&fs) > count_after_first,
+            "auto-fetch should trigger again on next interval"
+        );
+
+        // Disable auto-fetch via settings change
+        let count_before_disable = fetch_count(&fs);
+        cx.update(|cx| {
+            SettingsStore::update_global(cx, |store, cx| {
+                store
+                    .set_user_settings(
+                        r#"{"git": {"auto_fetch": {"enabled": false, "interval_secs": 20}}}"#,
+                        cx,
+                    )
+                    .unwrap();
+            });
+        });
+        cx.background_executor
+            .advance_clock(std::time::Duration::from_secs(30));
+        cx.run_until_parked();
+
+        assert_eq!(
+            fetch_count(&fs),
+            count_before_disable,
+            "no fetches should occur after disabling auto-fetch"
+        );
+
+        // Re-enable with a longer interval
+        cx.update(|cx| {
+            SettingsStore::update_global(cx, |store, cx| {
+                store
+                    .set_user_settings(
+                        r#"{"git": {"auto_fetch": {"enabled": true, "interval_secs": 30}}}"#,
+                        cx,
+                    )
+                    .unwrap();
+            });
+        });
+        let count_before_re_enable = fetch_count(&fs);
+
+        // Advance less than the new interval — should not fetch
+        cx.background_executor
+            .advance_clock(std::time::Duration::from_secs(20));
+        cx.run_until_parked();
+
+        assert_eq!(
+            fetch_count(&fs),
+            count_before_re_enable,
+            "should not fetch before new interval elapses"
+        );
+
+        // Advance past the new interval — should fetch
+        cx.background_executor
+            .advance_clock(std::time::Duration::from_secs(10));
+        cx.run_until_parked();
+
+        assert!(
+            fetch_count(&fs) > count_before_re_enable,
+            "should fetch after new interval elapses"
+        );
+    }
+
+    #[gpui::test]
     async fn test_dispatch_context_with_focus_states(cx: &mut TestAppContext) {
         init_test(cx);
 
@@ -14232,6 +14507,41 @@ mod tests {
             panel.clear_marks_and_select(c_ix, cx);
             assert!(panel.marked_entries.is_empty());
             assert_eq!(panel.selected_entry, Some(c_ix));
+        });
+    }
+
+    #[gpui::test]
+    async fn test_dragged_selection_carries_marked_rows(cx: &mut TestAppContext) {
+        init_test(cx);
+        let (_fs, _project, panel, mut cx) = setup_flat_marks_fixture(cx).await;
+
+        fn dragged_paths(panel: &GitPanel, path: &str, cx: &App) -> HashSet<RepoPath> {
+            let index = entry_index_for_repo_path(panel, &repo_path(path)).unwrap();
+            let entry = panel.entries[index].status_entry().unwrap();
+            let repo = panel.active_repository.as_ref().unwrap().read(cx);
+            let selection = panel.dragged_selection(index, entry, repo, cx).unwrap();
+            let project = panel.project.read(cx);
+            selection
+                .items()
+                .map(|item| project.path_for_entry(item.entry_id, cx).unwrap())
+                .map(|project_path| repo.project_path_to_repo_path(&project_path, cx).unwrap())
+                .collect()
+        }
+
+        panel.update_in(&mut cx, |panel, _window, cx| {
+            mark_file(panel, "a.txt");
+            mark_file(panel, "b.txt");
+
+            assert_eq!(
+                dragged_paths(panel, "a.txt", cx),
+                HashSet::from_iter([repo_path("a.txt"), repo_path("b.txt")]),
+                "dragging a marked row should carry every marked row",
+            );
+            assert_eq!(
+                dragged_paths(panel, "c.txt", cx),
+                HashSet::from_iter([repo_path("c.txt")]),
+                "dragging an unmarked row should carry only that row",
+            );
         });
     }
 

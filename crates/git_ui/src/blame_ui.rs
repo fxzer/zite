@@ -1,6 +1,6 @@
 use crate::{
     commit_tooltip::{CommitAvatar, CommitTooltip, commit_tag_chips, shallow_boundary_notice},
-    commit_view::{CommitView, GitBlob, build_buffer, worktree_id_for_repo_path},
+    commit_view::{CommitView, CommitViewOptions, GitBlob, build_buffer, worktree_id_for_repo_path},
 };
 use anyhow::Context as _;
 use editor::{BlameRenderer, Editor, GitBlame, MultiBuffer, hover_markdown_style};
@@ -252,8 +252,10 @@ impl BlameRenderer for GitBlameRenderer {
                                     blame_entry.sha.to_string(),
                                     repository.downgrade(),
                                     workspace.clone(),
-                                    None,
-                                    None,
+                                    CommitViewOptions {
+                                        reveal_file: RepoPath::new(&blame_entry.filename).ok(),
+                                        ..Default::default()
+                                    },
                                     window,
                                     cx,
                                 )
@@ -493,8 +495,13 @@ impl BlameRenderer for GitBlameRenderer {
                                                         commit_summary.sha.clone().into(),
                                                         repository.downgrade(),
                                                         workspace.clone(),
-                                                        None,
-                                                        None,
+                                                        CommitViewOptions {
+                                                            reveal_file: RepoPath::new(
+                                                                &blame.filename,
+                                                            )
+                                                            .ok(),
+                                                            ..Default::default()
+                                                        },
                                                         window,
                                                         cx,
                                                     );
@@ -526,8 +533,10 @@ impl BlameRenderer for GitBlameRenderer {
             blame_entry.sha.to_string(),
             repository.downgrade(),
             workspace,
-            None,
-            None,
+            CommitViewOptions {
+                reveal_file: RepoPath::new(&blame_entry.filename).ok(),
+                ..Default::default()
+            },
             window,
             cx,
         )

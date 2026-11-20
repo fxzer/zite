@@ -2,7 +2,7 @@ pub use crate::commit_context_menu::{CopyCommitSha, CopyCommitTag, OpenCommitVie
 use crate::{
     commit_context_menu::{CommitContextMenuData, CommitContextMenuSource, commit_context_menu},
     commit_tooltip::CommitAvatar,
-    commit_view::CommitView,
+    commit_view::{CommitView, CommitViewOptions},
     git_status_icon,
 };
 use collections::{BTreeMap, HashMap, IndexSet};
@@ -258,8 +258,10 @@ impl ChangedFileEntry {
             commit_sha.to_string(),
             repository.clone(),
             workspace.clone(),
-            None,
-            Some(self.repo_path.clone()),
+            CommitViewOptions {
+                file_filter: Some(self.repo_path.clone()),
+                ..Default::default()
+            },
             window,
             cx,
         );
@@ -2348,8 +2350,7 @@ impl GitGraph {
             commit_entry.data.sha.to_string(),
             repository.downgrade(),
             self.workspace.clone(),
-            None,
-            None,
+            Default::default(),
             window,
             cx,
         );

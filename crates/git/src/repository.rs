@@ -1031,7 +1031,7 @@ pub trait GitRepository: Send + Sync {
     fn fetch(
         &self,
         fetch_options: FetchOptions,
-        askpass: AskPassDelegate,
+        askpass: Option<AskPassDelegate>,
         env: Arc<HashMap<String, String>>,
         // This method takes an AsyncApp to ensure it's invoked on the main thread,
         // otherwise git-credentials-manager won't work.
@@ -2785,43 +2785,41 @@ impl GitRepository for RealGitRepository {
         message: SharedString,
         name_and_email: Option<(SharedString, SharedString)>,
         options: CommitOptions,
-        ask_pass: AskPassDelegate,
+        askpass: AskPassDelegate,
         env: Arc<HashMap<String, String>>,
     ) -> BoxFuture<'_, Result<()>> {
         let git = self.git_binary_in_worktree();
-        let executor = self.executor.clone();
         // Note: Do not spawn this command on the background thread, it might pop open the credential helper
         // which we want to block on.
         async move {
             let git = git?;
-            let mut cmd = git.build_command(&["commit", "--quiet", "-m"]);
-            cmd.envs(env.iter())
-                .arg(&message.to_string())
-                .arg("--cleanup=strip")
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped());
+            git.run_remote_command(Some(askpass), &env, &["commit", "--quiet", "-m"], |cmd| {
+                cmd.arg(&message.to_string())
+                    .arg("--cleanup=strip")
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped());
 
-            if options.amend {
-                cmd.arg("--amend");
-            }
+                if options.amend {
+                    cmd.arg("--amend");
+                }
 
-            if options.signoff {
-                cmd.arg("--signoff");
-            }
+                if options.signoff {
+                    cmd.arg("--signoff");
+                }
 
-            if options.allow_empty {
-                cmd.arg("--allow-empty");
-            }
+                if options.allow_empty {
+                    cmd.arg("--allow-empty");
+                }
 
-            if options.no_verify {
-                cmd.arg("--no-verify");
-            }
+                if options.no_verify {
+                    cmd.arg("--no-verify");
+                }
 
-            if let Some((name, email)) = name_and_email {
-                cmd.arg("--author").arg(&format!("{name} <{email}>"));
-            }
-
-            run_git_command(env, ask_pass, cmd, executor).await?;
+                if let Some((name, email)) = name_and_email {
+                    cmd.arg("--author").arg(&format!("{name} <{email}>"));
+                }
+            })
+            .await?;
 
             Ok(())
         }
@@ -2853,7 +2851,7 @@ impl GitRepository for RealGitRepository {
         remote_branch_name: String,
         remote_name: String,
         options: Option<PushOptions>,
-        ask_pass: AskPassDelegate,
+        askpass: AskPassDelegate,
         env: Arc<HashMap<String, String>>,
         cx: AsyncApp,
     ) -> BoxFuture<'_, Result<RemoteCommandOutput>> {
@@ -2870,23 +2868,22 @@ impl GitRepository for RealGitRepository {
                 git_binary_path,
                 working_directory,
                 git_directory,
-                executor.clone(),
+                executor,
                 is_trusted,
             );
-            let mut command = git.build_command(&["push"]);
-            command
-                .envs(env.iter())
-                .args(options.map(|option| match option {
-                    PushOptions::SetUpstream => "--set-upstream",
-                    PushOptions::Force => "--force-with-lease",
-                }))
-                .arg(remote_name)
-                .arg(format!("{}:{}", branch_name, remote_branch_name))
-                .stdin(Stdio::null())
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped());
-
-            run_git_command(env, ask_pass, command, executor).await
+            git.run_remote_command(Some(askpass), &env, &["push"], |command| {
+                command
+                    .args(options.map(|option| match option {
+                        PushOptions::SetUpstream => "--set-upstream",
+                        PushOptions::Force => "--force-with-lease",
+                    }))
+                    .arg(remote_name)
+                    .arg(format!("{}:{}", branch_name, remote_branch_name))
+                    .stdin(Stdio::null())
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped());
+            })
+            .await
         }
         .boxed()
     }
@@ -2896,7 +2893,7 @@ impl GitRepository for RealGitRepository {
         branch_name: Option<String>,
         remote_name: String,
         rebase: bool,
-        ask_pass: AskPassDelegate,
+        askpass: AskPassDelegate,
         env: Arc<HashMap<String, String>>,
         cx: AsyncApp,
     ) -> BoxFuture<'_, Result<RemoteCommandOutput>> {
@@ -2913,23 +2910,21 @@ impl GitRepository for RealGitRepository {
                 git_binary_path,
                 working_directory,
                 git_directory,
-                executor.clone(),
+                executor,
                 is_trusted,
             );
-            let mut command = git.build_command(&["pull"]);
-            command.envs(env.iter());
+            git.run_remote_command(Some(askpass), &env, &["pull"], |command| {
+                if rebase {
+                    command.arg("--rebase");
+                }
 
-            if rebase {
-                command.arg("--rebase");
-            }
-
-            command
-                .arg(remote_name)
-                .args(branch_name)
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped());
-
-            run_git_command(env, ask_pass, command, executor).await
+                command
+                    .arg(remote_name)
+                    .args(branch_name)
+                    .stdout(Stdio::piped())
+                    .stderr(Stdio::piped());
+            })
+            .await
         }
         .boxed()
     }
@@ -2937,7 +2932,7 @@ impl GitRepository for RealGitRepository {
     fn fetch(
         &self,
         fetch_options: FetchOptions,
-        ask_pass: AskPassDelegate,
+        askpass: Option<AskPassDelegate>,
         env: Arc<HashMap<String, String>>,
         cx: AsyncApp,
     ) -> BoxFuture<'_, Result<RemoteCommandOutput>> {
@@ -2955,16 +2950,13 @@ impl GitRepository for RealGitRepository {
                 git_binary_path,
                 working_directory,
                 git_directory,
-                executor.clone(),
+                executor,
                 is_trusted,
             );
-            let mut command = git.build_command(&["fetch", &remote_name]);
-            command
-                .envs(env.iter())
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped());
-
-            run_git_command(env, ask_pass, command, executor).await
+            git.run_remote_command(askpass, &env, &["fetch", &remote_name], |command| {
+                command.stdout(Stdio::piped()).stderr(Stdio::piped());
+            })
+            .await
         }
         .boxed()
     }
@@ -4151,6 +4143,18 @@ impl GitBinary {
     where
         S: AsRef<OsStr>,
     {
+        self.build_command_with_config(&[], args)
+    }
+
+    #[allow(clippy::disallowed_methods)]
+    fn build_command_with_config<S>(
+        &self,
+        config: &[(&str, &str)],
+        args: &[S],
+    ) -> util::command::Command
+    where
+        S: AsRef<OsStr>,
+    {
         let mut command = new_command(&self.git_binary_path);
         command.current_dir(&self.working_directory);
         // Disabled to stop malicious actors from running arbitrary commands via fsmonitor hooks
@@ -4168,6 +4172,9 @@ impl GitBinary {
             command.args(["-c", "protocol.ext.allow=never"]);
             command.args(["-c", "diff.external="]);
         }
+        for (key, value) in config {
+            command.args(["-c", &format!("{key}={value}")]);
+        }
         command.args(args);
 
         // If the `diff` command is being used, we'll want to add the
@@ -4183,36 +4190,76 @@ impl GitBinary {
         command.envs(&self.envs);
         command
     }
-}
 
-#[derive(Error, Debug)]
-#[error("Git command failed:\n{stdout}{stderr}\n")]
-struct GitBinaryCommandError {
-    stdout: String,
-    stderr: String,
-    status: ExitStatus,
-}
+    async fn run_remote_command<S>(
+        &self,
+        askpass: Option<AskPassDelegate>,
+        env: &HashMap<String, String>,
+        args: &[S],
+        configure: impl FnOnce(&mut util::command::Command),
+    ) -> Result<RemoteCommandOutput>
+    where
+        S: AsRef<OsStr>,
+    {
+        let mut config = Vec::new();
+        if askpass.is_none() {
+            config.push(("credential.interactive", "false"));
+            config.push(("gc.auto", "0"));
+            config.push(("core.askPass", ""));
+        }
 
-async fn run_git_command(
-    env: Arc<HashMap<String, String>>,
-    ask_pass: AskPassDelegate,
-    mut command: util::command::Command,
-    executor: BackgroundExecutor,
-) -> Result<RemoteCommandOutput> {
-    if env.contains_key("GIT_ASKPASS") {
-        let git_process = command.spawn()?;
-        let output = git_process.output().await?;
-        anyhow::ensure!(
-            output.status.success(),
-            "{}",
-            String::from_utf8_lossy(&output.stderr)
-        );
-        Ok(RemoteCommandOutput {
-            stdout: String::from_utf8_lossy(&output.stdout).to_string(),
-            stderr: String::from_utf8_lossy(&output.stderr).to_string(),
-        })
-    } else {
-        let ask_pass = AskPassSession::new(executor, ask_pass).await?;
+        let mut command = self.build_command_with_config(&config, args);
+        command.envs(env.iter());
+        configure(&mut command);
+
+        match askpass {
+            Some(delegate) => self.run_with_askpass(delegate, env, command).await,
+            None => {
+                command.env("GIT_TERMINAL_PROMPT", "0");
+                if let Some(ssh_command) = self.batch_mode_ssh_command(env).await {
+                    command.env("GIT_SSH_COMMAND", ssh_command);
+                }
+                command.env_remove("GIT_ASKPASS");
+                command.env_remove("SSH_ASKPASS");
+                remote_command_output(command.output().await?)
+            }
+        }
+    }
+
+    async fn batch_mode_ssh_command(&self, env: &HashMap<String, String>) -> Option<String> {
+        let inherited = |key: &str| {
+            env.get(key)
+                .or_else(|| self.envs.get(key))
+                .cloned()
+                .or_else(|| std::env::var(key).ok())
+        };
+        let ssh_command_env = inherited("GIT_SSH_COMMAND");
+        let core_ssh_command = if ssh_command_env.is_some() {
+            None
+        } else if self.is_trusted {
+            self.run(&["config", "--get", "core.sshCommand"]).await.ok()
+        } else {
+            Some("ssh".to_string())
+        };
+        compose_batch_mode_ssh_command(
+            ssh_command_env.as_deref(),
+            core_ssh_command.as_deref(),
+            inherited("GIT_SSH").as_deref(),
+        )
+    }
+
+    async fn run_with_askpass(
+        &self,
+        delegate: AskPassDelegate,
+        env: &HashMap<String, String>,
+        mut command: util::command::Command,
+    ) -> Result<RemoteCommandOutput> {
+        if env.contains_key("GIT_ASKPASS") {
+            let git_process = command.spawn()?;
+            return remote_command_output(git_process.output().await?);
+        }
+
+        let ask_pass = AskPassSession::new(self.executor.clone(), delegate).await?;
         command
             .env("GIT_ASKPASS", ask_pass.script_path())
             .env("SSH_ASKPASS", ask_pass.script_path())
@@ -4233,6 +4280,43 @@ async fn run_git_command(
 
         run_askpass_command(ask_pass, git_process).await
     }
+}
+
+fn compose_batch_mode_ssh_command(
+    ssh_command_env: Option<&str>,
+    core_ssh_command: Option<&str>,
+    git_ssh_env: Option<&str>,
+) -> Option<String> {
+    let configured = ssh_command_env
+        .or(core_ssh_command)
+        .map(str::trim)
+        .filter(|command| !command.is_empty());
+    let base = match configured {
+        Some(configured) => configured,
+        None if git_ssh_env.is_some_and(|program| !program.trim().is_empty()) => return None,
+        None => "ssh",
+    };
+    Some(format!("{base} -o BatchMode=yes"))
+}
+
+fn remote_command_output(output: Output) -> Result<RemoteCommandOutput> {
+    anyhow::ensure!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    Ok(RemoteCommandOutput {
+        stdout: String::from_utf8_lossy(&output.stdout).to_string(),
+        stderr: String::from_utf8_lossy(&output.stderr).to_string(),
+    })
+}
+
+#[derive(Error, Debug)]
+#[error("Git command failed:\n{stdout}{stderr}\n")]
+struct GitBinaryCommandError {
+    stdout: String,
+    stderr: String,
+    status: ExitStatus,
 }
 
 async fn run_askpass_command(
