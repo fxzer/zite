@@ -3498,10 +3498,10 @@ impl BackgroundScannerState {
                 }
             }
 
-            if let Err(ix) = removed_ids.binary_search(&entry.id) {
-                removed_ids.insert(ix, entry.id);
-            }
+            removed_ids.push(entry.id);
         }
+        removed_ids.sort_unstable();
+        removed_ids.dedup();
 
         self.snapshot
             .entries_by_id
@@ -3704,13 +3704,19 @@ async fn is_dot_git(path: &Path, fs: &dyn Fs) -> bool {
 
     // If we're in a bare repository, we are not inside a `.git` folder. In a
     // bare repository, the root folder contains what would normally be in the
-    // `.git` folder.
-    let head_metadata = fs.metadata(&path.join("HEAD")).await;
-    if !matches!(head_metadata, Ok(Some(_))) {
-        return false;
-    }
-    let config_metadata = fs.metadata(&path.join("config")).await;
-    matches!(config_metadata, Ok(Some(_)))
+    // `.git` folder, so `HEAD` and `config` must be files: source directories
+    // can contain entries with those names (`head` matches `HEAD` on
+    // case-insensitive filesystems).
+    //
+    // `HEAD` may be a symlink (`core.preferSymlinkRefs`) that dangles once its
+    // ref only lives in `packed-refs`; Git resolves it by name, so a broken
+    // link still counts.
+    fs.is_file(&path.join("config")).await && is_file_or_symlink(&path.join("HEAD"), fs).await
+}
+
+/// Whether the path is a file or a symlink, without resolving the link.
+async fn is_file_or_symlink(path: &Path, fs: &dyn Fs) -> bool {
+    fs.is_file(path).await || fs.read_link(path).await.is_ok()
 }
 
 async fn build_gitignore(abs_path: &Path, fs: &dyn Fs) -> Result<Gitignore> {
@@ -5370,6 +5376,8 @@ impl BackgroundScanner {
             root_char_bag = snapshot.root_char_bag;
         }
 
+        let parent_is_private = self.is_path_private(&job.path);
+        let parent_is_hidden = self.settings.is_path_hidden(&job.path);
         let next_entry_id = self.next_entry_id.clone();
         let mut ignore_stack = job.ignore_stack.clone();
         let mut new_ignore = None;
@@ -5445,7 +5453,8 @@ impl BackgroundScanner {
                 }
             }
 
-            if self.settings.is_path_excluded(&child_path) {
+            // `job.path` was checked above, so only the child can match.
+            if self.settings.file_scan_exclusions.is_match(&child_path) {
                 log::debug!("skipping excluded child entry {child_path:?}");
 
                 self.state
@@ -5549,18 +5558,16 @@ impl BackgroundScanner {
                     self.settings.is_path_always_included(&child_path, false);
             }
 
+            if parent_is_private
+                || (!self.share_private_files
+                    && self.settings.private_files.is_match(&child_entry.path))
             {
-                let relative_path = job
-                    .path
-                    .join(RelPath::from_unix_str(child_name.to_str().unwrap()).unwrap());
-                if self.is_path_private(&relative_path) {
-                    log::debug!("detected private file: {relative_path:?}");
-                    child_entry.is_private = true;
-                }
-                if self.settings.is_path_hidden(&relative_path) {
-                    log::debug!("detected hidden file: {relative_path:?}");
-                    child_entry.is_hidden = true;
-                }
+                log::debug!("detected private file: {:?}", child_entry.path);
+                child_entry.is_private = true;
+            }
+            if parent_is_hidden || self.settings.hidden_files.is_match(&child_entry.path) {
+                log::debug!("detected hidden file: {:?}", child_entry.path);
+                child_entry.is_hidden = true;
             }
 
             new_entries.push(child_entry);
