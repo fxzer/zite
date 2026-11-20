@@ -1,3 +1,4 @@
+use collections::FxHashMap;
 use gpui::{BackgroundExecutor, Task};
 use notify::{Event, EventKind};
 use parking_lot::Mutex;
@@ -454,19 +455,28 @@ impl WatchKey {
     }
 
     fn folded(path: &SanitizedPath) -> Self {
+        Self::Folded(Self::folded_path(path).into())
+    }
+
+    fn folded_path(path: &SanitizedPath) -> String {
         let lossy = path.as_path().to_string_lossy();
         // macOS (APFS/HFS+) compares names normalization-insensitively (NFC vs
         // NFD), and FSEvents can report NFD while a config/LSP supplies NFC, so
         // normalize before folding case. Windows (NTFS) and Linux are
         // normalization-sensitive, so there we only fold case.
         #[cfg(target_os = "macos")]
-        let folded = {
+        {
             use unicode_normalization::UnicodeNormalization as _;
+
+            if lossy.is_ascii() {
+                return lossy.to_ascii_lowercase();
+            }
+
             lossy.chars().nfc().collect::<String>().to_lowercase()
-        };
+        }
+
         #[cfg(not(target_os = "macos"))]
-        let folded = lossy.to_lowercase();
-        Self::Folded(folded.into())
+        lossy.to_lowercase()
     }
 
     fn for_registration(path: &SanitizedPath, case_insensitive: bool) -> Self {
@@ -697,7 +707,7 @@ struct PathRegistrationState {
 /// The registered watch paths for one watcher mode, keyed by [`WatchKey`] so that
 /// add (dedup), remove, and dispatch share a single notion of path identity.
 #[derive(Default)]
-struct WatchPaths(HashMap<WatchKey, PathRegistrationState>);
+struct WatchPaths(FxHashMap<WatchKey, PathRegistrationState>);
 
 impl WatchPaths {
     fn contains(&self, key: &WatchKey) -> bool {
@@ -711,7 +721,7 @@ impl WatchPaths {
     fn entry(
         &mut self,
         key: WatchKey,
-    ) -> std::collections::hash_map::Entry<'_, WatchKey, PathRegistrationState> {
+    ) -> collections::hash_map::Entry<'_, WatchKey, PathRegistrationState> {
         self.0.entry(key)
     }
 
@@ -741,8 +751,21 @@ impl WatchPaths {
             if let Some(registration) = self.0.get(&WatchKey::exact(ancestor)) {
                 ids.extend_from_slice(&registration.watcher_ids);
             }
+
+            #[cfg(target_os = "windows")]
             if let Some(registration) = self.0.get(&WatchKey::folded(ancestor)) {
                 ids.extend_from_slice(&registration.watcher_ids);
+            }
+        }
+
+        #[cfg(not(target_os = "windows"))]
+        {
+            let folded_path = WatchKey::folded_path(path);
+            for ancestor in Path::new(&folded_path).ancestors() {
+                let key = WatchKey::Folded(Arc::from(ancestor.to_string_lossy().as_ref()));
+                if let Some(registration) = self.0.get(&key) {
+                    ids.extend_from_slice(&registration.watcher_ids);
+                }
             }
         }
     }
