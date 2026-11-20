@@ -5491,6 +5491,7 @@ mod tests {
                 "pane",
                 "panel",
                 "picker",
+                "project_bookmarks",
                 "project_panel",
                 "project_search",
                 "project_symbols",
