@@ -2,7 +2,7 @@
 description = "The fast, native VSCode alternative."
 edition.workspace = true
 name = "zite"
-version = "1.6.1"
+version = "1.7.0"
 publish.workspace = true
 license = "GPL-3.0-or-later"
 default-run = "zite"
@@ -145,6 +145,7 @@ profiling.workspace = true
 project.workspace = true
 project_panel.workspace = true
 project_symbols.workspace = true
+project_bookmarks.workspace = true
 proto.workspace = true
 recent_projects.workspace = true
 release_channel.workspace = true
