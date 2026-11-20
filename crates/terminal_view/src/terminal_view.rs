@@ -677,6 +677,14 @@ impl TerminalView {
     }
 
     fn scroll_wheel(&mut self, event: &ScrollWheelEvent, cx: &mut Context<Self>) {
+        if event.modifiers.secondary()
+            && matches!(self.mode, TerminalMode::Standalone)
+            && EditorSettings::get_global(cx).mouse_wheel_zoom
+        {
+            theme_settings::adjust_buffer_font_size_for_scroll(event.delta, cx);
+            return cx.stop_propagation();
+        }
+
         let terminal_content = self.terminal.read(cx).last_content();
 
         if self.block_below_cursor.is_some() && terminal_content.display_offset == 0 {

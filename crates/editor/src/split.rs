@@ -628,7 +628,6 @@ impl SplittableEditor {
             editor.disable_runnables();
             editor.disable_code_lens(cx);
             editor.disable_inline_diagnostics();
-            editor.disable_mouse_wheel_zoom();
             editor.set_minimap_visibility(crate::MinimapVisibility::Disabled, window, cx);
             editor.set_diff_hunk_renderer(Some(Arc::new(DefaultDiffHunkRenderer)), cx);
             editor
@@ -729,6 +728,7 @@ impl SplittableEditor {
         });
 
         let splittable = cx.weak_entity();
+        let enable_mouse_wheel_zoom = self.rhs_editor.read(cx).enable_mouse_wheel_zoom;
         let rhs_editor = self.rhs_editor.downgrade();
         let lhs_editor = cx.new(|cx| {
             let mut editor =
@@ -747,8 +747,12 @@ impl SplittableEditor {
             editor.disable_lsp_data();
             editor.disable_runnables();
             editor.disable_diagnostics(cx);
-            editor.disable_mouse_wheel_zoom();
             editor.set_minimap_visibility(crate::MinimapVisibility::Disabled, window, cx);
+
+            if !enable_mouse_wheel_zoom {
+                editor.disable_mouse_wheel_zoom();
+            }
+
             editor
         });
 
