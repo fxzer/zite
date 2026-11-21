@@ -27,8 +27,13 @@ release_channel.workspace = true
 sqlez.workspace = true
 sqlez_macros.workspace = true
 util.workspace = true
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
 uuid.workspace = true
 zite_env_vars.workspace = true
+=======
+uuid = { workspace = true, features = ["v5", "v7"] }
+zed_env_vars.workspace = true
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 
 [dev-dependencies]
 gpui = { workspace = true, features = ["test-support"] }

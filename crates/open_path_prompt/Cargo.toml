@@ -10,7 +10,11 @@ file_icons.workspace = true
 futures.workspace = true
 fuzzy.workspace = true
 gpui.workspace = true
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
 i18n.workspace = true
+=======
+menu.workspace = true
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 picker.workspace = true
 project.workspace = true
 serde.workspace = true
@@ -32,3 +36,4 @@ workspace = true
 
 [lib]
 path = "src/open_path_prompt.rs"
+doctest = false

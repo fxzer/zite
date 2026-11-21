@@ -13,6 +13,23 @@ path = "src/mermaid_render.rs"
 doctest = false
 
 [dependencies]
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
 mermaid-rs-renderer.workspace = true
 thiserror.workspace = true
+=======
+anyhow.workspace = true
+gpui.workspace = true
+merman = { workspace = true, features = [
+    "layout-cytoscape",
+    "svg",
+] }
+quick-xml.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+ztracing.workspace = true
+
+[dev-dependencies]
+gpui = { workspace = true, features = ["test-support"] }
+mermaid_render = { workspace = true, features = ["test-support"] }
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 usvg.workspace = true

@@ -1,7 +1,11 @@
 use std::{collections::HashSet, sync::Arc};
 
 use futures::future::{FutureExt, Shared};
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
 use fuzzy_nucleo::{Case, LengthPenalty, StringMatchCandidate, match_strings};
+=======
+use fuzzy_nucleo::{StringMatchCandidate, match_strings};
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 use gpui::{
     App, Context, DismissEvent, Entity, ParentElement, SharedString, Task, WeakEntity, Window,
     actions,
@@ -156,6 +160,7 @@ impl PickerDelegate for ProjectBookmarksDelegate {
                 .map(|(i, bookmark)| StringMatchCandidate::new(i, &bookmark.label))
                 .collect();
 
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
             let matches = match_strings(
                 candidates.as_slice(),
                 &query,
@@ -163,6 +168,9 @@ impl PickerDelegate for ProjectBookmarksDelegate {
                 LengthPenalty::On,
                 candidates.len(),
             );
+=======
+            let matches = match_strings(candidates.as_slice(), &query, Default::default());
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 
             picker
                 .update(cx, |picker, cx| {

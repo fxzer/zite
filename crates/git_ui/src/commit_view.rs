@@ -2,11 +2,19 @@ use anyhow::{Context as _, Result};
 use buffer_diff::BufferDiff;
 use collections::HashMap;
 use editor::{
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
     display_map::{Block, DisplayRow, ToDisplayPoint},
     hover_markdown_style, multibuffer_context_lines,
     scroll::ScrollAnchor,
     Addon, Editor, EditorEvent, EditorSettings, HiddenDiffHunkRenderer, MultiBuffer, RowExt,
     SelectionEffects, SplittableEditor,
+=======
+    Addon, Editor, EditorEvent, EditorSettings, HiddenDiffHunkRenderer, MultiBuffer, RowExt,
+    SelectionEffects, SplittableEditor,
+    display_map::{Block, DisplayRow, ToDisplayPoint},
+    hover_markdown_style, multibuffer_context_lines,
+    scroll::ScrollAnchor,
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 };
 use futures_lite::future::yield_now;
 use git::repository::{CommitDetails, RepoPath};
@@ -23,19 +31,27 @@ use gpui::{
 };
 use i18n::t;
 use language::{
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
     Buffer, BufferId, Capability, DiskState, File, LanguageRegistry, LineEnding, OffsetRangeExt as _,
     ReplicaId, Rope, TextBuffer,
+=======
+    Buffer, BufferId, Capability, DiskState, File, LanguageRegistry, LineEnding,
+    OffsetRangeExt as _, ReplicaId, Rope, TextBuffer,
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 };
-use markdown::{Markdown, MarkdownElement};
+use markdown::{Markdown, MarkdownElement, MarkdownStyle};
 use multi_buffer::PathKey;
 use project::{
     git_store::{CommitDiff, CommitFile, Repository, UnshallowState},
     Project, ProjectPath, WorktreeId,
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+    git_store::{CommitDiff, CommitFile, Repository, UnshallowState},
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 };
 use settings::{DiffViewStyle, Settings};
 use std::{
     any::{Any, TypeId},
-    collections::HashSet,
     path::PathBuf,
     sync::Arc,
 };
@@ -211,6 +227,17 @@ impl CommitView {
         cx: &mut App,
     ) {
         Self::open_with_options(commit_sha, repo, workspace, options, false, window, cx)
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+    }
+
+    pub(crate) fn commit_sha(&self) -> &SharedString {
+        &self.commit.sha
+    }
+
+    pub(crate) fn repository(&self) -> &Entity<Repository> {
+        &self.repository
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
     }
 
     fn open_with_options(
@@ -223,12 +250,12 @@ impl CommitView {
         cx: &mut App,
     ) {
         let commit_diff = repo
-            .update(cx, |repo, _| {
-                repo.load_commit_diff(commit_sha.clone(), ignore_shallow_boundary)
+            .update(cx, |repo, cx| {
+                repo.load_commit_diff(commit_sha.clone(), ignore_shallow_boundary, cx)
             })
             .ok();
         let commit_details = repo
-            .update(cx, |repo, _| repo.show(commit_sha.clone()))
+            .update(cx, |repo, cx| repo.show_commit(commit_sha.clone(), cx))
             .ok();
 
         window
@@ -236,8 +263,8 @@ impl CommitView {
                 let commit_diff = commit_diff?;
                 let commit_details = commit_details?;
                 let (commit_diff, commit_details) = futures::join!(commit_diff, commit_details);
-                let mut commit_diff = commit_diff.log_err()?.log_err()?;
-                let commit_details = commit_details.log_err()?.log_err()?;
+                let mut commit_diff = commit_diff.log_err()?;
+                let commit_details = commit_details.log_err()?;
 
                 // Filter to specific file if requested
                 if let Some(ref filter_path) = options.file_filter {
@@ -352,11 +379,23 @@ impl CommitView {
         let project_clone = project.clone();
         let reveal_file_clone = reveal_file.clone();
         let mut files = commit_diff.files;
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+        let commit_view_settings = EditorSettings::get_global(cx).commit_view;
+        // A view filtered to a single file is opened to look at that file, so keep it expanded.
+        let collapse_files = !commit_view_settings.expand_files && file_filter.is_none();
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
 
         let load_diff_task = cx.spawn_in(window, async move |this, cx| {
-            let mut binary_buffer_ids: HashSet<language::BufferId> = HashSet::default();
             let mut file_statuses: HashMap<language::BufferId, FileStatus> = HashMap::default();
 
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+            // In case there's a file we should scroll to, i.e.,
+            // `CommitViewOptions::reveal_file` is set, we'll append that file
+            // first and immediately set the scroll anchor to its buffer
+            // header.
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
             let target_file = reveal_file_clone
                 .as_ref()
                 .and_then(|target_path| files.iter().position(|file| &file.path == target_path))
@@ -371,12 +410,20 @@ impl CommitView {
                     &project_clone,
                     &commit_sha,
                     &language_registry,
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+                    // We'll only want to collapse the target file if it is a
+                    // binary file, otherwise we'll always want it expanded,
+                    // regardless of the `CommitView` settings.
+                    is_binary,
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
                     cx,
                 )
                 .await?;
 
                 file_statuses.insert(buffer_id, file_status);
 
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
                 if is_binary {
                     binary_buffer_ids.insert(buffer_id);
                 }
@@ -406,8 +453,35 @@ impl CommitView {
                 }
             }
 
+=======
+                // Establish the scroll anchor before inserting files that may
+                // end up being sorted before it.
+                this.update_in(cx, |this, window, cx| {
+                    this.reveal_first_file(buffer_id, window, cx);
+                })?;
+            }
+
+            for file in files {
+                let is_binary = file.is_binary;
+                let (buffer_id, file_status) = Self::append_commit_file(
+                    &this,
+                    file,
+                    &repository_clone,
+                    &project_clone,
+                    &commit_sha,
+                    &language_registry,
+                    is_binary || collapse_files,
+                    cx,
+                )
+                .await?;
+
+                file_statuses.insert(buffer_id, file_status);
+            }
+
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
             this.update_in(cx, |this, _window, cx| {
                 let commit_view = cx.weak_entity();
+
                 this.editor.update(cx, |editor, cx| {
                     editor.rhs_editor().update(cx, |editor, cx| {
                         editor.register_addon(CommitDiffAddon {
@@ -443,7 +517,7 @@ impl CommitView {
             commit,
             editor,
             message,
-            message_expanded: false,
+            message_expanded: commit_view_settings.expand_description,
             message_scroll_handle: ScrollHandle::new(),
             multibuffer,
             stash,
@@ -465,6 +539,10 @@ impl CommitView {
         project: &Entity<Project>,
         commit_sha: &str,
         language_registry: &Arc<LanguageRegistry>,
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+        fold: bool,
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
         cx: &mut AsyncWindowContext,
     ) -> Result<(BufferId, FileStatus)> {
         let is_created = file.old_text.is_none();
@@ -474,7 +552,11 @@ impl CommitView {
         let raw_new_text = file.new_text.unwrap_or_default();
         let old_text = if is_binary { None } else { raw_old_text };
         let new_text = if is_binary {
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
             t!("(binary file not shown)").to_string()
+=======
+            "(binary file not shown)".to_string()
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
         } else {
             raw_new_text
         };
@@ -576,9 +658,22 @@ impl CommitView {
                         buffer_diff.clone(),
                         cx,
                     );
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
                     if is_first_batch && editor.diff_view_style() == DiffViewStyle::Split {
                         editor.split(window, cx);
                     }
+=======
+
+                    if is_first_batch && editor.diff_view_style() == DiffViewStyle::Split {
+                        editor.split(window, cx);
+                    }
+
+                    if is_first_batch && fold {
+                        editor.rhs_editor().update(cx, |editor, cx| {
+                            editor.fold_buffer(buffer_id, cx);
+                        });
+                    }
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
                 });
             })?;
             if batch_end < total {
@@ -589,6 +684,15 @@ impl CommitView {
         Ok((buffer_id, file_status))
     }
 
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+    /// Positions the file's header at the top of the viewport and places the cursor
+    /// at the start of its first excerpt, without adding a navigation history entry.
+    ///
+    /// The buffer must be the first file inserted into the view, with its header
+    /// within the initial header-height display rows. Call this before appending
+    /// other files so the scroll anchor preserves its position as they are inserted.
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
     fn reveal_first_file(
         &mut self,
         buffer_id: BufferId,
@@ -600,12 +704,29 @@ impl CommitView {
                 let display_snapshot = editor.display_snapshot(cx);
                 let header_height = display_snapshot.buffer_header_height();
 
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+                // Since we're guaranteed that the file we're
+                // dealing with is the first one for which excerpts
+                // are added, we can constrain our search range to
+                // simply
+                // `DisplayRow(0)..DisplayRow(header_height)`, as
+                // the block should always be found within that.
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
                 let header = display_snapshot
                     .blocks_in_range(DisplayRow(0)..DisplayRow(header_height))
                     .find_map(|(row, block)| match block {
                         Block::BufferHeader { excerpt, .. } if excerpt.buffer_id() == buffer_id => {
                             Some((row, excerpt.start_anchor))
                         }
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+                        Block::FoldedBuffer { first_excerpt, .. }
+                            if first_excerpt.buffer_id() == buffer_id =>
+                        {
+                            Some((row, first_excerpt.start_anchor))
+                        }
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
                         _ => None,
                     });
 
@@ -617,6 +738,15 @@ impl CommitView {
                         |selections| selections.select_ranges([anchor..anchor]),
                     );
 
+<<<<<<< 074505244d6a2a83ed2b2e13a50f5fde6d149eac
+=======
+                    // The excerpt's anchor points to its first text line, below the file header.
+                    // Scrolling to that anchor alone would leave the header above the viewport.
+                    //
+                    // As such, we use the difference between the header and text display rows as an
+                    // offset so the viewport starts at the header while following the text anchor
+                    // as other files might be inserted before it.
+>>>>>>> c2b6cedc996d38ade63ce1f45804ebb50ee61779
                     let anchor_row = anchor.to_display_point(&display_snapshot).row().as_f64();
                     let offset = gpui::point(0.0, header_row.as_f64() - anchor_row);
 
@@ -816,12 +946,10 @@ impl CommitView {
         let commit_sha = commit.sha.clone();
         let commit_date = time::OffsetDateTime::from_unix_timestamp(commit.commit_timestamp)
             .unwrap_or_else(|_| time::OffsetDateTime::now_utc());
-        let local_offset = time::UtcOffset::current_local_offset().unwrap_or(time::UtcOffset::UTC);
-        let date_string = time_format::format_localized_timestamp(
+        let date_string = crate::git_timestamp::format_git_timestamp(
             commit_date,
-            time::OffsetDateTime::now_utc(),
-            local_offset,
             time_format::TimestampFormat::MediumAbsolute,
+            cx,
         );
 
         let avatar_size = rems_from_px(40_f32);
@@ -973,7 +1101,10 @@ impl CommitView {
             return None;
         }
 
-        let markdown_style = hover_markdown_style(window, cx);
+        let markdown_style = MarkdownStyle {
+            soft_break_as_hard_break: true,
+            ..hover_markdown_style(window, cx)
+        };
 
         let is_expanded = self.message_expanded;
 
@@ -1249,6 +1380,7 @@ pub(crate) async fn build_buffer(
             text,
         );
         let mut buffer = Buffer::build(buffer, Some(blob), Capability::ReadWrite, cx);
+        buffer.set_language_registry(language_registry.clone());
         buffer.set_language_async(language, cx);
         buffer
     });
@@ -1637,4 +1769,594 @@ fn stash_matches_index(sha: &str, stash_index: usize, repo: &Repository) -> bool
         .get(stash_index)
         .map(|entry| entry.oid.to_string() == sha)
         .unwrap_or(false)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use gpui::{EmptyView, TestAppContext, UpdateGlobal, VisualTestContext};
+    use indoc::indoc;
+    use language::{Language, LanguageConfig, LanguageMatcher, markdown_lang};
+    use project::FakeFs;
+    use serde_json::json;
+    use settings::SettingsStore;
+    use std::path::Path;
+    use util::path;
+    use workspace::MultiWorkspace;
+
+    fn init_test(cx: &mut TestAppContext) {
+        cx.update(|cx| {
+            let settings_store = SettingsStore::test(cx);
+            cx.set_global(settings_store);
+            theme_settings::init(theme::LoadThemes::JustBase, cx);
+            language_model::init(cx);
+            editor::init(cx);
+            crate::init(cx);
+        });
+    }
+
+    /// Opens a commit view for a commit that modifies `a.txt` and `b.txt`.
+    async fn open_test_commit_view(
+        file_filter: Option<RepoPath>,
+        cx: &mut TestAppContext,
+    ) -> (Entity<CommitView>, &mut VisualTestContext) {
+        let fs = FakeFs::new(cx.executor());
+        fs.insert_tree(
+            path!("/project"),
+            json!({ ".git": {}, "a.txt": "a new\n", "b.txt": "b new\n" }),
+        )
+        .await;
+        let project = Project::test(fs, [Path::new(path!("/project"))], cx).await;
+        cx.run_until_parked();
+        let repository = project.read_with(cx, |project, cx| {
+            project
+                .active_repository(cx)
+                .expect("project should have a repository")
+        });
+
+        let (multi_workspace, cx) =
+            cx.add_window_view(|window, cx| MultiWorkspace::test_new(project.clone(), window, cx));
+        let workspace = multi_workspace.read_with(&*cx, |multi, _| multi.workspace().clone());
+
+        let commit = CommitDetails {
+            sha: "0123456789abcdef0123456789abcdef01234567".into(),
+            message: "Subject\n\nA longer description.".into(),
+            ..Default::default()
+        };
+        let commit_diff = CommitDiff {
+            files: ["a.txt", "b.txt"]
+                .map(|path| CommitFile {
+                    path: RepoPath::new(path).expect("valid repository path"),
+                    old_text: Some(format!("{path} old\n")),
+                    new_text: Some(format!("{path} new\n")),
+                    is_binary: false,
+                })
+                .into(),
+            is_shallow_boundary: false,
+        };
+        let commit_view = workspace.update_in(cx, |workspace, window, cx| {
+            let workspace_entity = cx.entity();
+            let commit_view = cx.new(|cx| {
+                CommitView::new(
+                    commit,
+                    commit_diff,
+                    repository,
+                    project.clone(),
+                    workspace_entity,
+                    CommitViewOptions {
+                        file_filter,
+                        ..Default::default()
+                    },
+                    window,
+                    cx,
+                )
+            });
+            workspace.add_item_to_active_pane(
+                Box::new(commit_view.clone()),
+                None,
+                true,
+                window,
+                cx,
+            );
+            commit_view
+        });
+        cx.run_until_parked();
+        (commit_view, cx)
+    }
+
+    fn folded_files(commit_view: &CommitView, cx: &App) -> usize {
+        let editor = commit_view.editor.read(cx).rhs_editor().read(cx);
+        commit_view
+            .multibuffer
+            .read(cx)
+            .all_buffers()
+            .iter()
+            .filter(|buffer| editor.is_buffer_folded(buffer.read(cx).remote_id(), cx))
+            .count()
+    }
+
+    #[gpui::test]
+    async fn test_commit_view_opens_with_defaults(cx: &mut TestAppContext) {
+        init_test(cx);
+        let (commit_view, cx) = open_test_commit_view(None, cx).await;
+
+        commit_view.read_with(cx, |commit_view, cx| {
+            assert!(!commit_view.message_expanded);
+            assert_eq!(folded_files(commit_view, cx), 0);
+        });
+    }
+
+    #[gpui::test]
+    async fn test_commit_view_settings_expand_description_and_collapse_files(
+        cx: &mut TestAppContext,
+    ) {
+        init_test(cx);
+        cx.update(|cx| {
+            SettingsStore::update_global(cx, |store, cx| {
+                store.update_user_settings(cx, |settings| {
+                    let commit_view = settings
+                        .git
+                        .get_or_insert_default()
+                        .commit_view
+                        .get_or_insert_default();
+                    commit_view.expand_description = Some(true);
+                    commit_view.expand_files = Some(false);
+                })
+            });
+        });
+        let (commit_view, cx) = open_test_commit_view(None, cx).await;
+
+        commit_view.read_with(cx, |commit_view, cx| {
+            assert!(commit_view.message_expanded);
+            assert_eq!(folded_files(commit_view, cx), 2);
+        });
+    }
+
+    #[gpui::test]
+    async fn test_commit_view_filtered_to_file_ignores_collapse_files(cx: &mut TestAppContext) {
+        init_test(cx);
+        cx.update(|cx| {
+            SettingsStore::update_global(cx, |store, cx| {
+                store.update_user_settings(cx, |settings| {
+                    settings
+                        .git
+                        .get_or_insert_default()
+                        .commit_view
+                        .get_or_insert_default()
+                        .expand_files = Some(false);
+                })
+            });
+        });
+        let file_filter = RepoPath::new("a.txt").expect("valid repository path");
+        let (commit_view, cx) = open_test_commit_view(Some(file_filter), cx).await;
+
+        commit_view.read_with(cx, |commit_view, cx| {
+            assert_eq!(folded_files(commit_view, cx), 0);
+        });
+    }
+
+    #[gpui::test]
+    async fn test_build_buffer_resolves_injected_languages(cx: &mut TestAppContext) {
+        cx.update(|cx| {
+            let store = SettingsStore::test(cx);
+            cx.set_global(store);
+        });
+
+        let language_registry = Arc::new(LanguageRegistry::test(cx.executor()));
+        language_registry.add(markdown_lang());
+        language_registry.add(Arc::new(markdown_inline_lang()));
+
+        let window = cx.add_window(|_, _| EmptyView);
+        let mut async_cx = window
+            .update(cx, |_, window, cx| window.to_async(cx))
+            .expect("window should be open");
+
+        let text = indoc! {"
+            # Title
+
+            Some *emphasized* text.
+        "}
+        .to_string();
+        let blob = Arc::new(GitBlob {
+            path: RepoPath::new("notes.md").unwrap(),
+            worktree_id: WorktreeId::from_usize(0),
+            is_deleted: false,
+            is_binary: false,
+            display_name: "abc1234 - notes.md".into(),
+        }) as Arc<dyn File>;
+
+        let buffer = build_buffer(text, blob, &language_registry, &mut async_cx)
+            .await
+            .expect("buffer should build");
+
+        cx.run_until_parked();
+
+        buffer.read_with(cx, |buffer, _| {
+            let language = buffer.language().expect("buffer should have a language");
+            assert_eq!(language.name().as_ref(), "Markdown");
+
+            let layers = buffer
+                .snapshot()
+                .syntax_layers()
+                .map(|layer| layer.language.name().to_string())
+                .collect::<Vec<_>>();
+            assert!(
+                layers.iter().any(|name| name == "Markdown-Inline"),
+                "emphasis, links, and fenced code blocks are highlighted by the injected \
+                 Markdown-Inline grammar, but the buffer parsed with layers {layers:?}",
+            );
+        });
+    }
+
+    #[gpui::test]
+    fn test_git_blob_language_detection_ignores_display_name(cx: &mut TestAppContext) {
+        cx.update(|cx| {
+            let mut store = SettingsStore::test(cx);
+            store
+                .set_user_settings(r#"{"file_types":{"JSONC":["tsconfig*.json"]}}"#, cx)
+                .expect("valid file type settings");
+            cx.set_global(store);
+        });
+
+        let language_registry = Arc::new(LanguageRegistry::test(cx.executor()));
+        language_registry.register_test_language(LanguageConfig {
+            name: "JSON".into(),
+            matcher: Arc::new(LanguageMatcher {
+                path_suffixes: vec!["json".into(), "flake.lock".into()],
+                ..LanguageMatcher::default()
+            }),
+            ..LanguageConfig::default()
+        });
+        language_registry.register_test_language(LanguageConfig {
+            name: "JSONC".into(),
+            ..LanguageConfig::default()
+        });
+
+        let languages = cx.update(|cx| {
+            [
+                ("flake.lock", "abc1234 - flake.lock"),
+                ("flake.lock", "flake.lock @ abc1234"),
+                ("nix/flake.lock", "abc1234 - flake.lock"),
+                ("nix/flake.lock", "flake.lock @ abc1234"),
+                ("web/tsconfig.json", "abc1234 - tsconfig.json"),
+                ("web/tsconfig.json", "tsconfig.json @ abc1234"),
+            ]
+            .map(|(path, display_name)| {
+                let blob = Arc::new(GitBlob {
+                    path: RepoPath::new(path).expect("valid repository path"),
+                    worktree_id: WorktreeId::from_usize(0),
+                    is_deleted: false,
+                    is_binary: false,
+                    display_name: display_name.to_string(),
+                }) as Arc<dyn File>;
+                assert_eq!(blob.file_system_abs_path(cx), None);
+                language_registry
+                    .language_for_file(&blob, None, cx)
+                    .and_then(|id| language_registry.language_name_for_id(id))
+                    .map(|name| name.to_string())
+            })
+        });
+
+        assert_eq!(
+            languages.each_ref().map(|name| name.as_deref()),
+            [
+                Some("JSON"),
+                Some("JSON"),
+                Some("JSON"),
+                Some("JSON"),
+                Some("JSONC"),
+                Some("JSONC"),
+            ]
+        );
+    }
+
+    #[gpui::test]
+    async fn test_reveal_file_preserves_header_position(cx: &mut TestAppContext) {
+        cx.update(|cx| {
+            let settings_store = SettingsStore::test(cx);
+
+            cx.set_global(settings_store);
+            theme_settings::init(theme::LoadThemes::JustBase, cx);
+            editor::init(cx);
+            crate::init(cx);
+        });
+
+        let fs = project::FakeFs::new(cx.executor());
+        fs.insert_tree(
+            path!("/project"),
+            json!({
+                ".git": {},
+                "a.txt": "",
+                "b.txt": "",
+                "c.txt": "",
+            }),
+        )
+        .await;
+
+        let project = Project::test(fs, [Path::new(path!("/project"))], cx).await;
+        let (multi_workspace, cx) = cx.add_window_view(|window, cx| {
+            workspace::MultiWorkspace::test_new(project.clone(), window, cx)
+        });
+
+        let workspace = multi_workspace.read_with(cx, |multi_workspace, _cx| {
+            multi_workspace.workspace().clone()
+        });
+        cx.run_until_parked();
+
+        let repository = project
+            .read_with(cx, |project, cx| project.active_repository(cx))
+            .expect("project should have a repository");
+
+        let commit_details = CommitDetails {
+            sha: "a".repeat(40).into(),
+            message: "commit message".into(),
+            commit_timestamp: 0,
+            author_email: "dino@zed.dev".into(),
+            author_name: "dino".into(),
+        };
+
+        let make_file = |name: &str| {
+            let old_text = (0..80)
+                .map(|row| format!("{name}: original line {row}\n"))
+                .collect::<String>();
+            let new_text = (0..80)
+                .map(|row| format!("{name}: changed line {row}\n"))
+                .collect::<String>();
+
+            CommitFile {
+                path: RepoPath::new(name).expect("should be valid repository path"),
+                old_text: Some(old_text),
+                new_text: Some(new_text),
+                is_binary: false,
+            }
+        };
+
+        let commit_diff = CommitDiff {
+            files: vec![make_file("a.txt"), make_file("b.txt"), make_file("c.txt")],
+            is_shallow_boundary: false,
+        };
+
+        let commit_view = workspace.update_in(cx, |workspace, window, cx| {
+            let workspace_entity = cx.entity();
+            let project = workspace.project().clone();
+            let options = CommitViewOptions {
+                reveal_file: Some(RepoPath::new("b.txt").unwrap()),
+                ..Default::default()
+            };
+
+            let commit_view = cx.new(|cx| {
+                CommitView::new(
+                    commit_details,
+                    commit_diff,
+                    repository,
+                    project,
+                    workspace_entity,
+                    options,
+                    window,
+                    cx,
+                )
+            });
+
+            workspace.active_pane().update(cx, |pane, cx| {
+                pane.add_item(Box::new(commit_view.clone()), true, true, None, window, cx);
+            });
+
+            commit_view
+        });
+        cx.run_until_parked();
+
+        let target_path = RepoPath::new("b.txt").expect("should be valid repository path");
+        commit_view.update(cx, |commit_view, cx| {
+            // Assert that the `Block::BufferHeader` for b.txt is at the viewport top.
+            commit_view.editor.update(cx, |editor, cx| {
+                editor.rhs_editor().update(cx, |editor, cx| {
+                    let multi_buffer = editor.buffer().read(cx);
+                    let multi_buffer_snapshot = multi_buffer.snapshot(cx);
+                    let display_snapshot = editor.display_snapshot(cx);
+                    let max_display_row = display_snapshot.max_point().row();
+
+                    // Confirm that, even though the revealed file's hunks were
+                    // added first to the multibuffer, the final order is
+                    // unaffected by this.
+                    assert_eq!(
+                        display_snapshot
+                            .blocks_in_range(DisplayRow(0)..max_display_row)
+                            .filter_map(|(_display_row, block)| match block {
+                                Block::BufferHeader { excerpt, .. } => {
+                                    let buffer = excerpt.buffer(&multi_buffer_snapshot);
+                                    let file = buffer.file()?;
+                                    Some(file.path().as_unix_str().to_owned())
+                                }
+                                _ => None,
+                            })
+                            .collect::<Vec<_>>(),
+                        ["a.txt", "b.txt", "c.txt"]
+                    );
+
+                    let (display_row, anchor) = display_snapshot
+                        .blocks_in_range(DisplayRow(0)..max_display_row)
+                        .find_map(|(display_row, block)| match block {
+                            Block::BufferHeader { excerpt, .. } => {
+                                let buffer = excerpt.buffer(&multi_buffer_snapshot);
+                                let file = buffer.file()?;
+
+                                (file.path().as_ref() == &*target_path)
+                                    .then_some((display_row, excerpt.start_anchor))
+                            }
+                            _ => None,
+                        })
+                        .expect("b.txt should have a file header");
+
+                    // Assert that the editor's scroll is anchored to the buffer
+                    // header block for the revealed file.
+                    let scroll_position = editor.scroll_position(cx);
+                    assert!((scroll_position.y - display_row.as_f64()).abs() < 0.001);
+
+                    // Assert that the editor's cursor is at the first excerpt
+                    // of the revealed file.
+                    let selections = editor.selections.all::<language::Point>(&display_snapshot);
+                    let selection = selections.first().expect("should have one selection");
+                    let expected_point = multi_buffer::ToPoint::to_point(
+                        &anchor,
+                        display_snapshot.buffer_snapshot(),
+                    );
+                    assert_eq!(selections.len(), 1);
+                    assert_eq!(selection.start, expected_point);
+                    assert_eq!(selection.end, expected_point);
+                });
+            });
+        });
+    }
+
+    #[gpui::test]
+    async fn test_reveal_binary_file_preserves_folded_header_position(cx: &mut TestAppContext) {
+        init_test(cx);
+
+        let fs = FakeFs::new(cx.executor());
+        fs.insert_tree(
+            path!("/project"),
+            json!({
+                ".git": {},
+                "a.txt": "",
+                "b.bin": "",
+                "c.txt": "",
+            }),
+        )
+        .await;
+
+        let project = Project::test(fs, [Path::new(path!("/project"))], cx).await;
+        let (multi_workspace, cx) =
+            cx.add_window_view(|window, cx| MultiWorkspace::test_new(project.clone(), window, cx));
+
+        let workspace = multi_workspace.read_with(cx, |multi_workspace, _cx| {
+            multi_workspace.workspace().clone()
+        });
+        cx.run_until_parked();
+
+        let repository = project
+            .read_with(cx, |project, cx| project.active_repository(cx))
+            .expect("project should have a repository");
+
+        let commit_details = CommitDetails {
+            sha: "a".repeat(40).into(),
+            message: "commit message".into(),
+            ..Default::default()
+        };
+
+        let make_text_file = |name: &str| {
+            let old_text = (0..80)
+                .map(|row| format!("{name}: original line {row}\n"))
+                .collect::<String>();
+            let new_text = (0..80)
+                .map(|row| format!("{name}: changed line {row}\n"))
+                .collect::<String>();
+
+            CommitFile {
+                path: RepoPath::new(name).expect("should be valid repository path"),
+                old_text: Some(old_text),
+                new_text: Some(new_text),
+                is_binary: false,
+            }
+        };
+
+        let binary_file = CommitFile {
+            path: RepoPath::new("b.bin").expect("should be valid repository path"),
+            old_text: Some(String::new()),
+            new_text: Some(String::new()),
+            is_binary: true,
+        };
+
+        let commit_diff = CommitDiff {
+            files: vec![
+                make_text_file("a.txt"),
+                binary_file,
+                make_text_file("c.txt"),
+            ],
+            is_shallow_boundary: false,
+        };
+
+        let commit_view = workspace.update_in(cx, |workspace, window, cx| {
+            let workspace_entity = cx.entity();
+            let project = workspace.project().clone();
+            let options = CommitViewOptions {
+                reveal_file: Some(RepoPath::new("b.bin").unwrap()),
+                ..Default::default()
+            };
+
+            let commit_view = cx.new(|cx| {
+                CommitView::new(
+                    commit_details,
+                    commit_diff,
+                    repository,
+                    project,
+                    workspace_entity,
+                    options,
+                    window,
+                    cx,
+                )
+            });
+
+            workspace.active_pane().update(cx, |pane, cx| {
+                pane.add_item(Box::new(commit_view.clone()), true, true, None, window, cx);
+            });
+
+            commit_view
+        });
+        cx.run_until_parked();
+
+        let target_path = RepoPath::new("b.bin").expect("should be valid repository path");
+        commit_view.update(cx, |commit_view, cx| {
+            commit_view.editor.update(cx, |editor, cx| {
+                editor.rhs_editor().update(cx, |editor, cx| {
+                    let multi_buffer = editor.buffer().read(cx);
+                    let multi_buffer_snapshot = multi_buffer.snapshot(cx);
+                    let display_snapshot = editor.display_snapshot(cx);
+                    let max_display_row = display_snapshot.max_point().row();
+
+                    // A folded buffer is displayed as a `Block::FoldedBuffer`
+                    // instead of a `Block::BufferHeader`, so finding one for
+                    // the revealed file also confirms that it was folded.
+                    let display_row = display_snapshot
+                        .blocks_in_range(DisplayRow(0)..max_display_row)
+                        .find_map(|(display_row, block)| match block {
+                            Block::FoldedBuffer { first_excerpt, .. } => {
+                                let buffer = first_excerpt.buffer(&multi_buffer_snapshot);
+                                let file = buffer.file()?;
+
+                                (file.path().as_ref() == &*target_path).then_some(display_row)
+                            }
+                            _ => None,
+                        })
+                        .expect("b.bin should be folded");
+
+                    // Confirm that a.txt was inserted before the revealed file,
+                    // otherwise the scroll position would trivially match.
+                    assert!(display_row > DisplayRow(0));
+
+                    // Assert that the editor's scroll is anchored to the folded
+                    // buffer header for the revealed file.
+                    let scroll_position = editor.scroll_position(cx);
+                    assert!(
+                        (scroll_position.y - display_row.as_f64()).abs() < 0.001,
+                        "folded header is at row {}, but the scroll position is {}",
+                        display_row.as_f64(),
+                        scroll_position.y,
+                    );
+                });
+            });
+        });
+    }
+
+    fn markdown_inline_lang() -> Language {
+        Language::new(
+            LanguageConfig {
+                name: "Markdown-Inline".into(),
+                hidden: true,
+                ..LanguageConfig::default()
+            },
+            Some(tree_sitter_md::INLINE_LANGUAGE.into()),
+        )
+        .with_highlights_query("(emphasis) @emphasis")
+        .unwrap()
+    }
 }
